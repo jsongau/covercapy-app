@@ -180,6 +180,9 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .fcell label{display:block;font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);margin-bottom:3px}
 .fcell select,.fcell input{width:100%;font-size:14px;font-weight:600;color:var(--ink);background:transparent;border:none;cursor:pointer}
 .fcell .within-row{display:flex;align-items:center;gap:8px}
+.locbtn{flex:none;width:30px;height:30px;border-radius:9px;border:1.5px solid var(--line);background:var(--cream);cursor:pointer;font-size:13px;display:grid;place-items:center;padding:0}
+.locbtn:hover{border-color:var(--mint);background:var(--mint-soft)}
+.locbtn.busy{opacity:.5;pointer-events:none}
 .fcell.omni{position:relative}
 .fomni{position:absolute;top:calc(100% + 8px);left:-1.5px;right:-1.5px;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);z-index:60;max-height:380px;overflow:auto;padding:6px}
 .fomni-sec{font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);padding:9px 11px 4px}
@@ -441,8 +444,8 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 
 <div class="sheet-back" id="sheet"><div class="sheet" id="sheetIn"></div></div>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 window.__CC={url:"https://hfvbeqlefwwjlrbyxpbj.supabase.co",key:"sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf",login:"./index.html"};
@@ -874,7 +877,7 @@ function vFind(){
     : 'Search a city, ZIP, office, or dentist. Results rank by distance, accreditation, and reviews.';
   return '<div class="page"><div class="phead"><div class="eyebrow">Find a Dentist</div><h1>PPO dentists near you</h1><div class="guide">'+guide+'</div></div>'
   +'<div class="fbar">'
-   +'<div class="fcell"><label>Location</label><input value="'+esc(F.q)+'" id="findQ" placeholder="City, ZIP, office, or dentist" aria-label="Location"></div>'
+   +'<div class="fcell" style="position:relative"><label>Location</label><div style="display:flex;gap:6px;align-items:center"><input value="'+esc(F.q)+'" id="findQ" placeholder="City, ZIP, office, or dentist" aria-label="Location" style="flex:1;min-width:0"><button type="button" class="locbtn" onclick="ccFindLocate()" title="Use my current location" aria-label="Use my current location">&#128205;</button></div></div>'
    +'<div class="fcell"><label>Treatment</label><select id="findTreat">'+topt()+'</select></div>'
    +'<div class="fcell"><label>Your PPO</label><select id="findPPO">'+popt()+'</select></div>'
    +'<div class="fcell"><label>Within <b id="findWithinLbl">'+F.within+' mi</b></label><div class="within-row"><input type="range" id="findWithin" min="5" max="50" step="5" value="'+F.within+'"></div></div>'
@@ -2271,15 +2274,36 @@ function suggest(q){
   if(ds.length){ html+='<div class="fomni-sec">Offices</div>';
     ds.forEach(function(d){ html+=row({label:d.name,sub:(d.doc||'')+' · '+(d.city||''),ic:'&#129463;',run:function(){ try{ profileSheet(d.id); }catch(e){} }},q); }); }
   var fill=function(locs){
-    var h2=html;
+    items=[]; idx=-1;
+    var h2='';
+    if(ds.length){ h2+='<div class="fomni-sec">Offices</div>';
+      ds.forEach(function(d){ h2+=row({label:d.name,sub:(d.doc||'')+' · '+(d.city||''),ic:'&#129463;',run:function(){ try{ profileSheet(d.id); }catch(e){} }},q); }); }
     if(locs.length){ h2+='<div class="fomni-sec">Locations</div>';
       locs.forEach(function(L){ h2+=row(L,q); }); }
-    if(!items.length && !locs.length && !ds.length){ h2='<div class="fomni-empty">No matches for &quot;'+esc(q)+'&quot;. Try a city, ZIP, or office name.</div>'; }
+    if(!items.length){ h2='<div class="fomni-empty">No matches for &quot;'+esc(q)+'&quot;. Try a city, ZIP, or office name.</div>'; }
     open(h2);
   };
+  /* local city fallback from loaded offices: search still works if the suggest service is unreachable */
+  function localLocs(){
+    var seen={}, out=[];
+    (DEMO_DATA.dentists||[]).forEach(function(d){
+      if(!d.lat||!d.lng) return;
+      var c=String(d.city||'').split(',')[0].trim(); if(!c) return;
+      var k=norm(c); if(seen[k]||!fzMatch(lq,c)) return; seen[k]=1;
+      out.push({label:d.city,sub:'City · from current results',ic:'&#128205;',
+        run:(function(la,ln,lb){ return function(){ go(la,ln,lb); }; })(d.lat,d.lng,d.city)});
+    });
+    return out.slice(0,4);
+  }
+  /* open instantly with whatever we have locally */
+  open(html+'<div class="fomni-empty" id="fomniWait">Searching locations&hellip;</div>');
+  var settled=false;
+  setTimeout(function(){ if(!settled && lastQ===q){ settled=true; fill(localLocs()); } }, 3000);
   if(window.__supa){
     window.__supa.rpc('nav_search_suggest',{q:q,max_n:6}).then(function(r){
-      if(lastQ!==q) return; /* stale */
+      if(lastQ!==q || settled) return; /* stale */
+      settled=true;
+      if(r&&r.error){ console.error('CoverCapy: nav_search_suggest failed', r.error); fill(localLocs()); return; }
       var locs=[];
       ((r&&r.data)||[]).forEach(function(x){
         var ic=x.kind==='zip'?'&#128230;':x.kind==='state'?'&#127463;':'&#128205;';
@@ -2290,9 +2314,9 @@ function suggest(q){
             else { byName(xx.value||xx.label); }
           }; })(x)});
       });
-      fill(locs);
-    }).catch(function(){ fill([]); });
-  } else { fill([]); }
+      fill(locs.length?locs:localLocs());
+    }).catch(function(e){ console.error('CoverCapy: suggest threw', e); if(!settled&&lastQ===q){ settled=true; fill(localLocs()); } });
+  } else { settled=true; fill(localLocs()); }
 }
 
 /* run a geo search and reload the list with true distances */
@@ -2316,12 +2340,40 @@ window.ccFindRefresh=refresh;
 function refresh(){
   var c=S.find.center; if(!c||c.lat==null){ try{ route(); }catch(e){} return; }
   if(!window.__supa){ try{ route(); }catch(e){} return; }
+  var done=false;
+  function clientFallback(){
+    if(done) return; done=true;
+    console.error('CoverCapy: coordinate search unavailable, using client-side distances');
+    var R=3958.8,toR=Math.PI/180;
+    (DEMO_DATA.dentists||[]).forEach(function(d){
+      if(!d.lat||!d.lng) return;
+      var dLat=(d.lat-c.lat)*toR,dLng=(d.lng-c.lng)*toR;
+      var h=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(c.lat*toR)*Math.cos(d.lat*toR)*Math.sin(dLng/2)*Math.sin(dLng/2);
+      d.mi=Math.round(R*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h))*10)/10;
+    });
+    try{ route(); }catch(e){}
+  }
+  setTimeout(clientFallback,5000);
   window.__supa.rpc('search_dentists_near_coordinates',{in_lat:c.lat,in_lng:c.lng,radius_miles:Math.max(S.find.within||25, PLAT_REACH)}).then(function(r){
-    var data=(r&&r.data)||[];
-    if(r&&r.error){ console.warn('geo search failed', r.error); return; }
-    loadByIds(data);
-  });
+    if(done) return;
+    if(r&&r.error){ console.error('CoverCapy: geo search failed', r.error); clientFallback(); return; }
+    done=true;
+    loadByIds((r&&r.data)||[]);
+  }).catch(function(e){ console.error('CoverCapy: geo search threw', e); clientFallback(); });
 }
+/* use my current location */
+window.ccFindLocate=function(){
+  var b=document.querySelector('.locbtn'); if(b) b.classList.add('busy');
+  if(!navigator.geolocation){ if(b) b.classList.remove('busy'); alert('Location is not available in this browser.'); return; }
+  navigator.geolocation.getCurrentPosition(function(pos){
+    if(b) b.classList.remove('busy');
+    go(pos.coords.latitude, pos.coords.longitude, 'Near you');
+  }, function(err){
+    if(b) b.classList.remove('busy');
+    console.error('CoverCapy: geolocation denied/failed', err);
+    alert('Could not get your location. Check the browser location permission and try again.');
+  }, {enableHighAccuracy:false, timeout:8000, maximumAge:300000});
+};
 function loadByIds(data){
   var ids=data.map(function(x){ return x.id; }).slice(0,60);
   var dist={}; data.forEach(function(x){ dist[x.id]=+x.distance_miles; });
@@ -2478,14 +2530,23 @@ function autoDefault(){
   else if(S.p && S.p.city){ q=S.p.city; }
   else { q=String(S.find.q||'').split(',')[0]; }
   q=(q||'').trim(); if(!q) return;
+  var settled=false;
+  function fallback(){
+    if(settled||S.find.center) return; settled=true;
+    S.find.center={lat:33.6638,lng:-117.9047,label:'Costa Mesa, CA'};
+    refresh();
+  }
+  setTimeout(fallback,4000);
   window.__supa.rpc('nav_search_suggest',{q:q,max_n:3}).then(function(r){
+    if(settled) return;
     var hit=((r&&r.data)||[]).filter(function(x){ return x.lat!=null&&x.lng!=null; })[0];
-    if(!hit) return;
+    if(!hit){ fallback(); return; }
+    settled=true;
     S.find.center={lat:+hit.lat,lng:+hit.lng,label:hit.label};
     S.find.q=hit.label;
     var inp=document.getElementById('findQ'); if(inp) inp.value=hit.label;
     refresh();
-  }).catch(function(){});
+  }).catch(function(e){ console.error('CoverCapy: default location failed', e); fallback(); });
 }
 function wire(){
   try{ autoDefault(); }catch(e){}
@@ -2506,9 +2567,18 @@ document.addEventListener('mousedown', function(e){
   if(cell && !cell.contains(e.target)) close();
 });
 /* ---- real map (Leaflet) ---- */
+var _mapTries=0;
 function ccFindMap(){
   var el=document.getElementById('lmap'); if(!el) return;
-  if(!window.L){ setTimeout(ccFindMap,400); return; }
+  if(!window.L){
+    _mapTries++;
+    if(_mapTries>20){
+      el.innerHTML='<div style="height:100%;display:grid;place-items:center;text-align:center;padding:24px"><div><div style="font-size:26px;margin-bottom:8px">&#128506;</div><b>The map could not load.</b><div class="muted" style="font-size:12.5px;margin:6px 0 12px;max-width:260px">Your network may block the map library. The office list and search still work.</div><button class="btn btn-ink btn-sm" onclick="_mapTries=0;ccFindMap()">Try again</button></div></div>';
+      return;
+    }
+    setTimeout(ccFindMap,400); return;
+  }
+  _mapTries=0;
   try{ if(window.__lmap){ window.__lmap.remove(); window.__lmap=null; } }catch(e){}
   var list=filteredDentists().filter(function(d){ return d.lat&&d.lng; });
   var m=L.map('lmap'); window.__lmap=m;
