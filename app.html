@@ -180,6 +180,23 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .fcell label{display:block;font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);margin-bottom:3px}
 .fcell select,.fcell input{width:100%;font-size:14px;font-weight:600;color:var(--ink);background:transparent;border:none;cursor:pointer}
 .fcell .within-row{display:flex;align-items:center;gap:8px}
+.fcell.omni{position:relative}
+.fomni{position:absolute;top:calc(100% + 8px);left:-1.5px;right:-1.5px;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);z-index:60;max-height:380px;overflow:auto;padding:6px}
+.fomni-sec{font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);padding:9px 11px 4px}
+.fomni-row{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;cursor:pointer;font-size:13.5px}
+.fomni-row:hover,.fomni-row.on{background:var(--cream)}
+.fomni-row .fi{flex:none;width:28px;height:28px;border-radius:9px;background:var(--sand);display:grid;place-items:center;font-size:13px}
+.fomni-row .ft{flex:1;min-width:0}
+.fomni-row .ft b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fomni-row .ft b .hl{color:var(--mint-deep)}
+.fomni-row .ft span{display:block;font-size:11.5px;color:var(--slate);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fomni-row .fx{flex:none;border:none;background:transparent;color:var(--slate);width:24px;height:24px;border-radius:50%;cursor:pointer;display:none;place-items:center}
+.fomni-row:hover .fx{display:grid}
+.fomni-row .fx:hover{background:var(--sand);color:var(--ink)}
+.fomni-empty{padding:14px 12px;font-size:12.5px;color:var(--slate);text-align:center}
+.fpager{display:flex;align-items:center;justify-content:center;gap:14px;margin:18px 0 6px}
+.fpager .fpg-lbl{font-size:12.5px;font-weight:700;color:var(--slate)}
+.fpager button[disabled]{opacity:.4;pointer-events:none}
 .fcell input[type=range]{accent-color:var(--mint);height:4px;cursor:pointer;padding:0}
 .fhead{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px}
 .fhead .sortsel{font-size:12.5px;font-weight:600;border:1.5px solid var(--line);border-radius:999px;padding:7px 13px;background:var(--paper);color:var(--ink)}
@@ -1310,13 +1327,34 @@ function nominateSheet(name,city){
     if($('nmE')) $('nmE').value=known||'';
     $('nomEmailHint').classList.toggle('hidden', !!known);
   }
+  var _nomSeq=0;
   function results(q){
     q=(q||'').toLowerCase().trim();
     var hits=DEMO_DATA.dentists.filter(function(d){
       return d.tier==='pend' && (!q || (d.name+' '+d.doc+' '+d.city).toLowerCase().indexOf(q)>-1);
     }).slice(0,4);
+    /* full-directory search: any of the 3,000+ offices is nominatable, not just the loaded page */
+    if(q.length>=2 && window.__supa){
+      var seq=++_nomSeq;
+      window.__supa.from('dentists')
+        .select('id,practice_name,doctor_name,city,state,email,membership_tier,accreditation_status')
+        .or('practice_name.ilike.%'+q.replace(/[%,()]/g,'')+'%,city.ilike.%'+q.replace(/[%,()]/g,'')+'%')
+        .limit(6).then(function(r){
+          if(seq!==_nomSeq || r.error || !r.data) return;
+          var rows=r.data.filter(function(x){ return x.membership_tier!=='capy_accredited' && x.membership_tier!=='platinum_elite'; })
+            .map(function(x){ return { id:x.id, name:x.practice_name||'Dental office', doc:x.doctor_name||'General dentistry',
+              city:[x.city,x.state].filter(Boolean).join(', '), tag:(x.accreditation_status==='accredited'?'Accredited':'Public Listing'),
+              av:'&#129441;', hasEmail:!!x.email }; });
+          paintNomResults(rows, q);
+        });
+      $('nomResults').innerHTML='<div class="muted" style="font-size:12.5px;padding:6px 2px 10px">Searching the directory&hellip;</div>';
+      return;
+    }
+    paintNomResults(hits.map(function(d){ return {id:d.id,name:d.name,doc:d.doc,city:d.city,tag:d.tag,av:d.av,hasEmail:officeEmail(d.name)?true:false}; }), q);
+  }
+  function paintNomResults(hits, q){
     $('nomResults').innerHTML = hits.length
-      ? hits.map(function(d){var hasEm=officeEmail(d.name);return '<button class="rowcard nomPick" data-id="'+d.id+'" data-nm="'+esc(d.name)+'" data-ct="'+esc(d.city)+'"><div class="ic">'+d.av+'</div><div class="meta"><b>'+esc(d.name)+'</b><span>'+esc(d.doc)+' &#183; '+esc(d.city)+' &#183; '+d.tag+'</span></div>'+(hasEm?'':'<span class="mini pend" style="font-size:9px">No email</span>')+'<div class="arr">&#8250;</div></button>';}).join('')
+      ? hits.map(function(d){var hasEm=d.hasEmail;return '<button class="rowcard nomPick" data-id="'+d.id+'" data-nm="'+esc(d.name)+'" data-ct="'+esc(d.city)+'"><div class="ic">'+d.av+'</div><div class="meta"><b>'+esc(d.name)+'</b><span>'+esc(d.doc)+' &#183; '+esc(d.city)+' &#183; '+d.tag+'</span></div>'+(hasEm?'':'<span class="mini pend" style="font-size:9px">No email</span>')+'<div class="arr">&#8250;</div></button>';}).join('')
       : '<div class="muted" style="font-size:12.5px;padding:6px 2px 10px">No directory match'+(q?' for "'+esc(q)+'"':'')+'. Add it yourself below.</div>';
     document.querySelectorAll('.nomPick').forEach(function(btn){
       btn.addEventListener('click',function(){
@@ -1346,7 +1384,15 @@ function nominateSheet(name,city){
       if(stAbbr){ rec.nominee_state=stAbbr; }
       if(S.nomPick&&S.nomPick.id){ rec.dentist_id=S.nomPick.id; }
       window.__supa.from('dentist_nominations').insert(rec).select('id').single().then(function(r){
-        if(r.error){ celebrate({em:'&#9888;',title:'Could not submit',body:r.error.message||'Please try again.'}); return; }
+        if(r.error){
+          var dup=/nomination_unique_user_office|duplicate key/i.test(r.error.message||'');
+          var lim=/nomination limit/i.test(r.error.message||'');
+          celebrate(dup
+            ? {em:'&#127942;',title:'Already on record',body:'You have already nominated '+esc(nm)+'. Every office credits one patient when it joins, and your nomination is on file. Keep it moving with a review or an intro email.'}
+            : lim
+            ? {em:'&#9203;',title:'Daily limit reached',body:'Nominations are limited to 5 per day and 50 per month to keep the network honest. Your earlier nominations are safe, so come back tomorrow.'}
+            : {em:'&#9888;',title:'Could not submit',body:r.error.message||'Please try again.'});
+          return; }
         afterSave(r.data&&r.data.id);
       });
       return;
@@ -2086,6 +2132,243 @@ function ccLoadNoms(){
     });
   }).catch(function(e){ console.error('CoverCapy boot error', e); location.replace(window.__CC.login); });
 })();
+})();
+</script>
+
+<script>
+/* ============================================================
+   Find a Dentist: real location search (omnibox layer).
+   - Suggestions from Supabase nav_search_suggest (cities/ZIPs/
+     areas/states, dentist-count weighted) + loaded offices.
+   - Picking a place runs search_dentists_near_coordinates and
+     reloads the result list with true distances.
+   - Recents, fuzzy typo tolerance, full keyboard navigation.
+   ============================================================ */
+(function(){
+if(typeof vFind!=='function') return;
+var REC='cc_find_recent', items=[], idx=-1, deb=null, lastQ='';
+
+function recGet(){ try{ return JSON.parse(localStorage.getItem(REC)||'[]')||[]; }catch(e){ return []; } }
+function recSave(a){ try{ localStorage.setItem(REC, JSON.stringify(a.slice(0,5))); }catch(e){} }
+function recAdd(label,lat,lng){ if(!label) return; var a=recGet().filter(function(x){return (x.label||'').toLowerCase()!==label.toLowerCase();}); a.unshift({label:label,lat:lat,lng:lng}); recSave(a); }
+window.ccFindRecDel=function(i,ev){ if(ev){ev.stopPropagation();ev.preventDefault();} var a=recGet(); a.splice(i,1); recSave(a); home(); };
+
+function fz(a,b,max){ var la=a.length,lb=b.length; if(Math.abs(la-lb)>max) return max+1;
+  var prev=[],cur=[],i,j; for(j=0;j<=lb;j++)prev[j]=j;
+  for(i=1;i<=la;i++){ cur[0]=i; var mn=i;
+    for(j=1;j<=lb;j++){ var c=a.charAt(i-1)===b.charAt(j-1)?0:1; cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+c); if(cur[j]<mn)mn=cur[j]; }
+    if(mn>max) return max+1; var t=prev;prev=cur;cur=t; }
+  return prev[lb]; }
+function tokHit(qt,ft){ if(!qt||!ft) return false;
+  if(ft.indexOf(qt)===0||(qt.length>=3&&ft.indexOf(qt)>=0)) return true;
+  if(qt.length<4) return false; var m=qt.length>=6?2:1; return fz(qt,ft,m)<=m; }
+function fzMatch(q,hay){ var qs=norm(q).split(' ').filter(Boolean), fs=norm(hay).split(' ').filter(Boolean);
+  if(!qs.length||!fs.length) return false;
+  return qs.every(function(qt){ return fs.some(function(ft){ return tokHit(qt,ft); }); }); }
+function norm(x){ return String(x==null?'':x).toLowerCase().replace(/[.,]/g,' ').replace(/\s+/g,' ').trim(); }
+function hl(t,q){ var T=esc(t), qn=norm(q); if(!qn) return T;
+  var i=norm(t).indexOf(qn); if(i<0) return T;
+  return esc(t.slice(0,i))+'<span class="hl">'+esc(t.slice(i,i+qn.length))+'</span>'+esc(t.slice(i+qn.length)); }
+function box(){ return document.getElementById('findOmni'); }
+function close(){ var b=box(); if(b){ b.remove(); } items=[]; idx=-1; }
+function paint(){ var rows=document.querySelectorAll('#findOmni .fomni-row'); rows.forEach(function(r,i){ r.classList.toggle('on', i===idx); }); var el=document.querySelector('#findOmni .fomni-row.on'); if(el) el.scrollIntoView({block:'nearest'}); }
+function open(html){
+  var cell=document.getElementById('findQ'); if(!cell) return;
+  var fc=cell.closest('.fcell'); if(!fc) return; fc.classList.add('omni');
+  var b=box(); if(!b){ b=document.createElement('div'); b.id='findOmni'; b.className='fomni'; fc.appendChild(b); }
+  b.innerHTML=html;
+}
+function row(it,q){
+  var i=items.length; items.push(it);
+  var del=(it._rec!=null)?'<button class="fx" type="button" aria-label="Remove recent search" onmousedown="ccFindRecDel('+it._rec+',event)">&#10005;</button>':'';
+  return '<div class="fomni-row'+(i===idx?' on':'')+'" data-i="'+i+'" onmousedown="event.preventDefault();ccFindPick('+i+')"><span class="fi">'+(it.ic||'&#128205;')+'</span><span class="ft"><b>'+hl(it.label,q||'')+'</b><span>'+esc(it.sub||'')+'</span></span>'+del+'</div>';
+}
+window.ccFindPick=function(i){ var it=items[i]; if(!it) return; close(); try{ it.run(); }catch(e){ console.warn('find pick failed',e); } };
+
+function home(){
+  items=[]; idx=-1; var html='';
+  var rec=recGet();
+  if(rec.length){ html+='<div class="fomni-sec">Recent searches</div>';
+    rec.forEach(function(e,i){ html+=row({label:e.label,sub:'Recent',ic:'&#128337;',_rec:i,run:function(){ go(e.lat,e.lng,e.label); }}); }); }
+  var seen={}, cs=[];
+  (DEMO_DATA.dentists||[]).forEach(function(d){ var c=(d.city||'').trim(); if(c&&!seen[norm(c)]&&d.lat&&d.lng){ seen[norm(c)]=1; cs.push({c:c,lat:d.lat,lng:d.lng}); } });
+  if(cs.length){ html+='<div class="fomni-sec">Areas with offices</div>';
+    cs.slice(0,5).forEach(function(x){ html+=row({label:x.c,sub:'Browse this area',ic:'&#128205;',run:function(){ go(x.lat,x.lng,x.c); }}); }); }
+  if(!items.length){ html='<div class="fomni-empty">Type a city, ZIP, or office name.</div>'; }
+  open(html);
+}
+
+function suggest(q){
+  lastQ=q;
+  var html='', lq=norm(q);
+  items=[]; idx=-1;
+  /* offices already loaded (token + typo tolerant) */
+  var ds=(DEMO_DATA.dentists||[]).filter(function(d){ return fzMatch(lq,[d.name,d.doc,d.city].filter(Boolean).join(' ')); }).slice(0,3);
+  if(ds.length){ html+='<div class="fomni-sec">Offices</div>';
+    ds.forEach(function(d){ html+=row({label:d.name,sub:(d.doc||'')+' · '+(d.city||''),ic:'&#129463;',run:function(){ try{ profileSheet(d.id); }catch(e){} }},q); }); }
+  var fill=function(locs){
+    var h2=html;
+    if(locs.length){ h2+='<div class="fomni-sec">Locations</div>';
+      locs.forEach(function(L){ h2+=row(L,q); }); }
+    if(!items.length && !locs.length && !ds.length){ h2='<div class="fomni-empty">No matches for &quot;'+esc(q)+'&quot;. Try a city, ZIP, or office name.</div>'; }
+    open(h2);
+  };
+  if(window.__supa){
+    window.__supa.rpc('nav_search_suggest',{q:q,max_n:6}).then(function(r){
+      if(lastQ!==q) return; /* stale */
+      var locs=[];
+      ((r&&r.data)||[]).forEach(function(x){
+        var ic=x.kind==='zip'?'&#128230;':x.kind==='state'?'&#127463;':'&#128205;';
+        if(x.kind==='state') ic='&#128506;';
+        locs.push({label:x.label,sub:(x.sublabel||'')+(x.kind==='zip'?' · ZIP':''),ic:ic,
+          run:(function(xx){ return function(){
+            if(xx.lat!=null&&xx.lng!=null){ go(+xx.lat,+xx.lng,xx.label+(xx.kind==='zip'?'':'')); }
+            else { byName(xx.value||xx.label); }
+          }; })(x)});
+      });
+      fill(locs);
+    }).catch(function(){ fill([]); });
+  } else { fill([]); }
+}
+
+/* run a geo search and reload the list with true distances */
+function go(lat,lng,label){
+  var inp=document.getElementById('findQ'); if(inp) inp.value=label;
+  S.find.q=label; S.find.center={lat:lat,lng:lng,label:label};
+  recAdd(label,lat,lng);
+  refresh();
+}
+function byName(name){
+  if(!window.__supa){ return; }
+  window.__supa.rpc('search_dentists_near_location',{location_name:name,radius_miles:S.find.within||25}).then(function(r){
+    var data=(r&&r.data)||[];
+    if(r&&r.error||!data.length){ return; }
+    S.find.q=name; S.find.center={label:name,ids:true};
+    recAdd(name,null,null);
+    loadByIds(data);
+  });
+}
+window.ccFindRefresh=refresh;
+function refresh(){
+  var c=S.find.center; if(!c||c.lat==null){ try{ route(); }catch(e){} return; }
+  if(!window.__supa){ try{ route(); }catch(e){} return; }
+  window.__supa.rpc('search_dentists_near_coordinates',{in_lat:c.lat,in_lng:c.lng,radius_miles:Math.max(S.find.within||25, PLAT_REACH)}).then(function(r){
+    var data=(r&&r.data)||[];
+    if(r&&r.error){ console.warn('geo search failed', r.error); return; }
+    loadByIds(data);
+  });
+}
+function loadByIds(data){
+  var ids=data.map(function(x){ return x.id; }).slice(0,60);
+  var dist={}; data.forEach(function(x){ dist[x.id]=+x.distance_miles; });
+  if(!ids.length){ DEMO_DATA.dentists=[]; try{ route(); }catch(e){} return; }
+  window.__supa.from('dentists')
+    .select('id,name,practice_name,doctor_name,city,state,zip,website,booking_url,phone,short_description,insurance_networks,procedures,specialties,languages,review_themes,open_weekends,accreditation_status,membership_tier,featured_tier,pending_display_label,weighted_rating,weighted_review_count,aggregate_rating,aggregate_review_count,google_rating,google_review_count,latitude,longitude,distance_miles,email')
+    .in('id',ids).then(function(res){
+      if(res.error||!res.data){ return; }
+      var rows=res.data.map(ccMapDentist);
+      rows.forEach(function(d){ if(dist[d.id]!=null&&isFinite(dist[d.id])){ d.mi=Math.round(dist[d.id]*10)/10; } });
+      /* ppodentists visibility rule: hide offices past the radius, EXCEPT Platinum Elite which stays visible to 18 mi */
+      var within=S.find.within||25;
+      rows=rows.filter(function(d){
+        var dm=(typeof d.mi==='number')?d.mi:null; if(dm==null) return true;
+        var reach=(d.tier==='elite')?Math.max(within,PLAT_REACH):within;
+        return dm<=reach+0.5;
+      });
+      /* one card per Platinum practice: keep the nearest location */
+      rows.sort(function(a,b){ return ((+a.mi||999)-(+b.mi||999)); });
+      var seenP={};
+      rows=rows.filter(function(d){ if(d.tier!=='elite') return true; var k=(d.name||'').toLowerCase(); if(seenP[k]) return false; seenP[k]=1; return true; });
+      rows.sort(function(a,b){ return scoreOf(b)-scoreOf(a); });
+      ccLayoutPins(rows); DEMO_DATA.dentists=rows;
+      S.find.page=1;
+      try{ route(); }catch(e){}
+    });
+}
+
+/* ppodentists ranking, ported: distance 40%, tier 30%, profile quality 10%,
+   rewards 10% (no signal yet -> 0), engagement 10%. A close Capy Accredited
+   office can outrank a far Platinum one; never pay-to-win. */
+var PLAT_REACH=18, TIER_MULT={elite:1.8,tier:1.35,verified:1.0,pend:0.75};
+function scoreOf(d){
+  var dist=(typeof d.mi==='number')?d.mi:PLAT_REACH;
+  var distScore=1-Math.min(dist/PLAT_REACH,1);
+  var mult=(d.tier==='pend'&&/verified/i.test(d.tag||''))?TIER_MULT.verified:(TIER_MULT[d.tier]||0.75);
+  var tierScore=(mult-0.75)/(1.8-0.75);
+  var q=0; if(d.website)q++; if(d.booking_url)q++; if(d.themes&&d.themes.length)q++; if(d.accepts&&d.accepts.length)q++; if(d.line)q++;
+  var eng=Math.min(Math.log10((d.reviews||0)+1)/Math.log10(500),1);
+  return 0.40*distScore+0.30*tierScore+0.10*(q/5)+0.10*0+0.10*eng;
+}
+/* typed-but-unselected text still filters the loaded list */
+var _filtered=filteredDentists;
+window.filteredDentists=function(){
+  var list=_filtered();
+  var q=(S.find.q||'').trim();
+  var c=S.find.center;
+  if(q && !c){
+    var f=list.filter(function(d){ return fzMatch(q,[d.name,d.doc,d.city,String(d.zip||'')].filter(Boolean).join(' ')); });
+    if(f.length) list=f;
+  }
+  if(c && c.lat!=null){ list=list.slice().sort(function(a,b){ return scoreOf(b)-scoreOf(a); }); }
+  return list;
+};
+
+/* ---- 12 results per page ---- */
+var PAGE_SIZE=12;
+window.ccFindPage=function(d){ S.find.page=(S.find.page||1)+d; ccFindPaginate(); try{ document.getElementById('findList').scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){} };
+window.ccFindPaginate=function(){
+  var listEl=document.getElementById('findList'); if(!listEl) return;
+  var cards=[].slice.call(listEl.querySelectorAll('.dcard'));
+  var old=document.getElementById('fpager'); if(old) old.remove();
+  var n=cards.length, pages=Math.max(1,Math.ceil(n/PAGE_SIZE));
+  if(!S.find.page||S.find.page<1||S.find.page>pages) S.find.page=1;
+  var p=S.find.page;
+  cards.forEach(function(cd,i){ cd.style.display=(i>=(p-1)*PAGE_SIZE && i<p*PAGE_SIZE)?'':'none'; });
+  var cnt=listEl.querySelector('.muted');
+  if(cnt) cnt.innerHTML=n+' office'+(n===1?'':'s')+' &#183; sorted by recommended'+(pages>1?' &#183; page '+p+' of '+pages:'');
+  if(pages>1){
+    var pg=document.createElement('div'); pg.id='fpager'; pg.className='fpager';
+    pg.innerHTML='<button class="btn btn-ghost btn-sm" '+(p<=1?'disabled':'')+' onclick="ccFindPage(-1)">&#8592; Previous</button>'
+      +'<span class="fpg-lbl">Page '+p+' of '+pages+'</span>'
+      +'<button class="btn btn-ink btn-sm" '+(p>=pages?'disabled':'')+' onclick="ccFindPage(1)">Next &#8594;</button>';
+    listEl.appendChild(pg);
+  }
+};
+
+function key(e){
+  var b=box();
+  if(e.key==='ArrowDown'){ e.preventDefault(); if(!b){ suggest(e.target.value||''); return; } idx=(idx+1)%Math.max(items.length,1); paint(); }
+  else if(e.key==='ArrowUp'){ e.preventDefault(); if(items.length){ idx=(idx-1+items.length)%items.length; paint(); } }
+  else if(e.key==='Tab' && b && items.length){ e.preventDefault(); var it=items[idx>=0?idx:0]; if(it){ e.target.value=it.label; suggest(it.label); } }
+  else if(e.key==='Enter'){ e.preventDefault();
+    if(idx>=0 && items[idx]){ ccFindPick(idx); return; }
+    if(items.length){ ccFindPick(0); return; }
+    var v=(e.target.value||'').trim();
+    if(v){ S.find.q=v; S.find.center=null; close(); try{ route(); }catch(_){} }
+  }
+  else if(e.key==='Escape'){ close(); e.target.blur(); }
+}
+
+function wire(){
+  var inp=document.getElementById('findQ'); if(!inp||inp._omni) return; inp._omni=1;
+  inp.setAttribute('autocomplete','off');
+  inp.setAttribute('placeholder','City, ZIP, office, or dentist');
+  inp.addEventListener('input', function(){ var v=this.value; clearTimeout(deb);
+    if(!v.trim()){ S.find.q=''; S.find.center=null; deb=setTimeout(home,120); return; }
+    deb=setTimeout(function(){ suggest(v.trim()); },160); });
+  inp.addEventListener('keydown', key);
+  inp.addEventListener('focus', function(){ if(this.value.trim()) suggest(this.value.trim()); else home(); });
+  var fw=document.getElementById('findWithin');
+  if(fw && !fw._omni){ fw._omni=1; fw.addEventListener('change', function(){ if(S.find.center&&S.find.center.lat!=null){ refresh(); } }); }
+}
+document.addEventListener('mousedown', function(e){
+  var b=box(); if(!b) return;
+  var cell=b.closest('.fcell');
+  if(cell && !cell.contains(e.target)) close();
+});
+var _after=afterRender;
+window.afterRender=function(id){ _after(id); if(id==='find'){ try{ wire(); }catch(e){} try{ ccFindPaginate(); }catch(e){} } };
+if(S && S.find && !('center' in S.find)) S.find.center=null;
 })();
 </script>
 </body>
