@@ -235,6 +235,26 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .crail-it .cb{flex:none;background:var(--gold);color:#fff;font-size:10px;font-weight:800;border-radius:999px;min-width:18px;height:18px;display:grid;place-items:center;padding:0 5px}
 .crail-it.on .cb{background:var(--mint);color:var(--ink)}
 .crail-sep{height:1px;background:var(--line);margin:6px 4px}
+.rwhero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(220px,.75fr);gap:18px;background:linear-gradient(140deg,#15535C,#0E3A41);border-radius:var(--rad);padding:24px;box-shadow:var(--shadow-lg);color:var(--paper);align-items:center}
+.rwhero .bar{height:8px;border-radius:99px;background:rgba(246,240,230,.16);overflow:hidden}
+.rwhero .bar i{display:block;height:100%;background:linear-gradient(90deg,#5ED0B5,#8FF0C2,#D8FCEC,#8FF0C2);background-size:220% 100%;animation:dflow 2.8s linear infinite;box-shadow:0 0 12px rgba(143,240,194,.55)}
+.rwhero-r .gcard{width:100%}
+@media(max-width:760px){.rwhero{grid-template-columns:1fr}}
+.gtag{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.92);color:#1c1c1c;font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border-radius:999px;padding:4px 9px}
+.gcard{position:relative}
+.gcard.feat{box-shadow:0 14px 36px rgba(8,42,48,.35);transform:none}
+.rwcats{display:flex;gap:8px;overflow-x:auto;margin:0 0 12px;scrollbar-width:none}
+.rwcats::-webkit-scrollbar{display:none}
+.rwcat{flex:none;border:1.5px solid var(--line);background:var(--paper);border-radius:999px;padding:7px 14px;font-size:12.5px;font-weight:700;cursor:pointer;color:var(--ink)}
+.rwcat.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.rwmiss{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:9px}
+.missrow{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);background:var(--paper);border-radius:13px;padding:12px 13px;cursor:pointer;text-align:left;font-size:13px;box-shadow:var(--shadow)}
+.missrow:hover{border-color:var(--gold)}
+.missrow.hit{opacity:.6;border-color:var(--mint)}
+.missrow .mk{flex:none;width:30px;height:30px;border-radius:10px;background:var(--cream);display:grid;place-items:center;font-size:14px}
+.missrow.hit .mk{background:var(--mint-soft);color:var(--mint-deep)}
+.missrow .mt{flex:1;font-weight:700}
+.missrow .ma{flex:none;font-size:11px;font-weight:800;color:var(--gold-deep)}
 @media(max-width:899px){
   .cshell{grid-template-columns:1fr;gap:12px}
   .crail{position:static;flex-direction:row;overflow-x:auto;padding:8px;gap:6px;scrollbar-width:none}
@@ -1914,23 +1934,65 @@ function ambassadorSheet(){
     celebrate({em:'&#129441;',title:'Application received',body:'We review your track record and reach out within a week. Ambassador roles come with a written agreement, a defined territory, and pay: official work, done right.'});});
 }
 function vRewards(){
-  var p=S.p, bal=p.diamonds, can=bal>=10000, start=Math.min(bal,10000);
+  var p=S.p, bal=p.diamonds, can=bal>=10000;
+  var pct=Math.min(100,Math.round(bal/100));
+  /* curated merchandising: categories + editorial badges (no fabricated counts;
+     live redemption stats plug in here once real volume exists) */
+  var RW_META={
+    amazon:['shopping','Most popular'], target:['shopping','Member favorite'], walmart:['shopping',''],
+    bestbuy:['shopping',''], nike:['style','New'], sephora:['style',''],
+    starbucks:['food',''], doordash:['food','Trending'], uber:['travel',''],
+    airbnb:['travel','Trending'], apple:['shopping',''], visa:['everyday','Most flexible']
+  };
+  var cat=S.rwCat||'all';
+  function brandKey(k){ return (k.split('_')[1]||''); }
+  var gifts=GIFTS.filter(function(g){ var m=RW_META[brandKey(g[0])]||['everyday','']; return cat==='all'||m[0]===cat; });
+  var catBtn=function(k,label){ return '<button class="rwcat'+(cat===k?' on':'')+'" data-rwcat="'+k+'">'+label+'</button>'; };
+  var monthIdx=new Date().getMonth()%GIFTS.length;
+  var featured=GIFTS[monthIdx];
+  /* missions: every reward here is a real earn action with its real amount */
+  var missions=[
+    ['&#128100;','Complete your profile','+150 &#128081;', !!(p.zip&&p.name), 'settings'],
+    ['&#128737;','Activate a PPO plan','+500 &#128081;', !!(p.journey&&p.journey.plan), 'coverage'],
+    ['&#128197;','Book your first visit','+500 &#128081;', !!(p.journey&&p.journey.visit), 'find'],
+    ['&#129309;','Refer a friend who visits','+700 &#128081;', !!(p.journey&&p.journey.refer), 'community'],
+    ['&#11088;','Nominate an office','+10 &#128142; now &#183; +10,000 if they join', (p.noms||[]).length>0, 'noms'],
+    ['&#128269;','Verify an office detail','+25 &#128142;', false, 'find']
+  ];
+  var doneCount=missions.filter(function(m){return m[3];}).length;
   return '<div class="page">'
-  +'<div class="phead"><div class="eyebrow">Rewards network</div><h1>The gift card wall</h1><div class="guide">Every card is $150, delivered through Tango by email. Slide your Diamond Crowns to 10,000 and pick any card on the wall.</div></div>'
-  +'<div class="rw-commit contrib vault" style="margin-bottom:22px"><div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px"><div class="eyebrow" style="color:var(--mint)">Commit your Diamond Crowns</div><div class="rw-big"><span class="dgem">&#128142;</span> <span id="rwVal">'+start.toLocaleString('en-US')+'</span> <small>of '+bal.toLocaleString('en-US')+'</small></div></div>'
-  +'<input type="range" id="rwSlider" min="0" max="'+Math.max(bal,10000)+'" step="100" value="'+start+'" aria-label="Diamond Crowns to commit">'
-  +'<div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(246,240,230,.6)"><span>0</span><span>10,000 unlocks the wall</span><span>'+Math.max(bal,10000).toLocaleString('en-US')+'</span></div>'
-  +'<div style="margin-top:12px" id="rwState">'+(can?'<span class="okpill">The wall is open: pick your card</span>':'<span class="pendpill">'+(10000-bal).toLocaleString('en-US')+' &#128142; to go: claims, verified details, and joins get you there</span>')+'</div></div>'
-  +'<div class="slabel"><h3>$150 gift cards</h3><span class="muted" style="font-size:12px">10,000 &#128142; each &#183; delivered through Tango</span></div>'
-  +'<div class="gift-grid'+(can?'':' locked')+'" id="giftGrid">'+GIFTS.map(function(g){
-     return '<button class="gcard" data-gift="'+g[0]+'|'+g[1].replace(/&#39;/g,"&#39;")+'" style="background:linear-gradient(135deg,'+g[2]+')"><span class="gb">'+g[1]+'</span><div class="gfoot"><span class="gv">$150</span><span class="gd">10,000 &#128142;</span></div></button>';
+  +'<div class="phead"><div class="eyebrow">Rewards</div><h1>Your rewards destination</h1><div class="guide">Earn by getting care and growing the network. Redeem for gift cards and local treatment rewards.</div></div>'
+  /* HERO: progress + fastest path + featured brand */
+  +'<div class="rwhero"><div class="rwhero-l">'
+   +'<div class="eyebrow" style="color:var(--mint)">Gift card progress</div>'
+   +'<div class="rw-big"><span class="dgem">&#128142;</span> '+bal.toLocaleString('en-US')+' <small>/ 10,000</small></div>'
+   +'<div class="bar" style="margin:12px 0 8px"><i style="width:'+pct+'%"></i></div>'
+   +(can
+     ?'<div style="font-size:13.5px;color:rgba(246,240,230,.85)">The wall is open. Every card below is yours for 10,000 &#128142;.</div>'
+     :'<div style="font-size:13.5px;color:rgba(246,240,230,.85)">'+(10000-bal).toLocaleString('en-US')+' to go. Fastest path: a nominated office that joins is <b>+10,000 &#128142;</b> on its own.</div><button class="btn btn-mint btn-sm" data-go="noms" style="margin-top:10px">Nominate an office</button>')
+  +'</div><div class="rwhero-r"><div class="eyebrow" style="color:rgba(246,240,230,.6)">Featured this month</div>'
+   +'<button class="gcard feat" data-gift="'+featured[0]+'|'+featured[1]+'" style="background:linear-gradient(135deg,'+featured[2]+')"><span class="gtag">&#128293; Featured</span><span class="gb">'+featured[1]+'</span><div class="gfoot"><span class="gv">$150</span><span class="gd">10,000 &#128142;</span></div></button>'
+  +'</div></div>'
+  /* MISSIONS */
+  +'<div class="slabel" style="margin-top:22px"><h3>Missions</h3><span class="muted" style="font-size:12px">'+doneCount+' of '+missions.length+' complete &#183; every reward is real</span></div>'
+  +'<div class="rwmiss">'+missions.map(function(m){
+     return '<button class="missrow'+(m[3]?' hit':'')+'" data-go="'+m[4]+'"><span class="mk">'+(m[3]?'&#10003;':m[0])+'</span><span class="mt">'+m[1]+'</span><span class="ma">'+m[2]+'</span></button>';
    }).join('')+'</div>'
-  +'<div class="slabel"><h3>Treatments at participating offices</h3><span class="muted" style="font-size:12px">&#128081; crowns</span></div>'
-  +'<div class="muted" style="font-size:11.5px;margin:0 0 10px;line-height:1.5">The whitening session unlocks at a participating office once a friend you referred visits it. Refer from any office&#39;s Share button in Find a Dentist.</div>'
+  /* GIFT WALL */
+  +'<div class="slabel" style="margin-top:26px"><h3>$150 gift cards</h3><span class="muted" style="font-size:12px">10,000 &#128142; each &#183; delivered through Tango</span></div>'
+  +'<div class="rwcats">'+catBtn('all','All')+catBtn('shopping','Shopping')+catBtn('food','Food &amp; drink')+catBtn('travel','Travel')+catBtn('style','Style &amp; beauty')+catBtn('everyday','Everyday')+'</div>'
+  +'<div class="gift-grid'+(can?'':' locked')+'" id="giftGrid">'+gifts.map(function(g){
+     var m=RW_META[brandKey(g[0])]||['everyday',''];
+     return '<button class="gcard" data-gift="'+g[0]+'|'+g[1].replace(/&#39;/g,"&#39;")+'" style="background:linear-gradient(135deg,'+g[2]+')">'+(m[1]?'<span class="gtag">'+m[1]+'</span>':'')+'<span class="gb">'+g[1]+'</span><div class="gfoot"><span class="gv">$150</span><span class="gd">10,000 &#128142;</span></div></button>';
+   }).join('')+'</div>'
+  +(can?'':'<div class="muted" style="font-size:12px;margin-top:8px;text-align:center">The wall unlocks at 10,000 Diamond Crowns. You are '+pct+'% of the way.</div>')
+  /* LOCAL REWARDS — the marketplace seed */
+  +'<div class="slabel" style="margin-top:26px"><h3>Local rewards</h3><span class="muted" style="font-size:12px">&#128081; crowns &#183; funded by participating offices near you</span></div>'
+  +'<div class="muted" style="font-size:11.5px;margin:0 0 10px;line-height:1.5">Real treatments at real offices: this is the start of the CoverCapy local marketplace. The whitening session unlocks at a participating office once a friend you referred visits it.</div>'
   +TREATS.map(function(t){var ok=p.crowns>=t[3];
      return '<button class="rowcard" style="'+(ok?'':'opacity:.45')+'" '+(ok?'data-treat="'+t[0]+'|'+t[1]+'|'+t[2]+'|'+t[3]+'"':'disabled')+'><div class="ic">&#10024;</div><div class="meta"><b>'+t[1]+'</b><span>At '+t[2]+' &#183; '+t[3].toLocaleString('en-US')+' &#128081;</span></div><div class="arr">&#8250;</div></button>';
    }).join('')
-  +'<div class="foot-note">Our team reviews every redemption before it is sent. Gift cards are delivered through Tango by email. Treatment rewards redeem at the participating office that funds them.</div></div>';
+  +'<div class="foot-note">Our team reviews every redemption before it is sent. Gift cards are delivered through Tango by email, limited to one per 30 days. Treatment rewards redeem at the participating office that funds them.</div></div>';
 }
 function giftConfirm(key,brand){
   openSheet('<h3 class="serif">Redeem the '+esc(brand)+' $150 card</h3><div class="ssub">10,000 &#128142; from your '+S.p.diamonds.toLocaleString('en-US')+'</div>'
@@ -3180,6 +3242,13 @@ document.addEventListener('click',function(e){
   var b=e.target.closest&&e.target.closest('[data-rgo]'); if(!b) return;
   var p=b.dataset.rgo.split('|');
   try{ window.ccGoSearch(+p[0],+p[1],p[2]); }catch(err){ console.error(err); }
+});
+
+/* ---- rewards category chips ---- */
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-rwcat]'); if(!b) return;
+  S.rwCat=b.dataset.rwcat;
+  try{ route(); }catch(_){}
 });
 
 /* ---- Community hub shell: sticky rail (desktop) / segmented bar (mobile) ---- */
