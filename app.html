@@ -668,7 +668,7 @@ body.sheet-open #view,body.sheet-open #topnav{filter:blur(2px) saturate(.92);tra
 <script>
 window.__CC={url:"https://hfvbeqlefwwjlrbyxpbj.supabase.co",key:"sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf",login:"./index.html"};
 window.__supa=window.supabase.createClient(__CC.url,__CC.key);
-window.__CC_BUILD='v48';
+window.__CC_BUILD='v49';
 try{ console.log('CoverCapy build', window.__CC_BUILD); }catch(e){}
 </script>
 <script>
@@ -3281,12 +3281,15 @@ function ccFindMap(){
     }
     var nm=String(d.name||'').replace(/\\/g,'').replace(/'/g,"\\'").replace(/"/g,'');
     var ct=String(d.city||'').replace(/\\/g,'').replace(/'/g,"\\'").replace(/"/g,'');
-    L.marker([d.lat,d.lng],{icon:ic,zIndexOffset:(d.tier==='elite'?2000:d.tier==='tier'?800:0)}).addTo(window.__lgroup).bindTooltip(esc(d.name)+' &#183; &#9733; '+d.rating,{direction:'top'}).bindPopup(
+    var _mk=L.marker([d.lat,d.lng],{icon:ic,zIndexOffset:(d.tier==='elite'?2000:d.tier==='tier'?800:0)}).addTo(window.__lgroup).bindTooltip(esc(d.name)+' &#183; &#9733; '+d.rating,{direction:'top'}).bindPopup(
       '<div class="lpop"><b>'+esc(d.name)+'</b>'
       +'<div class="lpop-sub">'+esc(d.doc||'')+' &#183; '+(typeof d.mi==='number'?d.mi+' mi &#183; ':'')+'&#9733; '+d.rating+' ('+d.reviews+')'+(d.tier==='elite'?' &#183; <b style="color:#E8771E">Platinum Elite</b>':d.tier==='tier'?' &#183; <b style="color:#1F8A5B">Capy Accredited</b>':'')+'</div>'
       +'<div class="lpop-act"><button class="btn btn-ink btn-sm" onclick="profileSheet(\''+d.id+'\')">View office</button>'
       +(d.tier==='pend'?'<button class="btn btn-gold btn-sm" onclick="nominateSheet(\''+nm+'\',\''+ct+'\')">Nominate</button>':'')
       +'</div></div>');
+    /* the hover card must never linger behind the click card */
+    _mk.on('popupopen',function(){ try{ this.closeTooltip(); this.unbindTooltip(); }catch(_){ } });
+    _mk.on('popupclose',function(){ var self=this; try{ self.bindTooltip(esc(d.name)+' &#183; &#9733; '+d.rating,{direction:'top'}); }catch(_){ } });
     pts.push([d.lat,d.lng]);
   });
   if(S.find.userLoc&&S.find.userLoc.lat!=null){
