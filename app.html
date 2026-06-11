@@ -189,6 +189,17 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .fpill{display:inline-flex;align-items:center;gap:7px;background:var(--paper);border:1.5px solid var(--gold);border-radius:999px;padding:6px 7px 6px 13px;font-size:12px;font-weight:700;color:var(--ink);cursor:pointer;box-shadow:var(--shadow)}
 .fpill .fpx{border:none;background:var(--cream);border-radius:50%;width:18px;height:18px;font-size:9px;cursor:pointer;display:grid;place-items:center;color:var(--slate)}
 .fpill .fpx:hover{background:var(--gold-soft);color:var(--gold-deep)}
+.dcard{position:relative}
+.dcard.plat{border:2px solid transparent;background-image:linear-gradient(var(--paper),var(--paper)),linear-gradient(135deg,#E4CB8E 0%,#92702E 35%,#F4E3BC 60%,#92702E 100%);background-origin:border-box;background-clip:padding-box,border-box;box-shadow:0 14px 38px rgba(146,112,46,.20)}
+.dcard.plat:hover{box-shadow:0 18px 46px rgba(146,112,46,.30)}
+.plat-ribbon{position:absolute;top:-11px;left:18px;background:linear-gradient(135deg,#92702E,#C9A55C);color:#FBF1DD;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:4px 12px;box-shadow:0 4px 12px rgba(146,112,46,.4);z-index:2}
+.dcard.accr{border:2px solid #A9E1C6;box-shadow:0 10px 28px rgba(31,138,91,.12)}
+.dcard.accr:hover{box-shadow:0 14px 34px rgba(31,138,91,.18)}
+.cov-r{display:inline-flex;align-items:center;gap:10px}
+.cardact{display:inline-flex;align-items:center;gap:6px;margin-left:4px}
+.cardact .favbtn{font-size:15px;padding:2px 4px}
+.cmp.top{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;color:inherit;cursor:pointer;opacity:.85}
+.cmp.top input{width:14px;height:14px;accent-color:var(--ink)}
 .ppofind{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;font-size:13.5px;font-weight:600;background:var(--paper)}
 .ppofind:focus{outline:none;border-color:var(--gold)}
 #sheetIn{transition:transform .32s cubic-bezier(.2,.8,.2,1)}
@@ -603,7 +614,7 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 <script>
 window.__CC={url:"https://hfvbeqlefwwjlrbyxpbj.supabase.co",key:"sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf",login:"./index.html"};
 window.__supa=window.supabase.createClient(__CC.url,__CC.key);
-window.__CC_BUILD='v38';
+window.__CC_BUILD='v39';
 try{ console.log('CoverCapy build', window.__CC_BUILD); }catch(e){}
 </script>
 <script>
@@ -987,7 +998,10 @@ function fitDetailHTML(d){
 function dcardHTML(d){
   var fb=fitBadge(d), checked=S.find.compare.indexOf(d.id)>-1;
   var tierChip=(window.ccTierBadge?ccTierBadge(d):'<span class="mini">'+d.tag+'</span>');
-  return '<div class="dcard" id="dc-'+d.id+'"><div class="cov '+fb[0]+'"><span>'+fb[1]+'</span><span>'+(d.tier==='elite'?'<b style="color:var(--plum)">Featured</b> &#183; ':'')+d.mi+' mi</span></div>'
+  return '<div class="dcard'+(d.tier==='elite'?' plat':d.tier==='tier'?' accr':'')+'" id="dc-'+d.id+'">'
+  +(d.tier==='elite'?'<div class="plat-ribbon">&#128081; Platinum Elite</div>':'')
+  +'<div class="cov '+fb[0]+'"><span>'+fb[1]+'</span><span class="cov-r">'+(d.tier==='elite'?'<b style="color:var(--plum)">Featured</b> &#183; ':'')+d.mi+' mi'
+  +'<span class="cardact"><button class="favbtn" data-fav="'+d.id+'" aria-label="Save office">'+((window.ccIsFav&&window.ccIsFav(d.id))?'&#10084;':'&#9825;')+'</button><label class="cmp top"><input type="checkbox" data-cmp="'+d.id+'" '+(checked?'checked':'')+'>Compare</label></span></span></div>'
   +'<div class="body"><div class="av">'+((window.ccAvatarHTML?ccAvatarHTML(d):d.av))+'</div><div class="info"><div class="nm">'+d.name+'</div>'
   +'<div class="sub">'+d.doc+' &#183; '+d.city+' &#183; &#9733; '+d.rating+' ('+d.reviews+')'+(window.ccDiscovery?' <span class="dscore" title="Discovery index: PPO friendliness, verification, access, and engagement">&#9670; '+ccDiscovery(d).toFixed(1)+'</span>':'')+'</div>'
   +'<div class="persona-line">'+(window.ccWhyLine?ccWhyLine(d):d.line)+'</div>'
@@ -1002,11 +1016,11 @@ function dcardHTML(d){
   +'<div class="foot">'+(d.booking_url?'<a class="btn btn-gold btn-sm" href="'+esc(d.booking_url)+'" target="_blank" rel="noopener">Book appointment</a>':'')
   +(d.phone?'<a class="btn btn-ink btn-sm" href="tel:'+String(d.phone).replace(/[^0-9+]/g,'')+'">Call</a>':'')
   +'<button class="btn btn-ghost btn-sm" data-profile="'+d.id+'">View profile</button>'
-  +'<button class="favbtn" data-fav="'+d.id+'" aria-label="Save office" title="Save to favorites">'+((window.ccIsFav&&window.ccIsFav(d.id))?'&#10084;':'&#9825;')+'</button>'
+
   +'<button class="btn btn-ghost btn-sm" data-verify="'+d.name+'">'+(d.hasEmail===false?'Add email to verify':'Check my plan')+'</button>'
   +'<button class="btn btn-ghost btn-sm" data-share="'+d.id+'">Share</button>'
   +(d.tier==='pend'?'<button class="btn btn-ghost btn-sm" data-nominate="'+d.name+'|'+d.city+', CA">Nominate</button>':'')
-  +'<label class="cmp"><input type="checkbox" data-cmp="'+d.id+'" '+(checked?'checked':'')+'>Compare</label></div></div>';
+  +'</div></div>';
 }
 function filteredDentists(){
   var f=S.find.filters,lm=S.find.landmark,F=S.find;
@@ -1020,7 +1034,7 @@ function filteredDentists(){
       var pk=F.ppo.toLowerCase().replace(/\s*(ppo|pdp|dppo)$/,'').trim();
       if(!(d.accepts||[]).some(function(c){ return String(c).toLowerCase().indexOf(pk)>-1; })) return false;
     }
-    if(F.within&&(typeof d.mi==='number')&&d.mi>((d.tier==='elite')?Math.max(F.within,18):F.within)) return false;
+    if(F.within&&(typeof d.mi==='number')&&d.mi>((d.tier==='elite')?Math.max(F.within,18):(d.tier==='tier')?Math.max(F.within,10):F.within)) return false;
     if(F.minRating&&d.rating<F.minRating) return false;
     if(f.weekends&&!d.weekends) return false;
     if(f.offer&&!d.offer) return false;
@@ -2760,17 +2774,22 @@ function refresh(){
             distance_miles:mi.toFixed(1), rating:x.weighted_rating||x.aggregate_rating||x.google_rating||0,
             review_count:x.weighted_review_count||x.aggregate_review_count||x.google_review_count||0,
             tier:tier, tier_rank:(tier==='platinum_elite'?1:tier==='capy_accredited'?2:4), lat:la, lng:ln, _pend:x.pending_display_label };
-        }).filter(function(x){ return +x.distance_miles<=rad || x.tier==='platinum_elite'; });
+        }).filter(function(x){
+          var mi=+x.distance_miles;
+          if(x.tier==='platinum_elite') return mi<=Math.max(rad,18);
+          if(x.tier==='capy_accredited') return mi<=Math.max(rad,10);
+          return mi<=rad;
+        });
         rows.sort(function(a,b){ return a.tier_rank-b.tier_rank || (+a.distance_miles)-(+b.distance_miles) || (+b.rating)-(+a.rating); });
         console.log('CoverCapy: direct fallback loaded', rows.length, 'offices');
         loadByIds(rows);
       });
   }
   setTimeout(clientFallback,6000);
-  window.__supa.rpc('search_dentists_near_coordinates',{in_lat:c.lat,in_lng:c.lng,radius_miles:Math.max(1,Math.min(30,S.find.within||30))}).then(function(r){
+  window.__supa.rpc('search_dentists_near_coordinates',{in_lat:c.lat,in_lng:c.lng,radius_miles:Math.max(Math.max(1,Math.min(30,S.find.within||30)),18)}).then(function(r){
     if(r&&r.error){ console.error('CoverCapy: geo search failed, retrying once', r.error);
       setTimeout(function(){
-        window.__supa.rpc('search_dentists_near_coordinates',{in_lat:c.lat,in_lng:c.lng,radius_miles:Math.max(1,Math.min(30,S.find.within||30))}).then(function(r2){
+        window.__supa.rpc('search_dentists_near_coordinates',{in_lat:c.lat,in_lng:c.lng,radius_miles:Math.max(Math.max(1,Math.min(30,S.find.within||30)),18)}).then(function(r2){
           if(r2&&!r2.error&&r2.data&&r2.data.length){ rpcWon=true; loadByIds(r2.data); }
           else { clientFallback(); }
         }).catch(function(){ clientFallback(); });
@@ -2836,7 +2855,15 @@ function rowFromRpc(x,i){
 }
 var ORDER_IDX={};
 function loadByIds(data){
-  /* top 50 per search: server order puts Platinum and Accredited first, then distance */
+  /* tier reach law: user radius for everyone, Platinum stays to 18 mi,
+     Capy Accredited stays to 10 mi. Then top 50 in server order. */
+  var r=Math.max(1,Math.min(30,S.find.within||30));
+  data=data.filter(function(x){
+    var mi=+x.distance_miles; if(!isFinite(mi)) return true;
+    if(x.tier==='platinum_elite') return mi<=Math.max(r,18);
+    if(x.tier==='capy_accredited') return mi<=Math.max(r,10);
+    return mi<=r;
+  });
   window.__geoTotal=data.length;
   data=data.slice(0,50);
   var rows=data.map(rowFromRpc);
@@ -3175,14 +3202,20 @@ function ccFindMap(){
   }
   if(S.find.center&&S.find.center.lat!=null) pts.push([S.find.center.lat,S.find.center.lng]);
   try{ m.invalidateSize(); }catch(e){}
-  if(pts.length){ m.fitBounds(pts,{padding:[36,36],maxZoom:14}); } else { m.setView([33.68,-117.82],10); }
+  if(pts.length){ m.fitBounds(pts,{padding:[36,36],maxZoom:14}); }
+  else if(S.find.center&&S.find.center.lat!=null){ m.setView([S.find.center.lat,S.find.center.lng],10); }
+  else { m.setView([33.68,-117.82],10); }
   setTimeout(function(){ try{ m.invalidateSize(); }catch(e){} },150);
 }
 window.ccFindHere=function(){
   if(!window.__lmap) return;
   var c=window.__lmap.getCenter();
-  var inp=document.getElementById('findQ'); if(inp) inp.value='Map area';
-  S.find.q='Map area'; S.find.center={lat:c.lat,lng:c.lng,label:'Map area'};
+  var label=(window.ccNearestCity&&window.ccNearestCity(c.lat,c.lng))||'Map area';
+  var inp=document.getElementById('findQ'); if(inp) inp.value=label;
+  S.find.q=label; S.find.center={lat:c.lat,lng:c.lng,label:label};
+  var b=document.getElementById('mapHere'); if(b) b.style.display='none';
+  ccBusy(true);
+  window.__radiusLive=true;
   refresh();
 };
 
