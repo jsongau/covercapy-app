@@ -1842,6 +1842,59 @@ document.addEventListener('click',function(e){
   }
 });
 
+/* ===== LIVE: real dentists into the Find tab ===== */
+function ccNum(v){ var n=parseFloat(v); return isNaN(n)?0:n; }
+function ccMapDentist(r){
+  var acc=r.accreditation_status, mt=r.membership_tier, ft=r.featured_tier;
+  var tier=(mt==='platinum'||ft==='elite'||ft==='platinum')?'elite':(acc==='accredited'||mt==='accredited'||ft==='accredited')?'tier':'pend';
+  var tag=r.pending_display_label||(tier==='elite'?'Platinum Elite':tier==='tier'?'Capy Accredited':'Public Listing');
+  var rating=ccNum(r.weighted_rating)||ccNum(r.aggregate_rating)||ccNum(r.google_rating);
+  var reviews=r.weighted_review_count||r.aggregate_review_count||r.google_review_count||0;
+  var accepts=Array.isArray(r.insurance_networks)?r.insurance_networks:[];
+  var treatments=(Array.isArray(r.procedures)&&r.procedures.length)?r.procedures:(Array.isArray(r.specialties)?r.specialties:[]);
+  var langs=(Array.isArray(r.languages)&&r.languages.length)?r.languages:['English'];
+  var themes=[];
+  if(Array.isArray(r.review_themes)){ r.review_themes.forEach(function(t){
+    if(Array.isArray(t)&&t.length>=2){ themes.push([String(t[0]),ccNum(t[1])]); }
+    else if(t&&typeof t==='object'){ var lbl=t.theme||t.label||t.name, pct=ccNum(t.pct||t.percent||t.count); if(lbl&&pct){ themes.push([String(lbl),pct]); } }
+  }); }
+  var hasEmail=!!r.email;
+  var missing=[]; if(!hasEmail){ missing.push('email'); } if(!r.website){ missing.push('website'); } if(!r.booking_url){ missing.push('google_url'); }
+  var doc=r.doctor_name||(Array.isArray(r.specialties)&&r.specialties[0])||'General dentistry';
+  var city=[r.city,r.state].filter(Boolean).join(', ');
+  var dist=ccNum(r.distance_miles);
+  return { id:r.id, name:r.practice_name||r.name||'Dental office', doc:doc, city:city,
+    mi:(dist>0?Math.round(dist*10)/10:'\u2014'), rating:Math.round(rating*10)/10, reviews:reviews,
+    tier:tier, tag:tag, av:'&#129441;', fit:(accepts.length?'strong':'ask'), cost:'Ask the office',
+    accepts:accepts, line:r.short_description||('Patient-rated office in '+(r.city||'your area')+'.'),
+    themes:themes, langs:langs, weekends:!!r.open_weekends, kids:false, offer:false, acceptingNew:true,
+    onlineBooking:!!r.booking_url, treatments:treatments, landmark:'all', hasEmail:hasEmail, missing:missing,
+    website:r.website||'', booking_url:r.booking_url||'', phone:r.phone||'', lat:ccNum(r.latitude), lng:ccNum(r.longitude) };
+}
+function ccLayoutPins(rows){
+  var la=rows.map(function(r){return r.lat;}).filter(function(v){return v;}), lo=rows.map(function(r){return r.lng;}).filter(function(v){return v;});
+  var miLa=Math.min.apply(null,la), maxLa=Math.max.apply(null,la), miLo=Math.min.apply(null,lo), maxLo=Math.max.apply(null,lo);
+  rows.forEach(function(r,i){
+    if(r.lat&&r.lng&&maxLa>miLa&&maxLo>miLo){ r.x=Math.round(10+(r.lng-miLo)/(maxLo-miLo)*80); r.y=Math.round(10+(maxLa-r.lat)/(maxLa-miLa)*80); }
+    else { r.x=15+(i*9)%70; r.y=15+(i*17)%70; }
+  });
+}
+function ccLoadDentists(){ try{
+  window.__supa.from('dentists')
+    .select('id,name,practice_name,doctor_name,city,state,zip,website,booking_url,phone,short_description,insurance_networks,procedures,specialties,languages,review_themes,open_weekends,accreditation_status,membership_tier,featured_tier,pending_display_label,weighted_rating,weighted_review_count,aggregate_rating,aggregate_review_count,google_rating,google_review_count,latitude,longitude,distance_miles,email')
+    .order('weighted_rating',{ascending:false,nullsFirst:false}).limit(60)
+    .then(function(res){
+      if(res.error){ console.warn('dentists load error', res.error); return; }
+      var data=res.data||[]; if(!data.length){ return; }
+      var rows=data.map(ccMapDentist); ccLayoutPins(rows); DEMO_DATA.dentists=rows;
+      var tset={}, pset={};
+      rows.forEach(function(d){ (d.treatments||[]).forEach(function(t){ if(t){ tset[t]=1; } }); (d.accepts||[]).forEach(function(c){ if(c){ pset[c]=1; } }); });
+      var tk=Object.keys(tset); if(tk.length){ DEMO_DATA.treatmentOptions=tk.sort(); }
+      var pk=Object.keys(pset); if(pk.length){ DEMO_DATA.ppoOptions=pk.sort(); }
+      if(/find/.test(location.hash||'')&&typeof route==='function'){ route(); }
+    });
+}catch(e){ console.warn('dentists load failed', e); } }
+ccLoadDentists();
 /* ===== LIVE BOOT: real session + wallet ===== */
 (function bootLive(){
   var supa=window.__supa;
