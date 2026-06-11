@@ -360,6 +360,7 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .lpop{font-family:Inter,system-ui,sans-serif;min-width:190px}
 .lpop b{font-size:13.5px}
 .lpop-sub{font-size:11.5px;color:var(--slate);margin:4px 0 9px}
+.lpop-sub b{white-space:nowrap}
 .lpop-act{display:flex;gap:6px}
 .regrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0 16px}
 .regrow:empty{display:none}
@@ -662,7 +663,7 @@ body.sheet-open #view,body.sheet-open #topnav{filter:blur(2px) saturate(.92);tra
 <script>
 window.__CC={url:"https://hfvbeqlefwwjlrbyxpbj.supabase.co",key:"sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf",login:"./index.html"};
 window.__supa=window.supabase.createClient(__CC.url,__CC.key);
-window.__CC_BUILD='v44';
+window.__CC_BUILD='v45';
 try{ console.log('CoverCapy build', window.__CC_BUILD); }catch(e){}
 </script>
 <script>
@@ -3244,6 +3245,7 @@ function ccFindMap(){
   if(!reuse){
     try{ if(m){ m.remove(); } }catch(e){}
     m=L.map('lmap'); window.__lmap=m;
+    try{ m.attributionControl.setPrefix(false); }catch(_){ }
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',{maxZoom:19,subdomains:'abcd',attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(m);
     window.__lgroup=L.layerGroup().addTo(m);
     m.on('movestart',function(){ var b=document.getElementById('mapHere'); if(b) b.style.display=''; });
