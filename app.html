@@ -259,6 +259,21 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .ldot.tier{background:var(--gold)}
 .ldot.elite{background:var(--plum);box-shadow:0 0 0 4px rgba(90,60,110,.22),0 3px 10px rgba(8,42,48,.4)}
 .ldot.sv{border-color:#ffd9d8}
+.facepin{position:relative;width:52px;height:66px;display:flex;flex-direction:column;align-items:center;cursor:pointer;filter:drop-shadow(0 10px 14px rgba(8,42,48,.35))}
+.facepin .fp-face{width:52px;height:52px;border-radius:50%;overflow:hidden;background:var(--cream);border:3px solid #E4CB8E;box-shadow:0 0 0 3px #92702E;display:grid;place-items:center}
+.facepin .fp-face img,.facepin .fp-face svg{width:100%;height:100%;object-fit:cover;display:block}
+.facepin .fp-emoji{font-size:26px}
+.facepin .fp-crown{position:absolute;top:-13px;left:50%;transform:translateX(-50%) rotate(-8deg);font-size:17px;z-index:2;filter:drop-shadow(0 2px 3px rgba(8,42,48,.3))}
+.facepin .fp-tail{width:3px;height:12px;background:#92702E;border-radius:2px;margin-top:-1px}
+.facepin:hover .fp-face{box-shadow:0 0 0 3px #92702E,0 0 18px rgba(228,203,142,.9)}
+@keyframes pindrop{0%{opacity:0;transform:translateY(-26px) scale(.7)}62%{opacity:1;transform:translateY(3px) scale(1.04)}82%{transform:translateY(-2px) scale(.99)}100%{opacity:1;transform:none}}
+.drop{animation:pindrop .5s cubic-bezier(.2,.8,.3,1.1) both}
+.badge-paid{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 11px;font-size:11px;font-weight:800;letter-spacing:.02em}
+.badge-paid .badge-coin{display:inline-flex;align-items:center;font-size:12px}
+.badge-paid .capy-ic{width:18px;height:12px}
+.badge-pend{display:inline-block;border-radius:999px;padding:4px 10px;font-size:10.5px;font-weight:700}
+.nearbtn{flex:none;border-radius:999px;white-space:nowrap}
+@media(max-width:620px){.fbar.lux .fq>div{flex-wrap:wrap}.nearbtn{width:100%;margin-top:6px}}
 .leaflet-tooltip{font-family:Inter,system-ui,sans-serif;font-weight:700;font-size:11.5px;border-radius:9px;border:1px solid var(--line);box-shadow:var(--shadow)}
 .idlenudge{position:fixed;left:24px;bottom:24px;z-index:95;background:var(--paper);border:1.5px solid var(--line);border-radius:18px;box-shadow:var(--shadow-lg);padding:16px 18px;max-width:320px;opacity:0;transform:translateY(14px);transition:.3s}
 .idlenudge.show{opacity:1;transform:none}
@@ -581,7 +596,7 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 <script>
 window.__CC={url:"https://hfvbeqlefwwjlrbyxpbj.supabase.co",key:"sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf",login:"./index.html"};
 window.__supa=window.supabase.createClient(__CC.url,__CC.key);
-window.__CC_BUILD='v34';
+window.__CC_BUILD='v35';
 try{ console.log('CoverCapy build', window.__CC_BUILD); }catch(e){}
 </script>
 <script>
@@ -964,7 +979,7 @@ function fitDetailHTML(d){
 }
 function dcardHTML(d){
   var fb=fitBadge(d), checked=S.find.compare.indexOf(d.id)>-1;
-  var tierChip='<span class="mini '+(d.tier==='elite'?'elite':d.tier==='tier'?'tier':'pend')+'">'+d.tag+'</span>';
+  var tierChip=(window.ccTierBadge?ccTierBadge(d):'<span class="mini">'+d.tag+'</span>');
   return '<div class="dcard" id="dc-'+d.id+'"><div class="cov '+fb[0]+'"><span>'+fb[1]+'</span><span>'+(d.tier==='elite'?'<b style="color:var(--plum)">Featured</b> &#183; ':'')+d.mi+' mi</span></div>'
   +'<div class="body"><div class="av">'+((window.ccAvatarHTML?ccAvatarHTML(d):d.av))+'</div><div class="info"><div class="nm">'+d.name+'</div>'
   +'<div class="sub">'+d.doc+' &#183; '+d.city+' &#183; &#9733; '+d.rating+' ('+d.reviews+')'+(window.ccDiscovery?' <span class="dscore" title="Discovery index: PPO friendliness, verification, access, and engagement">&#9670; '+ccDiscovery(d).toFixed(1)+'</span>':'')+'</div>'
@@ -1018,7 +1033,7 @@ function vFind(){
    +' <button class="chgchip" data-chg="loc">Change location</button><button class="chgchip" data-chg="ppo">PPO</button><button class="chgchip" data-chg="rad">Radius</button></div></div>';
   var ppoStrip = pr
     ? '<div class="insstrip">&#128737; <b>'+esc(pr.carrier)+' PPO active</b>'+(pr.remaining?' &#183; $'+pr.remaining.toLocaleString('en-US')+' of your annual maximum left':'')+'<button class="btn btn-mint btn-sm" data-insgo="1">Find offices that accept '+esc(pr.carrier)+'</button></div>'
-    : '<div class="insstrip noppo"><div><b>You currently have no PPO coverage.</b><div class="muted" style="font-size:12.5px;margin-top:2px">Most patients save more after activating a PPO plan; your dentist sees verified benefits when you book.</div></div><div style="display:flex;gap:8px;flex:none"><button class="btn btn-gold btn-sm" data-act="shop">Compare PPO plans</button><button class="btn btn-ghost btn-sm" data-cc="open">Ask concierge</button></div></div>';
+    : '<div class="insstrip noppo"><div><b>You currently have no PPO coverage.</b><div class="muted" style="font-size:12.5px;margin-top:2px">Most patients save more after activating a PPO plan; your dentist sees verified benefits when you book.</div></div><div style="display:flex;gap:8px;flex:none"><button class="btn btn-gold btn-sm" data-act="shop">Compare PPO plans</button></div></div>';
   var body='';
   if(view==='split'){
     body='<div class="find-grid view-split"><div id="findList">'
@@ -1042,10 +1057,9 @@ function vFind(){
   }
   return '<div class="page">'+head+ppoStrip
   +'<div class="fbar lux">'
-   +'<div class="fcell fq" style="position:relative"><label>Location</label><div style="display:flex;gap:8px;align-items:center"><input value="'+esc(F.q)+'" id="findQ" placeholder="City, ZIP, or neighborhood" aria-label="Location" style="flex:1;min-width:0"><button type="button" class="locbtn" onclick="ccFindLocate()" title="Use my current location" aria-label="Use my current location">&#128205;</button></div>'
+   +'<div class="fcell fq" style="position:relative"><label>Location</label><div style="display:flex;gap:8px;align-items:center"><button type="button" class="locbtn" onclick="ccFindLocate()" title="Use my current location" aria-label="Use my current location">&#128205;</button><input value="'+esc(F.q)+'" id="findQ" placeholder="City, ZIP, or neighborhood" aria-label="Location" style="flex:1;min-width:0"><button type="button" class="btn btn-gold btn-sm nearbtn" onclick="ccBrowseNearby()">Browse nearby dentists</button></div>'
    +'<div class="fsub">Find PPO friendly dentists with concierge verification, rewards, and premium care experiences.</div></div>'
-   +'<div class="fcell"><label>Within <b id="findWithinLbl">'+F.within+' mi</b></label><div class="within-row"><button type="button" class="radbtn" data-rstep="-1" aria-label="Decrease radius">&#8722;</button><input type="range" id="findWithin" min="1" max="30" step="1" value="'+F.within+'"><button type="button" class="radbtn" data-rstep="1" aria-label="Increase radius">+</button></div>'
-   +'<button class="btn btn-ink btn-sm" data-cc="open" style="margin-top:9px;border-radius:999px;width:100%">&#129441; Ask concierge</button></div>'
+   +'<div class="fcell"><label>Within <b id="findWithinLbl">'+F.within+' mi</b></label><div class="within-row"><button type="button" class="radbtn" data-rstep="-1" aria-label="Decrease radius">&#8722;</button><input type="range" id="findWithin" min="1" max="30" step="1" value="'+F.within+'"><button type="button" class="radbtn" data-rstep="1" aria-label="Increase radius">+</button></div></div>'
   +'</div>'
   +'<input type="hidden" id="findTreat" value="'+esc(F.treatment||'')+'"><input type="hidden" id="findPPO" value="'+esc(F.ppo||'')+'">'
   +(function(){
@@ -2699,6 +2713,18 @@ window.ccNearestCity=function(lat,lng){
   });
   return (best&&bd<=40)?(best.city+', '+best.state):null;
 };
+window.ccBrowseNearby=function(){
+  var inp=document.getElementById('findQ');
+  var q=(inp&&inp.value.trim())||'';
+  if(!q){ window.ccFindLocate(); return; }
+  if(window.__supa){
+    window.__supa.rpc('nav_search_suggest',{q:q.split(',')[0],max_n:3}).then(function(r){
+      var hit=(((r&&r.data)||[]).filter(function(x){ return x.lat!=null; }))[0];
+      if(hit){ window.ccGoSearch(+hit.lat,+hit.lng,hit.label); }
+      else { window.ccFindLocate(); }
+    }).catch(function(){ window.ccFindLocate(); });
+  } else { window.ccFindLocate(); }
+};
 window.ccFindLocate=function(){
   var b=document.querySelector('.locbtn'); if(b) b.classList.add('busy');
   if(!navigator.geolocation){ if(b) b.classList.remove('busy'); alert('Location is not available in this browser.'); return; }
@@ -2729,7 +2755,9 @@ function rowFromRpc(x,i){
 }
 var ORDER_IDX={};
 function loadByIds(data){
-  /* hold the full result set in memory, keep server order, no second bulk fetch */
+  /* top 50 per search: server order puts Platinum and Accredited first, then distance */
+  window.__geoTotal=data.length;
+  data=data.slice(0,50);
   var rows=data.map(rowFromRpc);
   ORDER_IDX={}; rows.forEach(function(d,i){ ORDER_IDX[d.id]=i; });
   DEMO_DATA.dentists=rows;
@@ -2892,7 +2920,8 @@ window.ccFindPaginate=function(){
   var cnt=listEl.querySelector('.muted');
   if(cnt){
     var scope=(S.find.center&&S.find.center.label)?(' within '+S.find.within+' mi of '+esc(S.find.center.label)):'';
-    cnt.innerHTML=n+' office'+(n===1?'':'s')+scope+' &#183; live directory'+(pages>1?' &#183; page '+p+' of '+pages:'');
+    var tot=(window.__geoTotal&&window.__geoTotal>n)?('top '+n+' of '+window.__geoTotal+' offices'):(n+' office'+(n===1?'':'s'));
+    cnt.innerHTML=tot+scope+' &#183; live directory'+(pages>1?' &#183; page '+p+' of '+pages:'');
   }
   if(pages>1){
     var pg=document.createElement('div'); pg.id='fpager'; pg.className='fpager';
@@ -3026,12 +3055,19 @@ function ccFindMap(){
   }
   window.__lgroup.clearLayers();
   var list=filteredDentists().filter(function(d){ return d.lat&&d.lng; });
-  var pts=[];
+  var pts=[]; var dropIdx=0;
   list.forEach(function(d){
     var cls=d.tier==='elite'?' elite':d.tier==='tier'?' tier':'';
     if(window.ccIsFav&&window.ccIsFav(d.id)) cls+=' sv';
-    var sz=d.tier==='elite'?24:d.tier==='tier'?17:12;
-    var ic=L.divIcon({className:'lpin-w',html:'<div class="ldot'+cls+'"'+(d.tier==='elite'?' title="Platinum Elite"':'')+'></div>',iconSize:[sz,sz],iconAnchor:[sz/2,sz/2]});
+    var sz=d.tier==='elite'?52:d.tier==='tier'?18:12;
+    var ic;
+    if(d.tier==='elite'){
+      /* the KING: a face card pin with a crown and a staged drop */
+      var face=d.image_url?'<img src="'+esc(d.image_url)+'" alt="">':(window.CapyAvatar&&CapyAvatar.ready()&&CapyAvatar.svg(d))||'<span class="fp-emoji">'+((window.ccAnimal&&ccAnimal(d))||'&#129441;')+'</span>';
+      ic=L.divIcon({className:'lpin-w',html:'<div class="facepin drop" style="animation-delay:'+(dropIdx++*90)+'ms" title="Platinum Elite"><span class="fp-crown">&#128081;</span><span class="fp-face">'+face+'</span><span class="fp-tail"></span></div>',iconSize:[sz,sz+16],iconAnchor:[sz/2,sz+14]});
+    } else {
+      ic=L.divIcon({className:'lpin-w',html:'<div class="ldot'+cls+' drop" style="animation-delay:'+(dropIdx++*40)+'ms"></div>',iconSize:[sz,sz],iconAnchor:[sz/2,sz/2]});
+    }
     var nm=String(d.name||'').replace(/\\/g,'').replace(/'/g,"\\'").replace(/"/g,'');
     var ct=String(d.city||'').replace(/\\/g,'').replace(/'/g,"\\'").replace(/"/g,'');
     L.marker([d.lat,d.lng],{icon:ic}).addTo(window.__lgroup).bindTooltip(esc(d.name)+' &#183; &#9733; '+d.rating,{direction:'top',offset:[0,-6]}).bindPopup(
@@ -3521,11 +3557,127 @@ window.ccCitySVG=function(name){
   return P+'<path d="M20 7l9 5v9c0 6-4 9-9 12-5-3-9-6-9-12v-9z"/><path d="M16 19l3 3 6-6"/>'+E;
 };
 
+/* ====================================================================
+   PORTED CANON from ppodentists.html (store for the dentist portal):
+   1. Tier law: platinum_elite > capy_accredited > verified > public.
+      Paid tiers carry fixed branded badges (crown coin for Platinum,
+      capybara icon for Accredited). Public offices show their Supabase
+      pending_display_label with the authoritative per-label palette.
+      No client side label invention, ever.
+   2. Platinum reach: paying members stay visible to 18 mi so they never
+      drop off maps or nearby city rails.
+   3. Avatar law: a real uploaded image wins; otherwise the deterministic
+      CoverCapy mascot generated from the Supabase trait library
+      (avatar_trait_categories / avatar_traits / avatar_generation_presets);
+      initials or emoji only transiently while traits load.
+   ==================================================================== */
+var TIER_BADGE_APP={ elite:{bg:'#FBF1DD',color:'#92702E',border:'#E4CB8E'}, tier:{bg:'#E6F7EE',color:'#1F8A5B',border:'#A9E1C6'} };
+var PENDING_PALETTE_APP={
+  'Public Directory Listing':{bg:'#F5F5F4',text:'#6F6E6B',border:'#E5E4E0'},
+  'Public Listing':{bg:'#F5F5F4',text:'#6F6E6B',border:'#E5E4E0'},
+  'Pending Profile Claim':{bg:'#F1F4F8',text:'#5E7088',border:'#DBE4EE'},
+  'Pending Verification':{bg:'#EEF4FB',text:'#3F6FA6',border:'#CFE0F2'},
+  'Recently Added':{bg:'#FEFBE8',text:'#8C7A18',border:'#F3EAA2'},
+  'New to CoverCapy':{bg:'#FEFBE8',text:'#8C7A18',border:'#F3EAA2'},
+  'Profile Under Review':{bg:'#F4F1FB',text:'#6A60A4',border:'#E1D9F0'},
+  'Awaiting Accreditation':{bg:'#F8F3F7',text:'#82627D',border:'#EAD8E5'},
+  'Accreditation Available':{bg:'#FBF3F5',text:'#97636E',border:'#F1DADF'}
+};
+var CAPY_ICON_APP='<svg class="capy-ic" viewBox="0 0 48 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g fill="currentColor"><ellipse cx="19" cy="17" rx="15.5" ry="9.5"/><ellipse cx="35.5" cy="15.5" rx="9" ry="7.8"/><rect x="43" y="12.6" width="4" height="6" rx="1.8"/><circle cx="31.5" cy="8.2" r="2.7"/><circle cx="38.5" cy="8.4" r="2.4"/><rect x="11" y="23" width="3.6" height="6.6" rx="1.8"/><rect x="18.5" y="24" width="3.6" height="6" rx="1.8"/><rect x="27.5" y="23" width="3.6" height="6.6" rx="1.8"/></g></svg>';
+window.ccTierBadge=function(d){
+  if(d.tier==='elite') return '<span class="badge-paid" style="background:'+TIER_BADGE_APP.elite.bg+';color:'+TIER_BADGE_APP.elite.color+';border:1px solid '+TIER_BADGE_APP.elite.border+'"><span class="badge-coin">&#128081;</span>Platinum Elite</span>';
+  if(d.tier==='tier') return '<span class="badge-paid" style="background:'+TIER_BADGE_APP.tier.bg+';color:'+TIER_BADGE_APP.tier.color+';border:1px solid '+TIER_BADGE_APP.tier.border+'"><span class="badge-coin">'+CAPY_ICON_APP+'</span>Capy Accredited</span>';
+  var lbl=d.tag||'Public Directory Listing';
+  var p=PENDING_PALETTE_APP[lbl]||PENDING_PALETTE_APP['Public Directory Listing'];
+  return '<span class="badge-pend" style="background:'+p.bg+';color:'+p.text+';border:1px solid '+p.border+'">'+esc(lbl)+'</span>';
+};
+
+/* ---- CapyAvatar: procedural mascot engine, Supabase trait library driven ---- */
+function hashSeed(str){ str=String(str); var hh=2166136261>>>0; for(var i=0;i<str.length;i++){ hh^=str.charCodeAt(i); hh=Math.imul(hh,16777619); } return hh>>>0; }
+var CapyAvatar={
+  _cats:null,_byCat:null,_ready:false,_loading:null,
+  ready:function(){ return this._ready; },
+  load:function(){
+    var self=this;
+    if(self._ready) return Promise.resolve(true);
+    if(self._loading) return self._loading;
+    if(!window.__supa) return Promise.resolve(false);
+    self._loading=Promise.all([
+      window.__supa.from('avatar_trait_categories').select('category_key,sort_order,active').eq('active',true),
+      window.__supa.from('avatar_traits').select('category_key,trait_key,svg_layer_template,svg_params,compatible_animals,incompatible_animals,compatible_verticals,compatible_specialties,compatible_claim_status,active').eq('active',true)
+    ]).then(function(rr){
+      var c=rr[0],t=rr[1];
+      if(c.error||t.error) throw (c.error||t.error);
+      self._cats=(c.data||[]).slice().sort(function(a,b){ return (a.sort_order||0)-(b.sort_order||0); });
+      self._byCat={};
+      (t.data||[]).forEach(function(tr){ (self._byCat[tr.category_key]=self._byCat[tr.category_key]||[]).push(tr); });
+      Object.keys(self._byCat).forEach(function(k){ self._byCat[k].sort(function(a,b){ return a.trait_key<b.trait_key?-1:(a.trait_key>b.trait_key?1:0); }); });
+      self._ready=!!(self._byCat.animal&&self._byCat.animal.length);
+      return self._ready;
+    }).catch(function(e){ console.warn('CoverCapy avatar traits failed to load',e); self._ready=false; return false; });
+    return self._loading;
+  },
+  _has:function(arr,v){ return Array.isArray(arr)&&arr.indexOf(v)>=0; },
+  _compat:function(tr,animal,vertical,specialty){
+    if(tr.compatible_claim_status&&!this._has(tr.compatible_claim_status,'unclaimed')) return false;
+    if(tr.compatible_animals&&!this._has(tr.compatible_animals,animal)) return false;
+    if(tr.incompatible_animals&&this._has(tr.incompatible_animals,animal)) return false;
+    if(tr.compatible_verticals&&vertical&&!this._has(tr.compatible_verticals,vertical)) return false;
+    if(tr.compatible_specialties&&specialty&&!this._has(tr.compatible_specialties,specialty)) return false;
+    return true;
+  },
+  _pick:function(cat,seed,animal,vertical,specialty){
+    var self=this;
+    var list=(this._byCat[cat]||[]).filter(function(tr){ return self._compat(tr,animal,vertical,specialty); });
+    if(!list.length) return null;
+    return list[hashSeed(seed+':'+cat)%list.length];
+  },
+  seedFor:function(d){
+    var specialty=(d&&d.treatments&&d.treatments.length)?String(d.treatments[0]).toLowerCase():'';
+    return [(d&&(d.id||'')),(d&&d.name)||'',(d&&d.city)||'','dental',specialty].join('|').toLowerCase();
+  },
+  svg:function(d){
+    if(!this._ready) return '';
+    var specialty=(d&&d.treatments&&d.treatments.length)?String(d.treatments[0]).toLowerCase():'';
+    var seed=this.seedFor(d);
+    var animalT=this._pick('animal',seed,null,'dental',specialty)||(this._byCat.animal||[])[0];
+    if(!animalT) return '';
+    var animal=animalT.trait_key;
+    var pals=[]; if(animalT.svg_params&&animalT.svg_params.palette) pals.push(animalT.svg_params.palette);
+    var self=this;
+    (this._byCat.body_color||[]).forEach(function(tr){ if(self._compat(tr,animal,'dental',specialty)&&tr.svg_params&&tr.svg_params.palette) pals.push(tr.svg_params.palette); });
+    if(!pals.length) pals=[{main:'#A2825F',shadow:'#82643F',belly:'#CFB89A',accent:'#8A6A4A',nose:'#2A1C10'}];
+    var pal=pals[hashSeed(seed+':body_color')%pals.length];
+    var uid='a'+(hashSeed(seed)>>>0).toString(36);
+    var bgT=this._pick('background',seed,animal,'dental',specialty);
+    var bg=(bgT&&bgT.svg_params)||{c0:'#EAF3EE',c1:'#D2E7DB'};
+    var defs='<defs><linearGradient id="fg'+uid+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+pal.main+'"/><stop offset="1" stop-color="'+pal.shadow+'"/></linearGradient><radialGradient id="bg'+uid+'" cx="0.5" cy="0.42" r="0.75"><stop offset="0" stop-color="'+bg.c0+'"/><stop offset="1" stop-color="'+bg.c1+'"/></radialGradient></defs>';
+    function subst(x){ return !x?'':x.split('{{BELLY}}').join(pal.belly).split('{{ACCENT}}').join(pal.accent).split('{{NOSE}}').join(pal.nose).split('{{MAIN}}').join(pal.main).split('{{SHADOW}}').join(pal.shadow).split('#fg)').join('#fg'+uid+')').split('#bg)').join('#bg'+uid+')'); }
+    var order=(this._cats&&this._cats.length)?this._cats.map(function(c){ return c.category_key; }):['background','personality_aura','animal','marking_style','cheek_style','eyebrow_style','eye_style','whisker_style','mouth_style','accessory_neck','outfit','accessory_face','accessory_head','accessory_hand','frame'];
+    var layers='';
+    for(var i=0;i<order.length;i++){
+      var cat=order[i]; if(cat==='body_color') continue;
+      var tr=(cat==='animal')?animalT:(cat==='background')?bgT:this._pick(cat,seed,animal,'dental',specialty);
+      if(tr&&tr.svg_layer_template) layers+=subst(tr.svg_layer_template);
+    }
+    return '<svg class="capyfull" viewBox="0 0 240 240" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="mascot">'+defs+layers+'</svg>';
+  }
+};
+window.CapyAvatar=CapyAvatar;
+(function bootAvatars(n){
+  if(window.__supa){ CapyAvatar.load().then(function(ok){ if(ok&&/find/.test(location.hash||'')){ try{ ccRefreshUI(); }catch(e){ try{ route(); }catch(_){}} } }); }
+  else if(n<30){ setTimeout(function(){ bootAvatars(n+1); },600); }
+})(0);
+
 /* ---- avatar system: Supabase image first, deterministic animal fallback ---- */
 var CC_ANIMALS=['🦫','🦊','🦦','🐰','🐱','🐻','🐼'];
 window.ccAvatarHTML=function(d){
   if(d&&d.image_url){
     return '<span class="avwrap avload"><img src="'+esc(d.image_url)+'" alt="" loading="lazy" onload="this.parentNode.classList.remove(\'avload\')" onerror="this.parentNode.classList.remove(\'avload\');this.replaceWith(document.createTextNode(\''+window.ccAnimal(d)+'\'))"></span>';
+  }
+  if(window.CapyAvatar&&CapyAvatar.ready()){
+    var svg=CapyAvatar.svg(d);
+    if(svg) return '<span class="avwrap">'+svg+'</span>';
   }
   return window.ccAnimal(d);
 };
