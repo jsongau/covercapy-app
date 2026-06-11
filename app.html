@@ -361,6 +361,11 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .lpop b{font-size:13.5px}
 .lpop-sub{font-size:11.5px;color:var(--slate);margin:4px 0 9px}
 .lpop-sub b{white-space:nowrap}
+.ccattr{position:absolute;right:10px;bottom:10px;z-index:800;display:flex;align-items:center;gap:7px;background:rgba(251,248,242,.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(228,203,142,.55);border-radius:999px;padding:5px 13px;font-size:9.5px;letter-spacing:.04em;color:var(--slate);box-shadow:0 4px 14px rgba(8,42,48,.10);pointer-events:auto}
+.ccattr b{color:var(--ink);font-weight:800;letter-spacing:.06em}
+.ccattr i{font-style:normal;color:var(--gold);opacity:.8}
+.ccattr a{color:var(--slate);text-decoration:none}
+.ccattr a:hover{color:var(--gold-deep)}
 .lpop-act{display:flex;gap:6px}
 .regrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0 16px}
 .regrow:empty{display:none}
@@ -663,7 +668,7 @@ body.sheet-open #view,body.sheet-open #topnav{filter:blur(2px) saturate(.92);tra
 <script>
 window.__CC={url:"https://hfvbeqlefwwjlrbyxpbj.supabase.co",key:"sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf",login:"./index.html"};
 window.__supa=window.supabase.createClient(__CC.url,__CC.key);
-window.__CC_BUILD='v46';
+window.__CC_BUILD='v47';
 try{ console.log('CoverCapy build', window.__CC_BUILD); }catch(e){}
 </script>
 <script>
@@ -3246,6 +3251,14 @@ function ccFindMap(){
     try{ if(m){ m.remove(); } }catch(e){}
     m=L.map('lmap'); window.__lmap=m;
     try{ m.attributionControl.remove(); }catch(_){ }
+    try{
+      var _ac=m.getContainer();
+      if(_ac&&!_ac.querySelector('.ccattr')){
+        var _at=document.createElement('div'); _at.className='ccattr';
+        _at.innerHTML='<b>CoverCapy Maps</b><i>&#183;</i><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">&copy; OpenStreetMap</a><i>&#183;</i><a href="https://carto.com/attributions" target="_blank" rel="noopener">&copy; CARTO</a>';
+        _ac.appendChild(_at);
+      }
+    }catch(_){ }
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',{maxZoom:19,subdomains:'abcd',attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(m);
     window.__lgroup=L.layerGroup().addTo(m);
     m.on('movestart',function(){ var b=document.getElementById('mapHere'); if(b) b.style.display=''; });
