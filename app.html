@@ -196,9 +196,10 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .fpills .fpill:nth-child(n+5){animation-delay:.24s}
 @keyframes pillin{from{opacity:0;transform:translateY(-8px) scale(.92)}to{opacity:1;transform:none}}
 .dcard{position:relative}
-.dcard.plat{border:2px solid transparent;background-image:linear-gradient(var(--paper),var(--paper)),linear-gradient(135deg,#FFC58A 0%,#E8771E 35%,#FFE2C2 60%,#E8771E 100%);background-origin:border-box;background-clip:padding-box,border-box;box-shadow:0 14px 38px rgba(232,119,30,.20)}
+.dcard.plat{overflow:visible;margin-top:14px;border:2px solid transparent;background-image:linear-gradient(var(--paper),var(--paper)),linear-gradient(135deg,#FFC58A 0%,#E8771E 35%,#FFE2C2 60%,#E8771E 100%);background-origin:border-box;background-clip:padding-box,border-box;box-shadow:0 14px 38px rgba(232,119,30,.20)}
 .dcard.plat:hover{box-shadow:0 18px 46px rgba(232,119,30,.30)}
-.plat-ribbon{position:absolute;top:-11px;left:18px;background:linear-gradient(135deg,#E8771E,#FFA050);color:#FFF6EC;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:4px 12px;box-shadow:0 4px 12px rgba(232,119,30,.4);z-index:2}
+.plat-ribbon{position:absolute;top:-12px;left:18px;background:linear-gradient(135deg,#E8771E,#FFA050);color:#FFF6EC;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:4px 12px;box-shadow:0 4px 12px rgba(232,119,30,.4);z-index:2}
+.dcard.plat .cov{border-radius:calc(var(--rad) - 3px) calc(var(--rad) - 3px) 0 0}
 .dcard.accr{border:2px solid #A9E1C6;box-shadow:0 10px 28px rgba(31,138,91,.12)}
 .dcard.accr:hover{box-shadow:0 14px 34px rgba(31,138,91,.18)}
 .cov-r{display:inline-flex;align-items:center;gap:10px}
@@ -288,18 +289,18 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .facepin .fp-face img,.facepin .fp-face svg{width:100%;height:100%;object-fit:cover;display:block}
 .facepin .fp-crown{position:absolute;top:-13px;left:50%;transform:translateX(-50%) rotate(-8deg);font-size:18px;z-index:2;filter:drop-shadow(0 2px 3px rgba(8,42,48,.3))}
 .facepin .fp-tail{width:3px;height:12px;border-radius:2px;margin-top:-1px}
-.facepin.plat{width:58px;height:74px}
-.facepin.plat .fp-face{width:58px;height:58px;border:3px solid #FFC58A;box-shadow:0 0 0 3px #E8771E,0 0 16px rgba(232,119,30,.45)}
-.facepin.plat .fp-emoji{font-size:29px}
+.facepin.plat{width:64px;height:82px;z-index:1000}
+.facepin.plat .fp-face{width:64px;height:64px;border:3px solid #FFC58A;box-shadow:0 0 0 3px #E8771E,0 0 18px rgba(232,119,30,.5)}
+.facepin.plat .fp-emoji{font-size:32px}
 .facepin.plat .fp-tail{background:#E8771E}
 .facepin.plat:hover .fp-face{box-shadow:0 0 0 3px #E8771E,0 0 24px rgba(255,165,80,.95)}
-.facepin.accr{width:46px;height:60px}
-.facepin.accr .fp-face{width:46px;height:46px;border:3px solid #A9E1C6;box-shadow:0 0 0 3px #1F8A5B,0 0 12px rgba(31,138,91,.35)}
-.facepin.accr .fp-emoji{font-size:23px}
+.facepin.accr{width:36px;height:48px;z-index:500}
+.facepin.accr .fp-face{width:36px;height:36px;border:2px solid #A9E1C6;box-shadow:0 0 0 2px #1F8A5B,0 0 10px rgba(31,138,91,.32)}
+.facepin.accr .fp-emoji{font-size:18px}
 .facepin.accr .fp-tail{background:#1F8A5B}
 .facepin.accr:hover .fp-face{box-shadow:0 0 0 3px #1F8A5B,0 0 18px rgba(169,225,198,.95)}
-.facepin .fp-capy{position:absolute;top:-11px;left:50%;transform:translateX(-50%);z-index:2;background:#1F8A5B;color:#E6F7EE;border-radius:999px;padding:2px 7px;display:flex;align-items:center;box-shadow:0 2px 6px rgba(8,42,48,.3)}
-.facepin .fp-capy svg{width:16px;height:11px}
+.facepin .fp-capy{position:absolute;top:-9px;left:50%;transform:translateX(-50%);z-index:2;background:#1F8A5B;color:#E6F7EE;border-radius:999px;padding:1px 5px;display:flex;align-items:center;box-shadow:0 2px 6px rgba(8,42,48,.3)}
+.facepin .fp-capy svg{width:13px;height:9px}
 @keyframes pindrop{0%{opacity:0;transform:translateY(-26px) scale(.7)}62%{opacity:1;transform:translateY(3px) scale(1.04)}82%{transform:translateY(-2px) scale(.99)}100%{opacity:1;transform:none}}
 .drop{animation:pindrop .5s cubic-bezier(.2,.8,.3,1.1) both}
 .badge-paid{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 11px;font-size:11px;font-weight:800;letter-spacing:.02em}
@@ -661,7 +662,7 @@ body.sheet-open #view,body.sheet-open #topnav{filter:blur(2px) saturate(.92);tra
 <script>
 window.__CC={url:"https://hfvbeqlefwwjlrbyxpbj.supabase.co",key:"sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf",login:"./index.html"};
 window.__supa=window.supabase.createClient(__CC.url,__CC.key);
-window.__CC_BUILD='v42';
+window.__CC_BUILD='v43';
 try{ console.log('CoverCapy build', window.__CC_BUILD); }catch(e){}
 </script>
 <script>
@@ -3253,7 +3254,7 @@ function ccFindMap(){
   list.forEach(function(d){
     var cls=d.tier==='elite'?' elite':d.tier==='tier'?' tier':'';
     if(window.ccIsFav&&window.ccIsFav(d.id)) cls+=' sv';
-    var sz=d.tier==='elite'?58:d.tier==='tier'?46:12;
+    var sz=d.tier==='elite'?64:d.tier==='tier'?36:12;
     var ic;
     if(d.tier==='elite'||d.tier==='tier'){
       /* the face cards: platinum = the KING (orange, biggest, crowned); accredited = green capy card */
@@ -3265,7 +3266,7 @@ function ccFindMap(){
     }
     var nm=String(d.name||'').replace(/\\/g,'').replace(/'/g,"\\'").replace(/"/g,'');
     var ct=String(d.city||'').replace(/\\/g,'').replace(/'/g,"\\'").replace(/"/g,'');
-    L.marker([d.lat,d.lng],{icon:ic}).addTo(window.__lgroup).bindTooltip(esc(d.name)+' &#183; &#9733; '+d.rating,{direction:'top',offset:[0,-6]}).bindPopup(
+    L.marker([d.lat,d.lng],{icon:ic,zIndexOffset:(d.tier==='elite'?2000:d.tier==='tier'?800:0)}).addTo(window.__lgroup).bindTooltip(esc(d.name)+' &#183; &#9733; '+d.rating,{direction:'top',offset:[0,-6]}).bindPopup(
       '<div class="lpop"><b>'+esc(d.name)+'</b>'
       +'<div class="lpop-sub">'+esc(d.doc||'')+' &#183; '+(typeof d.mi==='number'?d.mi+' mi &#183; ':'')+'&#9733; '+d.rating+' ('+d.reviews+')'+(d.tier==='elite'?' &#183; <b style="color:#E8771E">Platinum Elite</b>':d.tier==='tier'?' &#183; <b style="color:#1F8A5B">Capy Accredited</b>':'')+'</div>'
       +'<div class="lpop-act"><button class="btn btn-ink btn-sm" onclick="profileSheet(\''+d.id+'\')">View office</button>'
