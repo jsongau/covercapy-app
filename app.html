@@ -223,6 +223,38 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .dchip2{flex:none;border:1.5px solid var(--line);background:var(--paper);border-radius:999px;padding:8px 14px;font-size:12.5px;font-weight:700;cursor:pointer;color:var(--ink);transition:.15s;white-space:nowrap}
 .dchip2:hover{border-color:var(--gold)}
 .dchip2.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chgchip{border:1.5px solid var(--line);background:var(--paper);border-radius:999px;padding:4px 11px;font-size:11px;font-weight:700;cursor:pointer;color:var(--ink);margin-left:6px;vertical-align:1px}
+.chgchip:hover{border-color:var(--mint)}
+.insstrip{display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap;background:var(--mint-soft);color:var(--mint-deep);border-radius:14px;padding:12px 16px;font-size:13px;margin-bottom:14px}
+.insstrip.noppo{background:var(--gold-soft);color:var(--gold-deep)}
+.shelf{margin:20px 0 6px}
+.shelf-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
+.shelf-h b{font-family:var(--fd);font-size:18px}
+.shelf-h button{border:none;background:none;color:var(--mint-deep);font-weight:700;font-size:12.5px;cursor:pointer}
+.shrow{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:none}
+.shrow::-webkit-scrollbar{display:none}
+.mcard{flex:0 0 245px;border:1.5px solid var(--line);border-radius:16px;padding:14px;background:var(--paper);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:7px}
+.mcard.el{border-color:var(--plum);box-shadow:0 10px 26px rgba(90,60,110,.14)}
+.mcard .mc-name{font-weight:800;font-size:14px;line-height:1.3;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mcard .mc-sub{font-size:11.5px;color:var(--slate)}
+.mcard .mc-act{display:flex;gap:6px;margin-top:auto;padding-top:6px}
+.favbtn{border:none;background:none;font-size:17px;cursor:pointer;color:#c4504f;padding:4px 6px;line-height:1}
+.favbtn:hover{transform:scale(1.15)}
+.lgrid{display:grid;grid-template-columns:290px minmax(0,1fr);gap:18px;align-items:start}
+@media(max-width:899px){.lgrid{grid-template-columns:1fr}}
+.rtree{position:sticky;top:86px;max-height:78vh;overflow:auto}
+.rtree details{margin:2px 0}
+.rtree summary{cursor:pointer;font-weight:800;font-size:13.5px;padding:7px 8px;border-radius:9px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.rtree summary::-webkit-details-marker{display:none}
+.rtree summary:hover{background:var(--cream)}
+.rtree summary .ct{font-size:11px;color:var(--slate);font-weight:600}
+.rtree details details summary{font-weight:700;font-size:13px;padding-left:16px}
+.rtree details details details summary{font-weight:650;font-size:12.5px;padding-left:26px}
+.rtree .rcity{display:flex;justify-content:space-between;width:100%;border:none;background:none;text-align:left;font-size:12.5px;font-weight:600;color:var(--ink);padding:6px 8px 6px 38px;border-radius:8px;cursor:pointer}
+.rtree .rcity:hover{background:var(--mint-soft);color:var(--mint-deep)}
+.rtree .rcity .ct{font-size:10.5px;color:var(--slate)}
+.gridv{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;align-items:start}
+.gridv #fpager,.gridv .fpager{grid-column:1/-1}
 .bellbtn{position:relative;padding:7px 11px!important}
 .bellbadge{position:absolute;top:1px;right:1px;background:var(--gold);color:#fff;font-size:9px;font-weight:800;border-radius:999px;min-width:15px;height:15px;display:grid;place-items:center;padding:0 3px}
 .avbtn{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--line);background:var(--mint-soft);color:var(--mint-deep);font-weight:800;font-size:13px;cursor:pointer;flex:none}
@@ -842,6 +874,8 @@ function dcardHTML(d){
   +fitDetailHTML(d)
   +(d.hasEmail===false?'<div style="font-size:11.5px;color:var(--gold-deep);background:var(--gold-soft);margin:0 18px 10px;border-radius:10px;padding:8px 12px;line-height:1.45">&#9993; No email on file. Found their email? Add it to request verification and earn Diamond Crowns.</div>':'')
   +'<div class="foot">'+(d.booking_url?'<a class="btn btn-gold btn-sm" href="'+esc(d.booking_url)+'" target="_blank" rel="noopener">Book</a>':'')+'<button class="btn btn-ink btn-sm" data-profile="'+d.id+'">View office</button>'
+  +(d.phone?'<a class="btn btn-ghost btn-sm" href="tel:'+String(d.phone).replace(/[^0-9+]/g,'')+'">Call</a>':'')
+  +'<button class="favbtn" data-fav="'+d.id+'" aria-label="Save office" title="Save to favorites">'+((window.ccIsFav&&window.ccIsFav(d.id))?'&#10084;':'&#9825;')+'</button>'
   +'<button class="btn btn-ghost btn-sm" data-verify="'+d.name+'">'+(d.hasEmail===false?'Add email to verify':'Check my plan')+'</button>'
   +'<button class="btn btn-ghost btn-sm" data-share="'+d.id+'">Share</button>'
   +(d.tier==='pend'?'<button class="btn btn-ghost btn-sm" data-nominate="'+d.name+'|'+d.city+', CA">Nominate</button>':'')
@@ -870,12 +904,34 @@ function vFind(){
   function topt(){return '<option value="">Any reason</option>'+DEMO_DATA.treatmentOptions.map(function(t){return '<option value="'+t+'"'+(F.treatment===t?' selected':'')+'>'+t+'</option>';}).join('');}
   function popt(){var mine=INS.primary(S.p);var opts='<option value="">Any PPO</option>'+DEMO_DATA.ppoOptions.map(function(c){return '<option value="'+c+'"'+(F.ppo===c?' selected':'')+'>'+c+(mine&&mine.carrier===c?' (yours)':'')+'</option>';}).join('');return opts;}
   function ropt(){var opts=[[0,'Any rating'],[4,'4.0+'],[4.5,'4.5+'],[4.8,'4.8+']];return opts.map(function(o){return '<option value="'+o[0]+'"'+(F.minRating===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join('');}
-  var view=F.view||'split';
+  var view=F.view||'rec';
   function vbtn(v,lbl){return '<button class="btn '+(view===v?'btn-ink':'btn-ghost')+' btn-sm" data-view="'+v+'">'+lbl+'</button>';}
-  var guide=(F.center&&F.center.label)
-    ? 'Showing PPO dentists within '+F.within+' miles of '+esc(F.center.label)+'. Change the location or radius anytime.'
-    : 'Search a city, ZIP, office, or dentist. Results rank by distance, accreditation, and reviews.';
-  return '<div class="page"><div class="phead"><div class="eyebrow">Find a Dentist</div><h1>PPO dentists near you</h1><div class="guide">'+guide+'</div></div>'
+  var pr=null; try{ pr=INS.primary(S.p); }catch(e){}
+  var hr=new Date().getHours(), greet=hr<12?'Good morning':hr<18?'Good afternoon':'Good evening';
+  var where=(F.center&&F.center.label)?esc(F.center.label):'you';
+  var head='<div class="phead"><div class="eyebrow">Find a Dentist</div><h1>'+greet+(S.p&&S.p.first?', '+esc(S.p.first):'')+'</h1>'
+   +'<div class="guide">Showing PPO dentists near <b>'+where+'</b> &#183; '+(pr?esc(pr.carrier)+' PPO':'no PPO on file')+' &#183; '+F.within+' mi'
+   +' <button class="chgchip" data-chg="loc">Change location</button><button class="chgchip" data-chg="ppo">PPO</button><button class="chgchip" data-chg="rad">Radius</button></div></div>';
+  var ppoStrip = pr
+    ? '<div class="insstrip">&#128737; <b>'+esc(pr.carrier)+' PPO active</b>'+(pr.remaining?' &#183; $'+pr.remaining.toLocaleString('en-US')+' of your annual maximum left':'')+'<button class="btn btn-mint btn-sm" data-insgo="1">Find offices that accept '+esc(pr.carrier)+'</button></div>'
+    : '<div class="insstrip noppo"><div><b>You currently have no PPO coverage.</b><div class="muted" style="font-size:12.5px;margin-top:2px">Most patients save more after activating a PPO plan; your dentist sees verified benefits when you book.</div></div><div style="display:flex;gap:8px;flex:none"><button class="btn btn-gold btn-sm" data-act="shop">Compare PPO plans</button><button class="btn btn-ghost btn-sm" data-cc="open">Ask concierge</button></div></div>';
+  var body='';
+  if(view==='rec'){
+    body=(typeof ccShelvesHTML==='function'?ccShelvesHTML(list):'')
+      +'<div class="card pad" style="display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap;margin-top:8px"><div><b>Need help deciding?</b><div class="muted" style="font-size:12.5px;margin-top:2px">Tell your concierge what you need and get a shortlist that fits your plan.</div></div><button class="btn btn-ink btn-sm" data-cc="open">Ask concierge</button></div>';
+  } else if(view==='list'){
+    body='<div class="lgrid"><div class="rtree card pad" id="rtree">'+((typeof window!=='undefined'&&window.__ccRegionHTML)||'<div class="muted" style="font-size:12.5px">Loading regions&hellip;</div>')+'</div>'
+      +'<div id="findList"><div class="muted" style="font-size:13px;margin-bottom:12px">'+list.length+' offices &#183; sorted by recommended</div>'
+      +(list.length?list.map(dcardHTML).join(''):'<div class="card pad" style="text-align:center"><b>No offices match.</b><div class="muted" style="font-size:13px;margin-top:4px">Pick a city on the left, widen the radius, or ask your concierge.</div></div>')
+      +'</div></div>';
+  } else if(view==='map'){
+    body='<div class="mapwrap show" id="mapwrap" style="position:static"><div id="lmap" style="height:min(78vh,720px)"></div><button class="btn btn-ink btn-sm fs-here" id="mapHere" onclick="ccFindHere()" style="display:none">&#8635; Search this area</button></div>';
+  } else {
+    body='<div id="findList" class="gridv"><div class="muted" style="font-size:13px;margin-bottom:2px;grid-column:1/-1">'+list.length+' offices &#183; sorted by recommended</div>'
+      +(list.length?list.map(dcardHTML).join(''):'<div class="card pad" style="text-align:center;grid-column:1/-1"><b>No offices match those filters.</b><div class="muted" style="font-size:13px;margin-top:4px">Loosen a filter or widen the radius.</div></div>')
+      +'</div>';
+  }
+  return '<div class="page">'+head+ppoStrip
   +'<div class="fbar">'
    +'<div class="fcell" style="position:relative"><label>Location</label><div style="display:flex;gap:6px;align-items:center"><input value="'+esc(F.q)+'" id="findQ" placeholder="City, ZIP, office, or dentist" aria-label="Location" style="flex:1;min-width:0"><button type="button" class="locbtn" onclick="ccFindLocate()" title="Use my current location" aria-label="Use my current location">&#128205;</button></div></div>'
    +'<div class="fcell"><label>Treatment</label><select id="findTreat">'+topt()+'</select></div>'
@@ -884,7 +940,7 @@ function vFind(){
   +'</div>'
   +'<div class="fhead">'
    +'<div class="chips" style="margin-bottom:0">'+chip('weekends','Open weekends')+chip('offer','Has an offer or reward')+chip('acceptingNew','Accepting new patients')+chip('onlineBooking','Online booking')+chip('english','English')+chip('spanish','Spanish')+'</div>'
-   +'<div style="display:flex;gap:8px;align-items:center"><select class="sortsel" id="findRating">'+ropt()+'</select><div class="map-toggle">'+vbtn('list','List')+vbtn('split','Split')+vbtn('map','Map')+'</div></div>'
+   +'<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><select class="sortsel" id="findRating">'+ropt()+'</select><div class="map-toggle">'+vbtn('rec','For you')+vbtn('list','Browse')+vbtn('map','Map')+vbtn('grid','Grid')+'</div></div>'
   +'</div>'
   +'<div class="discover">'+[
      ['bestppo','&#128737;','Best PPO match'],['weekends','&#127774;','Open weekends'],['nominated','&#11088;','Most nominated'],
@@ -892,11 +948,7 @@ function vFind(){
      ['accredited','&#127942;','Recently accredited'],['concierge','&#129441;','Concierge picks']
    ].map(function(p){return '<button type="button" class="dchip2 '+(F.preset===p[0]?'on':'')+'" data-preset="'+p[0]+'">'+p[1]+' '+p[2]+'</button>';}).join('')+'</div>'
   +'<div class="regrow" id="regRow"></div>'
-  +'<div class="find-grid view-'+view+'"><div id="findList">'
-  +'<div class="muted" style="font-size:13px;margin-bottom:12px">'+list.length+' offices &#183; sorted by recommended</div>'
-  +(list.length?list.map(dcardHTML).join(''):'<div class="card pad" style="text-align:center"><div style="font-size:30px;margin-bottom:8px">&#129441;</div><b>No offices match those filters.</b><div class="muted" style="font-size:13px;margin-top:4px">Loosen a filter, widen the radius, or ask your concierge and we will look beyond the directory.</div></div>')
-  +'<div class="card pad" style="display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap;margin-top:14px"><div><b>Need help deciding?</b><div class="muted" style="font-size:12.5px;margin-top:2px">Tell your concierge what you need and get a shortlist that fits your plan.</div></div><button class="btn btn-ink btn-sm" data-cc="open">Ask concierge</button></div>'
-  +'</div><div class="mapwrap" id="mapwrap"><div id="lmap"></div><button class="btn btn-ink btn-sm fs-here" id="mapHere" onclick="ccFindHere()" style="display:none">&#8635; Search this area</button></div></div>'
+  +body
   +'<div class="foot-note">Results are organized using distance, office information, patient reviews, accreditation status, and availability signals. Paid members carry their tier badge; other offices show their listing status. Featured placement is a Platinum Elite benefit and is always labeled.</div></div>';
 }
 
@@ -2892,6 +2944,140 @@ document.addEventListener('click',function(e){
 document.addEventListener('click',function(e){
   var t=e.target.closest&&e.target.closest('#sheet [data-go]'); if(!t) return;
   try{ closeSheet(); }catch(_){}
+});
+})();
+</script>
+
+<script>
+/* ============================================================
+   V31: shelves, region hierarchy, favorites, header controls.
+   ============================================================ */
+(function(){
+if(typeof VIEWS==='undefined') return;
+function nrm(x){ return String(x==null?'':x).toLowerCase().trim(); }
+
+/* ---- favorites ---- */
+var FAVIDS={};
+window.ccIsFav=function(id){ return !!FAVIDS[id]; };
+(function loadFavs(n){
+  if(window.__ccUID&&window.__supa){
+    window.__supa.from('saved_dentists').select('dentist_id').then(function(r){
+      (((r&&r.data)||[])).forEach(function(x){ if(x.dentist_id) FAVIDS[x.dentist_id]=1; });
+    });
+  } else if(n<30){ setTimeout(function(){ loadFavs(n+1); },600); }
+})(0);
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-fav]'); if(!b) return;
+  var id=b.dataset.fav, on=!FAVIDS[id];
+  if(on) FAVIDS[id]=1; else delete FAVIDS[id];
+  document.querySelectorAll('[data-fav="'+id+'"]').forEach(function(x){ x.innerHTML=on?'&#10084;':'&#9825;'; });
+  if(window.__ccUID&&window.__supa){
+    if(on) window.__supa.from('saved_dentists').insert({user_id:window.__ccUID,dentist_id:id,source:'find'}).then(function(){});
+    else window.__supa.from('saved_dentists').delete().eq('dentist_id',id).then(function(){});
+  }
+});
+
+/* ---- discovery shelves (Recommended view) ---- */
+function mini(d){
+  var tc=d.tier==='elite'?'elite':d.tier==='tier'?'tier':'pend';
+  return '<div class="mcard'+(d.tier==='elite'?' el':'')+'">'
+   +'<div style="display:flex;justify-content:space-between;align-items:center"><span class="mini '+tc+'">'+esc(d.tag)+'</span><button class="favbtn" data-fav="'+d.id+'">'+(FAVIDS[d.id]?'&#10084;':'&#9825;')+'</button></div>'
+   +'<span class="mc-name">'+esc(d.name)+'</span>'
+   +'<span class="mc-sub">&#9733; '+d.rating+' ('+d.reviews+')'+(typeof d.mi==='number'?' &#183; '+d.mi+' mi':'')+' &#183; '+esc(String(d.city).split(',')[0])+'</span>'
+   +(d.weekends?'<span class="mc-sub">&#127774; Open weekends</span>':'')
+   +'<div class="mc-act"><button class="btn btn-ink btn-sm" data-profile="'+d.id+'">View</button>'
+   +(d.booking_url?'<a class="btn btn-gold btn-sm" href="'+esc(d.booking_url)+'" target="_blank" rel="noopener">Book</a>':'')
+   +(d.tier==='pend'?'<button class="btn btn-ghost btn-sm" data-nominate="'+esc(d.name)+'|'+esc(d.city)+'">Nominate</button>':'')
+   +'</div></div>';
+}
+function shelf(title, items, preset){
+  if(!items || items.length<2) return '';
+  return '<div class="shelf"><div class="shelf-h"><b>'+title+'</b>'+(preset?'<button data-shelf="'+preset+'">See all &#8594;</button>':'')+'</div>'
+   +'<div class="shrow">'+items.slice(0,8).map(mini).join('')+'</div></div>';
+}
+window.ccShelvesHTML=function(list){
+  var pr=null; try{ pr=INS.primary(S.p); }catch(e){}
+  var byMi=list.slice().filter(function(d){return typeof d.mi==='number';}).sort(function(a,b){return a.mi-b.mi;});
+  var ppoMatch=pr?list.filter(function(d){ return (d.accepts||[]).some(function(c){ return nrm(c).indexOf(nrm(pr.carrier))>-1; }); }):[];
+  if(pr && !ppoMatch.length) ppoMatch=list.filter(function(d){ return d.fit==='strong'; });
+  var nm=(typeof NOM_COUNTS!=='undefined'&&NOM_COUNTS)?NOM_COUNTS:{};
+  var nominated=list.slice().sort(function(a,b){ return (nm[b.id]||0)-(nm[a.id]||0); }).filter(function(d){ return (nm[d.id]||0)>0; });
+  var html='';
+  html+=shelf('Recommended for you', list, 'concierge');
+  html+=shelf('Near you', byMi, null);
+  if(pr) html+=shelf('Best '+esc(pr.carrier)+' match', ppoMatch, 'bestppo');
+  html+=shelf('Open weekends', list.filter(function(d){return d.weekends;}), 'weekends');
+  if(nominated.length) html+=shelf('Most nominated by patients', nominated, 'nominated');
+  html+=shelf('Accredited offices', list.filter(function(d){return d.tier==='tier'||d.tier==='elite';}), 'accredited');
+  html+=shelf('Help these offices join', list.filter(function(d){return d.tier==='pend';}), null);
+  return html || '<div class="card pad" style="text-align:center"><b>No offices yet for this area.</b><div class="muted" style="font-size:13px;margin-top:4px">Widen the radius or browse regions.</div></div>';
+};
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-shelf]'); if(!b) return;
+  S.find.preset=b.dataset.shelf; S.find.view='grid'; S.find.page=1;
+  try{ route(); }catch(_){}
+});
+
+/* ---- region hierarchy (Browse view) ---- */
+var REGION_OF={'California':'West Coast','Nevada':'West Coast','Arizona':'Southwest','Texas':'South','Illinois':'Midwest','Ohio':'Midwest','New York':'Northeast','New Jersey':'Northeast','Pennsylvania':'Northeast','Connecticut':'Northeast'};
+window.__ccRegionHTML=null;
+(function loadTree(n){
+  if(!window.__supa){ if(n<30) setTimeout(function(){ loadTree(n+1); },600); return; }
+  window.__supa.rpc('dentist_region_tree').then(function(r){
+    if(r&&r.error){ console.error('CoverCapy: region tree failed', r.error); return; }
+    var rows=(r&&r.data)||[]; if(!rows.length) return;
+    /* region > state > area > cities */
+    var tree={};
+    rows.forEach(function(x){
+      var reg=REGION_OF[x.state]||'More regions';
+      tree[reg]=tree[reg]||{n:0,states:{}};
+      var st=tree[reg].states[x.state]=tree[reg].states[x.state]||{n:0,areas:{}};
+      var ar=st.areas[x.area||x.state]=st.areas[x.area||x.state]||{n:0,cities:[]};
+      tree[reg].n+=x.n; st.n+=x.n; ar.n+=x.n;
+      ar.cities.push(x);
+    });
+    var order=['West Coast','Southwest','South','Midwest','Northeast','More regions'];
+    var html='<div class="eyebrow" style="margin-bottom:8px">Browse the network</div>';
+    order.forEach(function(reg){
+      var R=tree[reg]; if(!R) return;
+      html+='<details'+(reg==='West Coast'?' open':'')+'><summary>'+reg+'<span class="ct">'+R.n+'</span></summary>';
+      Object.keys(R.states).sort(function(a,b){ return R.states[b].n-R.states[a].n; }).forEach(function(st){
+        var SS=R.states[st];
+        html+='<details><summary>'+esc(st)+'<span class="ct">'+SS.n+'</span></summary>';
+        Object.keys(SS.areas).sort(function(a,b){ return SS.areas[b].n-SS.areas[a].n; }).forEach(function(ar){
+          var A=SS.areas[ar];
+          html+='<details><summary>'+esc(ar)+'<span class="ct">'+A.n+'</span></summary>';
+          A.cities.sort(function(a,b){ return b.n-a.n; }).forEach(function(c){
+            if(c.lat==null||c.lng==null) return;
+            html+='<button class="rcity" data-rgo="'+c.lat+'|'+c.lng+'|'+esc(c.city)+', '+esc(c.state)+'">'+esc(c.city)+'<span class="ct">'+c.n+'</span></button>';
+          });
+          html+='</details>';
+        });
+        html+='</details>';
+      });
+      html+='</details>';
+    });
+    window.__ccRegionHTML=html;
+    var el=document.getElementById('rtree'); if(el) el.innerHTML=html;
+  }).catch(function(e){ console.error('CoverCapy: region tree threw', e); });
+})(0);
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-rgo]'); if(!b) return;
+  var p=b.dataset.rgo.split('|');
+  try{ go(+p[0],+p[1],p[2]); }catch(err){ console.error(err); }
+});
+
+/* ---- header change chips + insurance one-click ---- */
+document.addEventListener('click',function(e){
+  var c=e.target.closest&&e.target.closest('[data-chg]');
+  if(c){
+    var k=c.dataset.chg;
+    var el=document.getElementById(k==='loc'?'findQ':k==='ppo'?'findPPO':'findWithin');
+    if(el){ try{ el.scrollIntoView({behavior:'smooth',block:'center'}); }catch(_){ } setTimeout(function(){ el.focus(); },300); }
+    return;
+  }
+  var g=e.target.closest&&e.target.closest('[data-insgo]');
+  if(g){ S.find.preset='bestppo'; S.find.view='grid'; S.find.page=1; try{ route(); }catch(_){ } }
 });
 })();
 </script>
