@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#082A30" />
+<title>CoverCapy Ops Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter+Tight:wght@400;500;600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--teal:#082A30;--teal-2:#0C3A41;--mint:#5BE0A0;--mint-deep:#1f8f64;--gold:#B8924F;--gold-soft:#F0E3C6;--gold-deep:#7a5e23;
+  --cream:#F6F0E6;--paper:#FDFBF7;--ink:#0c2024;--slate:#56655F;--muted:#7c8a8d;--line:#E3DAC9;--err:#c0564a;
+  --sans:'Inter Tight',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--serif:'Fraunces',Georgia,serif;}
+body{font-family:var(--sans);color:var(--ink);background:var(--cream);line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:920px;margin:0 auto;padding:24px 18px 80px}
+header{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.mk{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(150deg,var(--mint),#2fae79);font-size:20px}
+h1{font-family:var(--serif);font-weight:600;font-size:24px;letter-spacing:-.02em}
+.sub{color:var(--slate);font-size:13.5px;margin:2px 0 22px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.pill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;background:var(--gold-soft);color:var(--gold-deep)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.row:first-of-type{border-top:none}
+.row .info b{font-size:14.5px}
+.row .info span{display:block;font-size:12.5px;color:var(--slate);margin-top:2px}
+.btn{font-family:var(--sans);font-weight:700;font-size:13.5px;border:none;border-radius:11px;padding:10px 16px;cursor:pointer}
+.btn-mint{background:linear-gradient(135deg,var(--mint),#37c389);color:#062a23}
+.btn-ink{background:var(--teal-2);color:#eaf5f0}
+.btn-ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+.btn[disabled]{opacity:.5;pointer-events:none}
+.field{margin-top:10px}
+.field label{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--mint-deep)}
+.field input{width:100%;font-size:15px;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:4px;background:var(--paper);outline:none}
+.field input:focus{border-color:var(--mint-deep)}
+.muted{color:var(--muted);font-size:13px}
+.empty{color:var(--muted);font-size:13.5px;padding:8px 0}
+.err{color:var(--err);font-size:13px;font-weight:600;margin-top:8px;min-height:18px}
+.tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tab{font-weight:700;font-size:13px;padding:8px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--paper);cursor:pointer}
+.tab.on{background:var(--teal);color:#eaf5f0;border-color:var(--teal)}
+.hidden{display:none!important}
+.statusbadge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px}
+.s-pending{background:var(--gold-soft);color:var(--gold-deep)}
+.s-active{background:#d9f5e7;color:var(--mint-deep)}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:10px;flex-wrap:wrap}
+.who{font-size:12.5px;color:var(--slate)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><div class="mk">&#129441;</div><h1>CoverCapy Ops Console</h1></header>
+  <div class="sub">Verify insurance submissions and review reward activity.</div>
+
+  <!-- LOGIN -->
+  <div id="login" class="card hidden" style="max-width:420px">
+    <div class="eyebrow">Staff sign in</div>
+    <div class="field"><label>Email</label><input id="liEmail" type="email" autocomplete="email" placeholder="you@covercapy.com"></div>
+    <div class="field"><label>Password</label><input id="liPw" type="password" autocomplete="current-password"></div>
+    <div class="err" id="liErr"></div>
+    <button class="btn btn-mint" id="liGo" style="width:100%;margin-top:6px">Sign in</button>
+    <div class="muted" style="margin-top:12px;text-align:center">Use your CoverCapy account. Access is limited to admins.</div>
+  </div>
+
+  <!-- NOT ADMIN -->
+  <div id="denied" class="card hidden">
+    <div class="eyebrow">No access</div>
+    <p class="muted">This account is not an admin. Ask for the admin flag to be enabled on your profile, then reload.</p>
+    <button class="btn btn-ghost" id="signOut2" style="margin-top:12px">Sign out</button>
+  </div>
+
+  <!-- CONSOLE -->
+  <div id="console" class="hidden">
+    <div class="topbar">
+      <div class="tabs">
+        <button class="tab on" data-tab="insurance">Insurance <span id="cInsurance"></span></button>
+        <button class="tab" data-tab="redemptions">Gift cards <span id="cRedemptions"></span></button>
+        <button class="tab" data-tab="nominations">Nominations <span id="cNominations"></span></button>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="who" id="who"></span>
+        <button class="btn btn-ghost" id="refresh">Refresh</button>
+        <button class="btn btn-ghost" id="signOut">Sign out</button>
+      </div>
+    </div>
+
+    <div id="tab-insurance">
+      <div class="card">
+        <div class="eyebrow">Pending verification <span class="pill" id="insPendCount">0</span></div>
+        <div id="insPending"><div class="empty">Loading…</div></div>
+      </div>
+      <div class="card">
+        <div class="eyebrow">Recently verified</div>
+        <div id="insDone"><div class="empty">—</div></div>
+      </div>
+    </div>
+
+    <div id="tab-redemptions" class="hidden">
+      <div class="card">
+        <div class="eyebrow">Gift-card redemptions to fulfill <span class="pill" id="redCount">0</span></div>
+        <div class="muted" style="margin-bottom:8px">Diamonds are already deducted. Issue the Tango card by email, then this is informational only.</div>
+        <div id="redList"><div class="empty">Loading…</div></div>
+      </div>
+    </div>
+
+    <div id="tab-nominations" class="hidden">
+      <div class="card">
+        <div class="eyebrow">Recent nominations <span class="pill" id="nomCount">0</span></div>
+        <div id="nomList"><div class="empty">Loading…</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  "use strict";
+  var supa = window.supabase.createClient(
+    "https://hfvbeqlefwwjlrbyxpbj.supabase.co",
+    "sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf"
+  );
+  var $ = function(id){ return document.getElementById(id); };
+  var esc = function(s){ return String(s==null?'':s).replace(/[<>&]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;'}[c];}); };
+  var emailFor = {}; // user_id -> email
+
+  function show(id){ ['login','denied','console'].forEach(function(x){ $(x).classList.toggle('hidden', x!==id); }); }
+  function fmt(d){ if(!d) return ''; try{ return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'}); }catch(e){ return (''+d).slice(0,10); } }
+  function dollars(c){ return c!=null ? '$'+(c/100).toFixed(0) : ''; }
+
+  // ---- auth ----
+  $('liGo').addEventListener('click', function(){
+    var em=$('liEmail').value.trim(), pw=$('liPw').value, b=this;
+    $('liErr').textContent=''; b.disabled=true; b.textContent='Signing in…';
+    supa.auth.signInWithPassword({email:em,password:pw}).then(function(r){
+      b.disabled=false; b.textContent='Sign in';
+      if(r.error){ $('liErr').textContent=r.error.message; return; }
+      boot();
+    });
+  });
+  $('liPw').addEventListener('keydown',function(e){ if(e.key==='Enter') $('liGo').click(); });
+  function signOut(){ supa.auth.signOut().then(function(){ show('login'); }); }
+  $('signOut').addEventListener('click', signOut);
+  $('signOut2').addEventListener('click', signOut);
+  $('refresh').addEventListener('click', loadAll);
+
+  document.querySelectorAll('[data-tab]').forEach(function(t){
+    t.addEventListener('click', function(){
+      document.querySelectorAll('[data-tab]').forEach(function(x){ x.classList.toggle('on', x===t); });
+      ['insurance','redemptions','nominations'].forEach(function(n){ $('tab-'+n).classList.toggle('hidden', n!==t.dataset.tab); });
+    });
+  });
+
+  function boot(){
+    supa.auth.getSession().then(function(s){
+      if(!s.data.session){ show('login'); return; }
+      supa.rpc('is_admin').then(function(r){
+        if(r.error || !r.data){ show('denied'); return; }
+        $('who').textContent = s.data.session.user.email || '';
+        show('console'); loadAll();
+      });
+    });
+  }
+
+  function namesFor(ids){
+    var uniq = ids.filter(function(v,i,a){ return v && a.indexOf(v)===i && !(v in emailFor); });
+    if(!uniq.length) return Promise.resolve();
+    return supa.from('profiles').select('id,email,display_name').in('id', uniq).then(function(r){
+      (r.data||[]).forEach(function(p){ emailFor[p.id] = p.email || p.display_name || p.id.slice(0,8); });
+    });
+  }
+  function who(uid){ return emailFor[uid] || (uid? uid.slice(0,8)+'…' : 'Unknown'); }
+
+  function loadAll(){ loadInsurance(); loadRedemptions(); loadNominations(); }
+
+  // ---- insurance ----
+  function loadInsurance(){
+    supa.from('insurance_wallets')
+      .select('id,user_id,carrier,plan_name,plan_role,member_id,status,verification_requested_at,last_verified_at')
+      .order('verification_requested_at',{ascending:true})
+      .then(function(r){
+        if(r.error){ $('insPending').innerHTML='<div class="err">'+esc(r.error.message)+'</div>'; return; }
+        var rows = r.data||[];
+        var pend = rows.filter(function(x){ return x.status==='pending'; });
+        var done = rows.filter(function(x){ return x.status==='active'; }).sort(function(a,b){ return (b.last_verified_at||'').localeCompare(a.last_verified_at||''); }).slice(0,8);
+        $('cInsurance').textContent = pend.length ? '('+pend.length+')' : '';
+        $('insPendCount').textContent = pend.length;
+        namesFor(rows.map(function(x){return x.user_id;})).then(function(){
+          $('insPending').innerHTML = pend.length ? pend.map(function(x){
+            return '<div class="row"><div class="info"><b>'+esc(x.carrier||'Plan')+' &middot; '+esc(x.plan_role||'')+'</b>'
+              +'<span>'+esc(who(x.user_id))+' &middot; member '+esc(x.member_id||'—')+' &middot; requested '+fmt(x.verification_requested_at)+'</span></div>'
+              +'<button class="btn btn-mint" data-verify="'+x.id+'">Mark verified</button></div>';
+          }).join('') : '<div class="empty">No pending submissions. You’re all caught up.</div>';
+          $('insDone').innerHTML = done.length ? done.map(function(x){
+            return '<div class="row"><div class="info"><b>'+esc(x.carrier||'Plan')+'</b><span>'+esc(who(x.user_id))+' &middot; verified '+fmt(x.last_verified_at)+'</span></div><span class="statusbadge s-active">Verified</span></div>';
+          }).join('') : '<div class="empty">—</div>';
+          document.querySelectorAll('[data-verify]').forEach(function(btn){
+            btn.addEventListener('click', function(){
+              var id=btn.dataset.verify; btn.disabled=true; btn.textContent='Verifying…';
+              supa.from('insurance_wallets').update({verified:true}).eq('id', id).then(function(rr){
+                if(rr.error){ btn.disabled=false; btn.textContent='Mark verified'; alert(rr.error.message); return; }
+                loadInsurance();
+              });
+            });
+          });
+        });
+      });
+  }
+
+  // ---- redemptions (read-only) ----
+  function loadRedemptions(){
+    supa.from('crown_redemptions')
+      .select('id,user_id,reward_key,value_cents,status,created_at')
+      .order('created_at',{ascending:false}).limit(40)
+      .then(function(r){
+        if(r.error){ $('redList').innerHTML='<div class="err">'+esc(r.error.message)+'</div>'; return; }
+        var rows=r.data||[];
+        var pend=rows.filter(function(x){ return x.status==='pending_review'; });
+        $('cRedemptions').textContent = pend.length ? '('+pend.length+')' : '';
+        $('redCount').textContent = pend.length;
+        namesFor(rows.map(function(x){return x.user_id;})).then(function(){
+          $('redList').innerHTML = rows.length ? rows.map(function(x){
+            var label=(x.reward_key||'').replace('tango_','').replace('_150',' $150').replace(/_/g,' ');
+            return '<div class="row"><div class="info"><b>'+esc(label)+' '+esc(dollars(x.value_cents))+'</b>'
+              +'<span>'+esc(who(x.user_id))+' &middot; '+fmt(x.created_at)+'</span></div>'
+              +'<span class="statusbadge '+(x.status==='pending_review'?'s-pending':'s-active')+'">'+esc((x.status||'').replace(/_/g,' '))+'</span></div>';
+          }).join('') : '<div class="empty">No redemptions yet.</div>';
+        });
+      });
+  }
+
+  // ---- nominations (read-only) ----
+  function loadNominations(){
+    supa.from('dentist_nominations')
+      .select('id,user_id,nominee_name,nominee_city,nominee_state,stage,created_at')
+      .order('created_at',{ascending:false}).limit(40)
+      .then(function(r){
+        if(r.error){ $('nomList').innerHTML='<div class="err">'+esc(r.error.message)+'</div>'; return; }
+        var rows=r.data||[];
+        $('cNominations').textContent = rows.length ? '('+rows.length+')' : '';
+        $('nomCount').textContent = rows.length;
+        namesFor(rows.map(function(x){return x.user_id;})).then(function(){
+          $('nomList').innerHTML = rows.length ? rows.map(function(x){
+            return '<div class="row"><div class="info"><b>'+esc(x.nominee_name||'Office')+'</b>'
+              +'<span>'+esc([x.nominee_city,x.nominee_state].filter(Boolean).join(', '))+' &middot; by '+esc(who(x.user_id))+' &middot; '+fmt(x.created_at)+'</span></div>'
+              +'<span class="statusbadge '+(x.stage==='accredited'||x.stage==='reward_issued'?'s-active':'s-pending')+'">'+esc(x.stage||'received')+'</span></div>';
+          }).join('') : '<div class="empty">No nominations yet.</div>';
+        });
+      });
+  }
+
+  boot();
+})();
+</script>
+</body>
+</html>
