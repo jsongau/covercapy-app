@@ -400,21 +400,69 @@ window.__supa=window.supabase.createClient(__CC.url,__CC.key);
 })();
 </script>
 
+
+
 <script>
 (function(){
- function init(){
-  var seg=document.getElementById("seg"); if(!seg) return;
-  if(document.getElementById("roleChooser")) return;
-  var card=seg.parentNode;
-  var w=document.createElement("div"); w.id="roleChooser";
-  w.style.cssText="display:flex;gap:8px;margin:0 0 16px";
-  function mk(t,a){var b=document.createElement("button");b.type="button";b.textContent=t;b.style.cssText="flex:1;padding:11px 14px;border-radius:999px;font-weight:700;font-size:13.5px;cursor:pointer;-webkit-tap-highlight-color:transparent;border:1.5px solid "+(a?"transparent":"rgba(11,59,54,.18)")+";background:"+(a?"#0B3B36":"#fff")+";color:"+(a?"#fff":"#0B3B36")+";";return b;}
-  var p=mk("I\u2019m a patient",true), d=mk("I\u2019m a dentist",false);
-  d.addEventListener("click",function(){window.location.href="/dentist.html";});
-  w.appendChild(p); w.appendChild(d);
-  card.insertBefore(w, seg);
- }
- if(document.readyState!=="loading") init(); else document.addEventListener("DOMContentLoaded", init);
+  var SB_URL='https://hfvbeqlefwwjlrbyxpbj.supabase.co';
+  var SB_KEY='sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf';
+  var _c=null; function sbc(){ if(!_c && window.supabase) _c=window.supabase.createClient(SB_URL,SB_KEY); return _c; }
+  var TXT={
+    patient:{kick:'Welcome back',ti:'Sign in to your concierge',tc:'Create your account',sub:'Pick up your Capy Crowns, saved dentists, and coverage wallet right where you left off.'},
+    dentist:{kick:'For dental offices',ti:'Sign in to your practice',tc:'Create your practice account',sub:'See who booked you, the eligibility they need, and the reviews and nominations they left \u2014 live from CoverCapy.'}
+  };
+  function getRole(){ return localStorage.getItem('cc_role')==='dentist'?'dentist':'patient'; }
+  function curMode(){ var pc=document.getElementById('pCreate'); return (pc && pc.offsetParent!==null)?'create':'signin'; }
+  var pBtn,dBtn;
+  function styleBtn(b,on){ b.style.background=on?'#0B3B36':'transparent'; b.style.color=on?'#fff':'#0B3B36'; b.style.border='1.5px solid '+(on?'transparent':'rgba(11,59,54,.18)'); }
+  function paint(){
+    var r=getRole(),x=TXT[r];
+    var k=document.getElementById('awKick'),ti=document.getElementById('awTitle'),su=document.getElementById('awSub');
+    if(k)k.textContent=x.kick; if(ti)ti.textContent=(curMode()==='create'?x.tc:x.ti); if(su)su.textContent=x.sub;
+    if(pBtn&&dBtn){ styleBtn(pBtn,r==='patient'); styleBtn(dBtn,r==='dentist'); }
+  }
+  function setRole(r){ localStorage.setItem('cc_role',r); paint(); }
+  function build(){
+    var seg=document.getElementById('seg'); if(!seg) return false;
+    if(!document.getElementById('roleChooser')){
+      var w=document.createElement('div'); w.id='roleChooser'; w.style.cssText='display:flex;gap:8px;margin:0 0 14px';
+      function mk(tx){var b=document.createElement('button');b.type='button';b.textContent=tx;b.style.cssText='flex:1;padding:13px;border-radius:999px;font-weight:700;font-size:15px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .15s,color .15s';return b;}
+      pBtn=mk('I\u2019m a patient'); dBtn=mk('I\u2019m a dentist');
+      pBtn.addEventListener('click',function(){setRole('patient');});
+      dBtn.addEventListener('click',function(){setRole('dentist');});
+      w.appendChild(pBtn); w.appendChild(dBtn); seg.parentNode.insertBefore(w,seg);
+    }
+    ['segSignin','segCreate'].forEach(function(id){var e=document.getElementById(id); if(e&&!e._ccp){e._ccp=1; e.addEventListener('click',function(){setTimeout(paint,0);});}});
+    if(/[?&]role=dentist/.test(location.search)) localStorage.setItem('cc_role','dentist');
+    paint(); return true;
+  }
+  function val(id){var e=document.getElementById(id);return e?(e.value||'').trim():'';}
+  function pwv(id){var e=document.getElementById(id);return e?e.value:'';}
+  function seterr(id,m,ok){var e=document.getElementById(id);if(e){e.textContent=m;e.style.color=ok?'#1D7A50':'#B4453A';}}
+  async function doEmail(m){
+    var c=sbc(); if(!c) return;
+    var email=m==='create'?val('cr-email'):val('si-email');
+    var pw=m==='create'?pwv('cr-pw'):pwv('si-pw');
+    var eid=m==='create'?'crErr':'siErr';
+    if(!email||email.indexOf('@')<0){seterr(eid,'Enter your work email.');return;}
+    if(!pw||pw.length<6){seterr(eid,'Password must be at least 6 characters.');return;}
+    var res = m==='create' ? await c.auth.signUp({email:email,password:pw,options:{emailRedirectTo:location.origin+'/dentist.html'}}) : await c.auth.signInWithPassword({email:email,password:pw});
+    if(res.error){seterr(eid,res.error.message);return;}
+    if(m==='create' && !res.data.session){seterr(eid,'Check your inbox to confirm, then sign in.',true);return;}
+    location.replace(location.origin+'/dentist.html');
+  }
+  document.addEventListener('click',function(e){
+    if(getRole()!=='dentist') return;
+    var sub=e.target.closest('#siGo,#crGo');
+    if(sub){ e.preventDefault(); e.stopImmediatePropagation(); doEmail(sub.id==='crGo'?'create':'signin'); return; }
+    var b=e.target.closest('button,a'); if(!b) return;
+    var tx=b.textContent||'';
+    if(/Continue with Google/i.test(tx)){ e.preventDefault(); e.stopImmediatePropagation(); var c=sbc(); if(c)c.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+'/dentist.html'}}); return; }
+    if(/Continue with Apple/i.test(tx)){ e.preventDefault(); e.stopImmediatePropagation(); var c2=sbc(); if(c2)c2.auth.signInWithOAuth({provider:'apple',options:{redirectTo:location.origin+'/dentist.html'}}); return; }
+    if(/Preview the live demo/i.test(tx)){ e.preventDefault(); e.stopImmediatePropagation(); location.href='/dentist.html?demo=1'; return; }
+  },true);
+  function boot(){ if(!build()){ var n=0,iv=setInterval(function(){ if(build()||++n>40) clearInterval(iv); },100); } }
+  if(document.readyState!=='loading') boot(); else document.addEventListener('DOMContentLoaded',boot);
 })();
 </script>
 </body>
