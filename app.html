@@ -668,7 +668,7 @@ body.sheet-open #view,body.sheet-open #topnav{filter:blur(2px) saturate(.92);tra
 <script>
 window.__CC={url:"https://hfvbeqlefwwjlrbyxpbj.supabase.co",key:"sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf",login:"./index.html"};
 window.__supa=window.supabase.createClient(__CC.url,__CC.key);
-window.__CC_BUILD='v47';
+window.__CC_BUILD='v48';
 try{ console.log('CoverCapy build', window.__CC_BUILD); }catch(e){}
 </script>
 <script>
@@ -3275,13 +3275,13 @@ function ccFindMap(){
       /* the face cards: platinum = the KING (orange, biggest, crowned); accredited = green capy card */
       var face=d.image_url?'<img src="'+esc(d.image_url)+'" alt="">':(window.CapyAvatar&&CapyAvatar.ready()&&CapyAvatar.svg(d))||'<span class="fp-emoji">'+((window.ccAnimal&&ccAnimal(d))||'&#129441;')+'</span>';
       var crest=(d.tier==='elite')?'<span class="fp-crown">&#128081;</span>':'<span class="fp-capy">'+(window.CAPY_ICON_APP||'&#10003;')+'</span>';
-      ic=L.divIcon({className:'lpin-w',html:'<div class="facepin '+(d.tier==='elite'?'plat':'accr')+' drop" style="animation-delay:'+(dropIdx++*(d.tier==='elite'?90:70))+'ms" title="'+(d.tier==='elite'?'Platinum Elite':'Capy Accredited')+'">'+crest+'<span class="fp-face">'+face+'</span><span class="fp-tail"></span></div>',iconSize:[sz,sz+18],iconAnchor:[sz/2,sz+16]});
+      ic=L.divIcon({className:'lpin-w',html:'<div class="facepin '+(d.tier==='elite'?'plat':'accr')+' drop" style="animation-delay:'+(dropIdx++*(d.tier==='elite'?90:70))+'ms" title="'+(d.tier==='elite'?'Platinum Elite':'Capy Accredited')+'">'+crest+'<span class="fp-face">'+face+'</span><span class="fp-tail"></span></div>',iconSize:[sz,sz+18],iconAnchor:[sz/2,sz+16],popupAnchor:[0,-(sz+26)],tooltipAnchor:[0,-(sz+20)]});
     } else {
-      ic=L.divIcon({className:'lpin-w',html:'<div class="ldot'+cls+' drop" style="animation-delay:'+(dropIdx++*40)+'ms"></div>',iconSize:[sz,sz],iconAnchor:[sz/2,sz/2]});
+      ic=L.divIcon({className:'lpin-w',html:'<div class="ldot'+cls+' drop" style="animation-delay:'+(dropIdx++*40)+'ms"></div>',iconSize:[sz,sz],iconAnchor:[sz/2,sz/2],popupAnchor:[0,-(sz/2+6)],tooltipAnchor:[0,-(sz/2+4)]});
     }
     var nm=String(d.name||'').replace(/\\/g,'').replace(/'/g,"\\'").replace(/"/g,'');
     var ct=String(d.city||'').replace(/\\/g,'').replace(/'/g,"\\'").replace(/"/g,'');
-    L.marker([d.lat,d.lng],{icon:ic,zIndexOffset:(d.tier==='elite'?2000:d.tier==='tier'?800:0)}).addTo(window.__lgroup).bindTooltip(esc(d.name)+' &#183; &#9733; '+d.rating,{direction:'top',offset:[0,-6]}).bindPopup(
+    L.marker([d.lat,d.lng],{icon:ic,zIndexOffset:(d.tier==='elite'?2000:d.tier==='tier'?800:0)}).addTo(window.__lgroup).bindTooltip(esc(d.name)+' &#183; &#9733; '+d.rating,{direction:'top'}).bindPopup(
       '<div class="lpop"><b>'+esc(d.name)+'</b>'
       +'<div class="lpop-sub">'+esc(d.doc||'')+' &#183; '+(typeof d.mi==='number'?d.mi+' mi &#183; ':'')+'&#9733; '+d.rating+' ('+d.reviews+')'+(d.tier==='elite'?' &#183; <b style="color:#E8771E">Platinum Elite</b>':d.tier==='tier'?' &#183; <b style="color:#1F8A5B">Capy Accredited</b>':'')+'</div>'
       +'<div class="lpop-act"><button class="btn btn-ink btn-sm" onclick="profileSheet(\''+d.id+'\')">View office</button>'
