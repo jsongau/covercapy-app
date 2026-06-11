@@ -1871,6 +1871,16 @@ document.addEventListener('click',function(e){
 
 /* ===== LIVE: real dentists into the Find tab ===== */
 function ccNum(v){ var n=parseFloat(v); return isNaN(n)?0:n; }
+function ccEnterDemo(){
+  window.__ccUID=null; S.role='patient';
+  S.p={ name:'Guest preview', first:'there', init:'CC', avbg:'var(--mint-soft)', avc:'var(--mint-deep)',
+    crowns:300, diamonds:0, tier:'bronze_builder',
+    journey:{plan:0,visit:0,review:0,refer:0}, noms:[], plans:[], blurb:'Demo preview' };
+  var g=$('gate'); if(g){ g.classList.add('hidden'); }
+  renderChrome(); go('home'); route();
+  var sw=$('switchSeat');
+  if(sw){ sw.textContent='Create account'; var sw2=sw.cloneNode(true); sw.parentNode.replaceChild(sw2,sw); sw2.addEventListener('click',function(){ location.href=window.__CC.login; }); }
+}
 function ccMapDentist(r){
   var acc=r.accreditation_status, mt=r.membership_tier, ft=r.featured_tier;
   var tier=(mt==='platinum'||ft==='elite'||ft==='platinum')?'elite':(acc==='accredited'||mt==='accredited'||ft==='accredited')?'tier':'pend';
@@ -1966,7 +1976,7 @@ function ccLoadNoms(){
   supa.auth.getSession().then(function(s){
     var sess=s.data.session;
     if(!sess){
-      if(/[?&]demo=1/.test(location.search)){ var gd=$('gate'); if(gd) gd.classList.remove('hidden'); renderGate(); return; }
+      if(/[?&]demo=1/.test(location.search)){ ccEnterDemo(); return; }
       location.replace(window.__CC.login); return;
     }
     var uid=sess.user.id, email=sess.user.email||'';
