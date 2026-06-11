@@ -596,7 +596,7 @@ var DNAV=[['ddash','Dashboard','&#9737;'],['demand','Demand','&#9650;'],['patien
 function renderChrome(){
   var nav=S.role==='patient'?PNAV:DNAV;
   var right = S.role==='patient'
-    ? '<div class="crown-chip">&#128081; <span id="crownTop">0</span></div><div class="crown-chip" style="background:var(--mint-soft);color:var(--mint-deep)">&#128142; <span id="diamondTop">0</span></div><button class="btn btn-ink btn-sm" data-cc="open">Ask concierge</button>'
+    ? '<div class="crown-chip">&#128081; <span id="crownTop">0</span></div><div class="crown-chip" style="background:var(--mint-soft);color:var(--mint-deep)">&#128142; <span id="diamondTop">0</span></div><button class="btn btn-ink btn-sm" data-cc="open">Ask concierge</button><button class="btn btn-ghost btn-sm" data-act="settings" aria-label="Profile and settings" style="padding:7px 11px">&#9881;</button>'
     : '<span class="tierpill" id="dTierPill"></span><select id="dTierSel" style="border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12px;font-weight:700;background:var(--paper)"><option value="unclaimed">Demo: Unclaimed</option><option value="free">Demo: Claimed free</option><option value="accredited" selected>Demo: Capy Accredited</option><option value="platinum">Demo: Platinum Elite</option></select>';
   $('topnav').innerHTML='<div class="tn-in"><div class="tn-logo"><div class="lm">&#129441;</div>CoverCapy'+(S.role==='dentist'?' <span class="muted" style="font-family:var(--fb);font-size:12px;font-weight:600">&#183; Practice portal</span>':'')+'</div>'
     +'<nav class="tn-links">'+nav.map(function(n){return '<a data-go="'+n[0]+'">'+n[1]+'</a>';}).join('')+'</nav>'
@@ -1150,6 +1150,40 @@ function eligSheet(e){
   openSheet('<h3 class="serif">'+e.title+'</h3><div class="ssub">'+e.sub+'</div>'
    +e.groups.map(function(g){return '<div class="elig-grp">'+g[0]+'</div>'+g[1].map(function(l){return '<div class="elig-line"><span>'+l[0]+'</span><b>'+l[1]+'</b></div>';}).join('');}).join('')
    +'<button class="btn btn-cream btn-full" style="margin-top:16px" data-close="1">Close</button>');
+}
+function settingsSheet(){
+  var p=S.p||{};
+  var done=!!(p.zip&&p.name);
+  openSheet('<h3 class="serif">Profile &amp; settings</h3><div class="ssub">Keep your details current. Your ZIP helps us find dentists near you.</div>'
+   +'<div class="field"><label>Full name</label><input id="setName" value="'+esc(p.name||'')+'" placeholder="Your name"></div>'
+   +'<div class="field"><label>Street address <span style="font-weight:400;color:var(--slate)">(optional)</span></label><input id="setAddr" value="'+esc(p.address||'')+'" placeholder="123 Main St"></div>'
+   +'<div style="display:flex;gap:10px"><div class="field" style="flex:2"><label>City</label><input id="setCity" value="'+esc(p.city||'')+'" placeholder="Costa Mesa"></div>'
+   +'<div class="field" style="flex:1"><label>State</label><input id="setState" value="'+esc(p.state||'')+'" placeholder="CA" maxlength="2"></div></div>'
+   +'<div class="field"><label>ZIP code</label><input id="setZip" inputmode="numeric" maxlength="5" value="'+esc(p.zip||'')+'" placeholder="92626"></div>'
+   +(!done?'<div class="teaser" style="margin-top:12px"><span class="tc"><svg viewBox="0 0 24 24"><use href="#crown"/></svg></span><p>Add your name and ZIP to earn <b>+150 Capy Crowns</b>, one time.</p></div>':'')
+   +'<button class="btn btn-ink btn-full" id="setGo" style="margin-top:14px">Save</button>'
+   +'<button class="btn btn-ghost btn-full btn-sm" id="setOut" style="margin-top:8px">Sign out</button>');
+  $('setOut').addEventListener('click',function(){ if(window.__ccUID&&window.__supa){ window.__supa.auth.signOut().then(function(){ location.href=window.__CC.login; }); } else { location.href=window.__CC.login; } });
+  $('setGo').addEventListener('click',function(){
+    var nm=($('setName').value||'').trim(), addr=($('setAddr').value||'').trim(), city=($('setCity').value||'').trim(), state=($('setState').value||'').trim().toUpperCase(), zip=($('setZip').value||'').trim();
+    if(zip && !/^\d{5}$/.test(zip)){ $('setZip').style.borderColor='var(--gold)'; return; }
+    p.name=nm||p.name; p.first=((p.name||'there').split(/\s+/)[0]||p.name); p.address=addr; p.city=city; p.state=state; p.zip=zip; if(p.init===undefined){}
+    var btn=this; btn.setAttribute('aria-busy','true');
+    if(window.__ccUID&&window.__supa){
+      window.__supa.from('user_profiles').upsert({user_id:window.__ccUID, display_name:(nm||null), address:(addr||null), city:(city||null), state:(state||null), zip_code:(zip||null)}, {onConflict:'user_id'}).then(function(r){
+        if(r.error){ btn.removeAttribute('aria-busy'); celebrate({em:'&#9888;',title:'Could not save',body:r.error.message||'Please try again.'}); return; }
+        window.__supa.rpc('claim_crowns').then(function(cr){
+          var got=(cr&&cr.data&&cr.data.awarded)?JSON.stringify(cr.data.awarded):'';
+          closeSheet();
+          if(got.indexOf('profile_complete')>-1){ bump(150,'c'); celebrate({em:'&#127881;',title:'Profile complete',chip:'&#128081; +150 Capy Crowns',body:'Saved. Your details help us match you to dentists nearby.'}); }
+          else { celebrate({em:'&#9989;',title:'Saved',body:'Your profile is up to date.'}); }
+        });
+      });
+      return;
+    }
+    closeSheet();
+    celebrate({em:'&#9989;',title:'Saved',body:'Your profile is up to date.'});
+  });
 }
 function shopSheet(){
   openSheet('<h3 class="serif">Plans that fit how you use care</h3><div class="ssub">Six real plans, each here for a reason. Different plans fit different needs.</div>'
@@ -1872,6 +1906,7 @@ document.addEventListener('click',function(e){
     if(a==='ambassador')return ambassadorSheet();
     if(a==='refer')return referSheet();
     if(a==='managesub')return manageSheet();
+    if(a==='settings')return settingsSheet();
     if(a==='annual')return annualSheet();
     if(a==='tier2')return celebrate({em:'&#127942;',title:'Accreditation review requested',body:'Our team reviews your patient feedback and verification responsiveness. Accreditation is earned on merit; membership is $369 per month once approved.'});
     if(a==='tier3')return celebrate({em:'&#9670;',title:'Platinum Elite inquiry sent',body:'We will reach out about featured placement in patient searches up to 18 miles from the searched location, featured city slots, and concierge introduction priority.'});
@@ -1992,7 +2027,7 @@ function ccLoadNoms(){
     var uid=sess.user.id, email=sess.user.email||'';
     return Promise.all([
       supa.from('reward_wallets').select('balance,diamond_balance,tier,network_status,paying_offices').eq('user_id',uid).maybeSingle(),
-      supa.from('user_profiles').select('display_name,city,state').eq('user_id',uid).maybeSingle()
+      supa.from('user_profiles').select('display_name,city,state,zip_code,address').eq('user_id',uid).maybeSingle()
     ]).then(function(res){
       var w=(res[0]&&res[0].data)||{balance:0,diamond_balance:0,tier:null};
       var up=(res[1]&&res[1].data)||{};
@@ -2002,7 +2037,8 @@ function ccLoadNoms(){
       S.p={ name:nm, first:(nm.split(/\s+/)[0]||nm), init:initials(nm), avbg:'var(--mint-soft)', avc:'var(--mint-deep)',
         crowns:(w.balance||0), diamonds:(w.diamond_balance||0), tier:w.tier,
         journey:{plan:0,visit:0,review:0,refer:0}, noms:[], plans:[],
-        blurb:'Live CoverCapy account', email:email, uid:uid };
+        blurb:'Live CoverCapy account', email:email, uid:uid,
+        zip:(up.zip_code||''), city:(up.city||''), state:(up.state||''), address:(up.address||'') };
       var g=$('gate'); if(g) g.classList.add('hidden');
       renderChrome();
       go('home'); route(); window.__ccUID=uid; ccLoadNoms(); ccLoadCoverage();
