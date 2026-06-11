@@ -1848,7 +1848,10 @@ document.addEventListener('click',function(e){
   function initials(n){ n=(n||'').trim(); if(!n) return 'CC'; var a=n.split(/\s+/); var r=((a[0]||'')[0]||'')+((a[1]||'')[0]||''); return (r||a[0].slice(0,2)).toUpperCase(); }
   supa.auth.getSession().then(function(s){
     var sess=s.data.session;
-    if(!sess){ location.replace(window.__CC.login); return; }
+    if(!sess){
+      if(/[?&]demo=1/.test(location.search)){ var gd=$('gate'); if(gd) gd.classList.remove('hidden'); renderGate(); return; }
+      location.replace(window.__CC.login); return;
+    }
     var uid=sess.user.id, email=sess.user.email||'';
     return Promise.all([
       supa.from('reward_wallets').select('balance,diamond_balance,tier,network_status,paying_offices').eq('user_id',uid).maybeSingle(),
