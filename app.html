@@ -239,7 +239,10 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .fpager{display:flex;align-items:center;justify-content:center;gap:14px;margin:18px 0 6px}
 .fpager .fpg-lbl{font-size:12.5px;font-weight:700;color:var(--slate)}
 .fpager button[disabled]{opacity:.4;pointer-events:none}
-#lmap{height:min(72vh,640px);min-height:420px;border-radius:var(--rad);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden;z-index:1;position:relative}
+#lmap{height:calc(100vh - 170px);max-height:780px;min-height:460px;border-radius:var(--rad);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden;z-index:1;position:relative}
+.udot{width:18px;height:18px;border-radius:50%;background:rgba(74,168,157,.25);display:grid;place-items:center;animation:upulse 2s ease-out infinite}
+.udot span{width:10px;height:10px;border-radius:50%;background:#2E8C7F;border:2.5px solid #fff;box-shadow:0 1px 6px rgba(8,42,48,.4)}
+@keyframes upulse{0%{box-shadow:0 0 0 0 rgba(46,140,127,.35)}70%{box-shadow:0 0 0 14px rgba(46,140,127,0)}100%{box-shadow:0 0 0 0 rgba(46,140,127,0)}}
 #findList{min-height:420px;position:relative}
 .busyveil::after{content:"";position:absolute;inset:0;background:rgba(251,246,236,.55);z-index:40;border-radius:inherit}
 .busyveil::before{content:"";position:absolute;top:50%;left:50%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--ink);animation:ccspin .7s linear infinite;z-index:41}
@@ -2683,12 +2686,26 @@ function refresh(){
   }).catch(function(e){ console.error('CoverCapy: geo search threw', e); clientFallback(); });
 }
 /* use my current location */
+window.ccNearestCity=function(lat,lng){
+  var rows=window.__ccCityRows||[]; var best=null,bd=1e9,R=3958.8,toR=Math.PI/180;
+  rows.forEach(function(c){
+    if(c.lat==null) return;
+    var dLat=(c.lat-lat)*toR,dLng=(c.lng-lng)*toR;
+    var h=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat*toR)*Math.cos(c.lat*toR)*Math.sin(dLng/2)*Math.sin(dLng/2);
+    var mi=R*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h));
+    if(mi<bd){ bd=mi; best=c; }
+  });
+  return (best&&bd<=40)?(best.city+', '+best.state):null;
+};
 window.ccFindLocate=function(){
   var b=document.querySelector('.locbtn'); if(b) b.classList.add('busy');
   if(!navigator.geolocation){ if(b) b.classList.remove('busy'); alert('Location is not available in this browser.'); return; }
   navigator.geolocation.getCurrentPosition(function(pos){
     if(b) b.classList.remove('busy');
-    go(pos.coords.latitude, pos.coords.longitude, 'Near you');
+    var la=pos.coords.latitude, ln=pos.coords.longitude;
+    S.find.userLoc={lat:la,lng:ln};
+    var label=window.ccNearestCity(la,ln)||'Near you';
+    go(la, ln, label);
   }, function(err){
     if(b) b.classList.remove('busy');
     console.error('CoverCapy: geolocation denied/failed', err);
@@ -2896,8 +2913,8 @@ function key(e){
 
 var _defaultRan=false;
 var PREF='cc_find_pref';
-function prefGet(){ try{ return JSON.parse(localStorage.getItem(PREF)||'null'); }catch(e){ return null; } }
-function prefSave(){ try{ var c=S.find.center; if(c&&c.lat!=null) localStorage.setItem(PREF, JSON.stringify({label:c.label,lat:c.lat,lng:c.lng,within:S.find.within})); }catch(e){} }
+function prefGet(){ try{ var p=JSON.parse(localStorage.getItem(PREF)||'null'); if(!p||p.v!==2) return null; p.within=Math.max(1,Math.min(30,+p.within||30)); return p; }catch(e){ return null; } }
+function prefSave(){ try{ var c=S.find.center; if(c&&c.lat!=null) localStorage.setItem(PREF, JSON.stringify({v:2,label:c.label,lat:c.lat,lng:c.lng,within:Math.max(1,Math.min(30,S.find.within||30))})); }catch(e){} }
 function autoDefault(){
   /* location intelligence: saved search -> profile ZIP -> profile city -> preset city.
      Users should never have to re-type where they live. */
@@ -2943,7 +2960,21 @@ function wire(){
     if(!v.trim()){ S.find.q=''; S.find.center=null; deb=setTimeout(home,120); return; }
     deb=setTimeout(function(){ suggest(v.trim()); },160); });
   inp.addEventListener('keydown', key);
-  inp.addEventListener('focus', function(){ if(this.value.trim()) suggest(this.value.trim()); else home(); });
+  inp.addEventListener('focus', function(){
+    /* clear on focus so a new place can be typed immediately */
+    if(this.value.trim()){ this._stash=this.value; this.value=''; }
+    home();
+  });
+  inp.addEventListener('blur', function(){
+    var self=this;
+    setTimeout(function(){
+      if(!self.value.trim()){
+        var lbl=(S.find.center&&S.find.center.label)||self._stash||'';
+        if(lbl) self.value=lbl;
+      }
+      self._stash=null;
+    },180);
+  });
   var fw=document.getElementById('findWithin');
   if(fw && !fw._omni){ fw._omni=1; }
 }
@@ -2994,6 +3025,12 @@ function ccFindMap(){
       +'</div></div>');
     pts.push([d.lat,d.lng]);
   });
+  if(S.find.userLoc&&S.find.userLoc.lat!=null){
+    var ul=S.find.userLoc;
+    var uic=L.divIcon({className:'lpin-w',html:'<div class="udot"><span></span></div>',iconSize:[18,18],iconAnchor:[9,9]});
+    L.marker([ul.lat,ul.lng],{icon:uic}).addTo(window.__lgroup).bindTooltip('You are here',{direction:'top',offset:[0,-8]});
+    pts.push([ul.lat,ul.lng]);
+  }
   if(S.find.center&&S.find.center.lat!=null) pts.push([S.find.center.lat,S.find.center.lng]);
   try{ m.invalidateSize(); }catch(e){}
   if(pts.length){ m.fitBounds(pts,{padding:[36,36],maxZoom:14}); } else { m.setView([33.68,-117.82],10); }
@@ -3364,6 +3401,7 @@ window.__ccRegionHTML=null;
   window.__supa.rpc('dentist_region_tree').then(function(r){
     if(r&&r.error){ console.error('CoverCapy: region tree failed', r.error); return; }
     var rows=(r&&r.data)||[]; if(!rows.length) return;
+    window.__ccCityRows=rows.map(function(x){ return {city:x.city,state:x.state,lat:(x.lat!=null?+x.lat:null),lng:(x.lng!=null?+x.lng:null)}; });
     /* region > state > area > cities */
     var tree={};
     rows.forEach(function(x){
