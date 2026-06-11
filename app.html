@@ -2757,6 +2757,7 @@ window.afterRender=function(id){
   if(id==='settings'){
     var sv=document.getElementById('sgSave'); if(sv) sv.addEventListener('click',saveSettings);
     var so=document.getElementById('sgOut'); if(so) so.addEventListener('click',function(){
+      ccAuthCookie(null);
       if(window.__ccUID&&window.__supa){ window.__supa.auth.signOut().then(function(){ location.href=window.__CC.login; }); } else { location.href=window.__CC.login; }
     });
   }
@@ -2766,6 +2767,25 @@ window.afterRender=function(id){
   }
   if(id==='profile'){ paintBell(); }
 };
+/* ---- cross-domain presence: covercapy.com nav reads this cookie ---- */
+function ccAuthCookie(first){
+  try{
+    var base='; domain=.covercapy.com; path=/; SameSite=Lax; Secure';
+    if(first){ document.cookie='cc_auth='+encodeURIComponent(first)+base+'; max-age=2592000'; }
+    else { document.cookie='cc_auth='+base+'; max-age=0'; }
+  }catch(e){}
+}
+window.ccAuthCookie=ccAuthCookie;
+(function waitAuth(n){
+  if(window.__ccUID&&S.p){ ccAuthCookie(S.p.first||'Member'); }
+  else if(n<40){ setTimeout(function(){ waitAuth(n+1); },500); }
+})(0);
+/* main-site "Sign out" lands here */
+if(/[?&]signout=1/.test(location.search)){
+  ccAuthCookie(null);
+  try{ if(window.__supa){ window.__supa.auth.signOut().then(function(){ location.replace('https://www.covercapy.com'); }); } }catch(e){ location.replace('https://www.covercapy.com'); }
+}
+
 document.addEventListener('click',function(e){
   var t=e.target.closest&&e.target.closest('[data-nav2]'); if(!t) return;
   var k=t.dataset.nav2;
