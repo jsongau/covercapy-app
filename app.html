@@ -663,7 +663,7 @@ body.sheet-open #view,body.sheet-open #topnav{filter:blur(2px) saturate(.92);tra
 <script>
 window.__CC={url:"https://hfvbeqlefwwjlrbyxpbj.supabase.co",key:"sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf",login:"./index.html"};
 window.__supa=window.supabase.createClient(__CC.url,__CC.key);
-window.__CC_BUILD='v45';
+window.__CC_BUILD='v46';
 try{ console.log('CoverCapy build', window.__CC_BUILD); }catch(e){}
 </script>
 <script>
@@ -3245,7 +3245,7 @@ function ccFindMap(){
   if(!reuse){
     try{ if(m){ m.remove(); } }catch(e){}
     m=L.map('lmap'); window.__lmap=m;
-    try{ m.attributionControl.setPrefix(false); }catch(_){ }
+    try{ m.attributionControl.remove(); }catch(_){ }
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',{maxZoom:19,subdomains:'abcd',attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(m);
     window.__lgroup=L.layerGroup().addTo(m);
     m.on('movestart',function(){ var b=document.getElementById('mapHere'); if(b) b.style.display=''; });
