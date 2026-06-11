@@ -1244,11 +1244,11 @@ function nominateSheet(name,city){
       return d.tier==='pend' && (!q || (d.name+' '+d.doc+' '+d.city).toLowerCase().indexOf(q)>-1);
     }).slice(0,4);
     $('nomResults').innerHTML = hits.length
-      ? hits.map(function(d){var hasEm=officeEmail(d.name);return '<button class="rowcard nomPick" data-nm="'+esc(d.name)+'" data-ct="'+esc(d.city)+', CA"><div class="ic">'+d.av+'</div><div class="meta"><b>'+esc(d.name)+'</b><span>'+esc(d.doc)+' &#183; '+esc(d.city)+' &#183; '+d.tag+'</span></div>'+(hasEm?'':'<span class="mini pend" style="font-size:9px">No email</span>')+'<div class="arr">&#8250;</div></button>';}).join('')
+      ? hits.map(function(d){var hasEm=officeEmail(d.name);return '<button class="rowcard nomPick" data-id="'+d.id+'" data-nm="'+esc(d.name)+'" data-ct="'+esc(d.city)+'"><div class="ic">'+d.av+'</div><div class="meta"><b>'+esc(d.name)+'</b><span>'+esc(d.doc)+' &#183; '+esc(d.city)+' &#183; '+d.tag+'</span></div>'+(hasEm?'':'<span class="mini pend" style="font-size:9px">No email</span>')+'<div class="arr">&#8250;</div></button>';}).join('')
       : '<div class="muted" style="font-size:12.5px;padding:6px 2px 10px">No directory match'+(q?' for "'+esc(q)+'"':'')+'. Add it yourself below.</div>';
     document.querySelectorAll('.nomPick').forEach(function(btn){
       btn.addEventListener('click',function(){
-        S.nomPick={name:btn.dataset.nm,city:btn.dataset.ct};
+        S.nomPick={name:btn.dataset.nm,city:btn.dataset.ct,id:btn.dataset.id};
         document.querySelectorAll('.nomPick').forEach(function(x){x.style.borderColor='var(--line)';});
         btn.style.borderColor='var(--mint)';
         showForm(btn.dataset.nm);
@@ -1258,15 +1258,28 @@ function nominateSheet(name,city){
   function submitNom(nm,ct,em2,site){
     var em=em2||officeEmail(nm)||null;
     S.nomTarget={name:nm,city:ct,email:em,website:site||null};
-    S.p.noms.push({name:nm,city:ct,stage:'received',email:em,website:site||null,nudges:{}});
-    S.nomIdx=S.p.noms.length-1; S.nomKind='intro';
-    bump(200,'d'); route();
     var chip='&#128142; +200 now &#183; +10,000 if accredited = $150 gift card';
     var line= em
       ? 'Now let '+esc(nm)+' hear it from you. We can email them at '+esc(em)+' on your behalf.'
       : 'Now let '+esc(nm)+' hear it from you. We will look up their email, or you can add one to earn extra diamonds if they claim using it.';
-    celebrate({em:'&#127775;',title:'Nomination submitted',chip:chip,body:line,
-      cta:'&#9993; Email the office',then:function(){noteSheet('intro');}});
+    function afterSave(nid){
+      S.p.noms.push({id:nid,name:nm,city:ct,stage:'received',email:em,website:site||null,nudges:{}});
+      S.nomIdx=S.p.noms.length-1; S.nomKind='intro';
+      bump(200,'d'); route();
+      celebrate({em:'&#127775;',title:'Nomination submitted',chip:chip,body:line,cta:'&#9993; Email the office',then:function(){noteSheet('intro');}});
+    }
+    if(window.__ccUID&&window.__supa){
+      var parts=(ct||'').split(','), stAbbr=(parts.length>1?parts[parts.length-1].trim():''), cityNm=(parts.length>1?parts.slice(0,-1).join(',').trim():(ct||''))||null;
+      var rec={ user_id:window.__ccUID, nominee_name:nm, nominee_city:cityNm, would_recommend:true, proof_url:site||null };
+      if(stAbbr){ rec.nominee_state=stAbbr; }
+      if(S.nomPick&&S.nomPick.id){ rec.dentist_id=S.nomPick.id; }
+      window.__supa.from('dentist_nominations').insert(rec).select('id').single().then(function(r){
+        if(r.error){ celebrate({em:'&#9888;',title:'Could not submit',body:r.error.message||'Please try again.'}); return; }
+        afterSave(r.data&&r.data.id);
+      });
+      return;
+    }
+    afterSave(null);
   }
   $('nomQ').addEventListener('input',function(){results(this.value); if(S.nomPick){S.nomPick=null; $('nomEmailWrap').classList.add('hidden'); $('nmGo').classList.add('hidden');}});
   $('nomManualBtn').addEventListener('click',function(){
@@ -1340,8 +1353,11 @@ function noteSheet(kind){
   }
   function markDone(){
     if(S.nomIdx!=null&&S.p.noms[S.nomIdx]){
-      var nd=S.p.noms[S.nomIdx].nudges=S.p.noms[S.nomIdx].nudges||{};
-      if(!nd[kind]){nd[kind]=1;bump(100,'d');}
+      var row=S.p.noms[S.nomIdx];
+      var nd=row.nudges=row.nudges||{};
+      if(!nd[kind]){ nd[kind]=1; bump(100,'d');
+        if(window.__ccUID&&window.__supa&&row.id){ var _km={intro:'interest_intro',cc_review:'covercapy_review',g_review:'google_review',y_review:'yelp_review'}; window.__supa.from('nomination_nudges').insert({nomination_id:row.id,user_id:window.__ccUID,kind:(_km[kind]||'patient_note_sent')}); }
+      }
     }
   }
   function paintLock(){
@@ -1895,6 +1911,16 @@ function ccLoadDentists(){ try{
     });
 }catch(e){ console.warn('dentists load failed', e); } }
 ccLoadDentists();
+function ccLoadNoms(){
+  if(!window.__ccUID||!window.__supa){ return; }
+  window.__supa.from('dentist_nominations').select('id,nominee_name,nominee_city,nominee_state,stage,credited,created_at,dentist_id').order('created_at',{ascending:true}).then(function(res){
+    if(res.error||!res.data){ return; }
+    var byId={};
+    S.p.noms=res.data.map(function(n){ var o={ id:n.id, dentist_id:n.dentist_id, name:n.nominee_name, city:[n.nominee_city,n.nominee_state].filter(Boolean).join(', '), stage:(n.stage==='reward_issued'?'accredited':n.stage), credited:n.credited, email:null, website:null, nudges:{} }; byId[n.id]=o; return o; });
+    if(/noms|community/.test(location.hash||'')&&typeof route==='function'){ route(); }
+    window.__supa.from('nomination_nudges').select('nomination_id,kind').then(function(r2){ if(r2&&r2.data){ r2.data.forEach(function(x){ if(byId[x.nomination_id]){ byId[x.nomination_id].nudges[x.kind]=1; } }); if(/noms|community/.test(location.hash||'')&&typeof route==='function'){ route(); } } });
+  });
+}
 /* ===== LIVE BOOT: real session + wallet ===== */
 (function bootLive(){
   var supa=window.__supa;
@@ -1921,7 +1947,7 @@ ccLoadDentists();
         blurb:'Live CoverCapy account', email:email, uid:uid };
       var g=$('gate'); if(g) g.classList.add('hidden');
       renderChrome();
-      go('home'); route();
+      go('home'); route(); window.__ccUID=uid; ccLoadNoms();
       var sw=$('switchSeat');
       if(sw){ sw.textContent='Sign out'; var sw2=sw.cloneNode(true); sw.parentNode.replaceChild(sw2,sw);
         sw2.addEventListener('click',function(){ supa.auth.signOut().then(function(){ location.replace(window.__CC.login); }); }); }
