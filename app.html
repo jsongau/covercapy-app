@@ -2349,7 +2349,22 @@ function key(e){
   else if(e.key==='Escape'){ close(); e.target.blur(); }
 }
 
+var _defaultRan=false;
+function autoDefault(){
+  /* anchor the very first Find render to the preset location, so results are
+     local with true distances instead of top-rated-anywhere */
+  if(_defaultRan || S.find.center || !window.__supa) return;
+  var q=(S.find.q||'').trim(); if(!q) return;
+  _defaultRan=true;
+  window.__supa.rpc('nav_search_suggest',{q:q.split(',')[0],max_n:3}).then(function(r){
+    var hit=((r&&r.data)||[]).filter(function(x){ return x.lat!=null&&x.lng!=null; })[0];
+    if(!hit) return;
+    S.find.center={lat:+hit.lat,lng:+hit.lng,label:hit.label};
+    refresh();
+  }).catch(function(){});
+}
 function wire(){
+  try{ autoDefault(); }catch(e){}
   var inp=document.getElementById('findQ'); if(!inp||inp._omni) return; inp._omni=1;
   inp.setAttribute('autocomplete','off');
   inp.setAttribute('placeholder','City, ZIP, office, or dentist');
