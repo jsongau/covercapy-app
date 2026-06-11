@@ -1485,7 +1485,13 @@ function addNomEmailSheet(nmrow){
    +'<div class="field"><label>Office email you found</label><input id="aneEmail" type="email" placeholder="frontdesk@office.com"></div>'
    +'<div class="field"><label>Where did you find it? <span style="font-weight:400;color:var(--slate)">(optional)</span></label><input id="aneSrc" placeholder="Their website, Google listing, front desk"></div>'
    +'<button class="btn btn-gold btn-full" id="aneGo">Submit email</button>'
+   +'<button class="btn btn-ghost btn-full" id="aneTpl" style="margin-top:8px">No email yet? View the templates anyway</button>'
    +'<div class="muted" style="font-size:11.5px;text-align:center;margin-top:12px">Our team verifies the email before anything is sent. No reward for incomplete or wrong details.</div>');
+  var _aneT=$('aneTpl'); if(_aneT) _aneT.addEventListener('click',function(){
+    closeSheet();
+    S.nomTarget={name:nmrow.name, city:nmrow.city||'', email:null, website:nmrow.website||null};
+    setTimeout(function(){ noteSheet(S.nomKind||'intro'); }, 180);
+  });
   $('aneGo').addEventListener('click',function(){
     var em=($('aneEmail').value||'').trim();
     if(em.length<5||em.indexOf('@')<1){$('aneEmail').style.borderColor='var(--gold)';return;}
@@ -1519,8 +1525,13 @@ function noteSheet(kind){
        own:{label:'Write my own',html:'Hi <b>'+office+'</b> team,<br><br><b>Write your own message here. Say what you appreciated and why you nominated them.</b>'+credit+'<br><br><b>'+first+'</b>'}};
   }
   var mode='cc', tkey=Object.keys(T)[0];
+  var _d=null; try{ _d=dentByName(t.name); }catch(e){}
+  var _ph=(_d&&_d.phone)?String(_d.phone):'';
+  var noEmailBanner = t.email ? '' :
+    '<div style="background:var(--gold-soft);color:var(--gold-deep);border-radius:14px;padding:12px 14px;font-size:12.5px;line-height:1.55;margin-bottom:12px"><b>&#128222; No email on file.</b> You can still use these templates: copy one and read it to the office over the phone'+(_ph?' at <a href="tel:'+_ph.replace(/[^0-9+]/g,'')+'" style="color:inherit;font-weight:800">'+esc(_ph)+'</a>':'')+', or ask the front desk for their email and add it here for +25 &#128142;.</div>';
   openSheet('<h3 class="serif">Email '+office+'</h3>'
    +'<div class="ssub" id="noteHint"></div>'
+   +noEmailBanner
    +'<div class="chips" id="noteTpls" style="margin-bottom:10px"></div>'
    +'<div class="note-box" id="noteBody" spellcheck="false"></div>'
    +'<div class="chips" id="noteModes" style="margin:14px 0 10px">'
@@ -1579,8 +1590,10 @@ function noteSheet(kind){
       });
     }
   }
+  if(!t.email){ mode='me'; }
   $('noteBody').innerHTML=T[tkey].html;
   paintTpls(); paintLock(); paintActs();
+  if(!t.email){ document.querySelectorAll('[data-mode]').forEach(function(x){ x.classList.toggle('on', x.dataset.mode==='me'); }); }
   document.querySelectorAll('[data-mode]').forEach(function(c){c.addEventListener('click',function(){
     mode=c.dataset.mode;
     document.querySelectorAll('[data-mode]').forEach(function(x){x.classList.toggle('on',x===c);});
@@ -1595,7 +1608,13 @@ function provideEmailSheet(d){
    +'<div class="field"><label>Office email you found</label><input id="peEmail" type="email" placeholder="frontdesk@office.com"></div>'
    +'<div class="field"><label>Where did you find it? <span style="font-weight:400;color:var(--slate)">(optional)</span></label><input id="peSrc" placeholder="Their website, Google listing, front desk"></div>'
    +'<button class="btn btn-gold btn-full" id="peGo">Submit email and request verification</button>'
+   +'<button class="btn btn-ghost btn-full" id="peTpl" style="margin-top:8px">No email yet? View the templates anyway</button>'
    +'<div class="muted" style="font-size:11.5px;text-align:center;margin-top:12px">Our team confirms the office and the email before anything is sent. No reward for incomplete or wrong details.</div>');
+  var _peT=$('peTpl'); if(_peT) _peT.addEventListener('click',function(){
+    closeSheet();
+    S.nomTarget={name:d.name, city:d.city||'', email:null, website:d.website||null};
+    setTimeout(function(){ noteSheet('intro'); }, 180);
+  });
   $('peGo').addEventListener('click',function(){
     var em=($('peEmail').value||'').trim();
     if(em.length<5||em.indexOf('@')<1){$('peEmail').style.borderColor='var(--gold)';return;}
