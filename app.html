@@ -220,6 +220,30 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .dchip2{flex:none;border:1.5px solid var(--line);background:var(--paper);border-radius:999px;padding:8px 14px;font-size:12.5px;font-weight:700;cursor:pointer;color:var(--ink);transition:.15s;white-space:nowrap}
 .dchip2:hover{border-color:var(--gold)}
 .dchip2.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.bellbtn{position:relative;padding:7px 11px!important}
+.bellbadge{position:absolute;top:1px;right:1px;background:var(--gold);color:#fff;font-size:9px;font-weight:800;border-radius:999px;min-width:15px;height:15px;display:grid;place-items:center;padding:0 3px}
+.avbtn{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--line);background:var(--mint-soft);color:var(--mint-deep);font-weight:800;font-size:13px;cursor:pointer;flex:none}
+.avbtn:hover{border-color:var(--mint)}
+.stagebar{display:flex;align-items:center;gap:0;margin:12px 0 2px}
+.stagebar .sg{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;position:relative}
+.stagebar .sg::before{content:"";position:absolute;top:6px;left:-50%;width:100%;height:2px;background:var(--line)}
+.stagebar .sg:first-child::before{display:none}
+.stagebar .sg.done::before{background:var(--mint)}
+.stagebar .sg i{width:13px;height:13px;border-radius:50%;background:var(--paper);border:2.5px solid var(--line);z-index:1}
+.stagebar .sg.done i{background:var(--mint);border-color:var(--mint)}
+.stagebar .sg.now i{border-color:var(--gold);background:var(--gold-soft)}
+.stagebar .sg span{font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--slate);white-space:nowrap}
+.stagebar .sg.done span,.stagebar .sg.now span{color:var(--ink)}
+.inbrow{display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border-radius:14px;border:1.5px solid var(--line);background:var(--paper);margin-bottom:9px}
+.inbrow.unread{border-color:var(--gold);background:var(--gold-soft)}
+.inbrow .ii{flex:none;width:34px;height:34px;border-radius:11px;background:var(--cream);display:grid;place-items:center;font-size:15px}
+.inbrow .it{flex:1;min-width:0}
+.inbrow .it b{font-size:13.5px;display:block}
+.inbrow .it span{font-size:12px;color:var(--slate);line-height:1.45;display:block;margin-top:2px}
+.inbrow .when{flex:none;font-size:10.5px;color:var(--slate);font-weight:600}
+.npgrid{display:grid;grid-template-columns:1fr auto auto;gap:8px 14px;align-items:center;font-size:13px}
+.npgrid .nph{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--slate)}
+.npgrid input[type=checkbox]{width:17px;height:17px;accent-color:var(--ink)}
 .find-grid.view-list{grid-template-columns:1fr}
 .find-grid.view-list .mapwrap{display:none}
 .find-grid.view-map{grid-template-columns:1fr}
@@ -675,7 +699,7 @@ var DNAV=[['ddash','Dashboard','&#9737;'],['demand','Demand','&#9650;'],['patien
 function renderChrome(){
   var nav=S.role==='patient'?PNAV:DNAV;
   var right = S.role==='patient'
-    ? '<div class="crown-chip">&#128081; <span id="crownTop">0</span></div><div class="crown-chip dchip" style="color:var(--mint-deep)" title="Diamond Crowns"><span class="dgem">&#128142;</span> <span id="diamondTop">0</span></div><button class="btn btn-ink btn-sm" data-cc="open">Ask concierge</button><button class="btn btn-ghost btn-sm" data-act="settings" aria-label="Profile and settings" style="padding:7px 11px">&#9881;</button>'
+    ? '<div class="crown-chip">&#128081; <span id="crownTop">0</span></div><div class="crown-chip dchip" style="color:var(--mint-deep)" title="Diamond Crowns"><span class="dgem">&#128142;</span> <span id="diamondTop">0</span></div><button class="btn btn-ink btn-sm" data-cc="open">Ask concierge</button><button class="btn btn-ghost btn-sm bellbtn" data-nav2="inbox" aria-label="Notifications">&#128276;<span id="bellBadge" class="bellbadge" hidden>0</span></button><button class="avbtn" data-nav2="menu" aria-label="Account menu">'+((S.p&&S.p.init)||'&#129441;')+'</button>'
     : '<span class="tierpill" id="dTierPill"></span><select id="dTierSel" style="border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12px;font-weight:700;background:var(--paper)"><option value="unclaimed">Demo: Unclaimed</option><option value="free">Demo: Claimed free</option><option value="accredited" selected>Demo: Capy Accredited</option><option value="platinum">Demo: Platinum Elite</option></select>';
   $('topnav').innerHTML='<div class="tn-in"><div class="tn-logo"><div class="lm">&#129441;</div>CoverCapy'+(S.role==='dentist'?' <span class="muted" style="font-family:var(--fb);font-size:12px;font-weight:600">&#183; Practice portal</span>':'')+'</div>'
     +'<nav class="tn-links">'+nav.map(function(n){return '<a data-go="'+n[0]+'">'+n[1]+'</a>';}).join('')+'</nav>'
@@ -1002,11 +1026,12 @@ function vNoms(){
         return '<div class="lrow '+(done?'hit':'')+'"><div class="lk">'+(done?'&#10003;':st[1])+'</div><div class="lt"><b>'+st[2]+'</b><span>'+st[3]+'</span></div><button class="btn '+(done?'btn-ghost':'btn-gold')+' btn-sm" data-nudge="'+i+'|'+st[0]+'">'+(done?'Send again':'Send')+'</button></div>';
       }).join('');
   }
-  return '<div class="page"><button class="btn btn-ghost btn-sm" data-go="community" style="margin-bottom:14px">&#8592; Community</button><div class="phead"><div class="eyebrow">Nominations</div><h1>Offices you are bringing in</h1><div class="guide">Every accredited office started with a patient who vouched for them. Keep yours moving with the ladder below; the office credits one nomination when it joins, so make yours the one they remember.</div></div>'
+  return '<div class="page"><button class="btn btn-ghost btn-sm" data-go="community" style="margin-bottom:14px">&#8592; Community</button><div class="phead"><div class="eyebrow">My Offices</div><h1>Offices you are bringing in</h1><div class="guide">Every accredited office started with a patient who vouched for them. Keep yours moving with the ladder below; the office credits one nomination when it joins, so make yours the one they remember.</div></div>'
   +'<div class="cols2"><div class="stack">'
   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:12px">Your list</div>'
   +(p.noms.length? p.noms.map(function(nm,i){
       return '<div class="card pad" style="box-shadow:none;margin-bottom:12px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center"><div><b style="font-size:15px">'+esc(nm.name)+'</b><div class="muted" style="font-size:12.5px">'+esc(nm.city)+(nm.website?' &#183; '+esc(nm.website):'')+'</div></div>'+nomStagePill(nm.stage)+'</div>'
+       +(typeof stageBarHTML==='function'?stageBarHTML(nm.stage):'')
        +'<div class="chiprow" style="margin-top:10px">'+(nm.email?'<span class="mini lang">&#9993; '+esc(nm.email)+'</span>':'<button class="mini pend" style="cursor:pointer;border:none" data-addnomemail="'+i+'">&#9993; Add office email &#183; +25 &#128142;</button>')+'</div>'
        +(nm.stage!=='accredited'?stratBlock(nm,i):'<div class="okpill" style="margin-top:12px">&#127942; This office joined and credited your nomination</div>')+'</div>';
     }).join('')
@@ -2557,6 +2582,208 @@ window.dcardHTML=function(d){
 var _after=afterRender;
 window.afterRender=function(id){ _after(id); if(id==='find'){ try{ wire(); }catch(e){} try{ ccFindPaginate(); }catch(e){} try{ ccFindMap(); }catch(e){} try{ ccRegionChips(); }catch(e){} } };
 if(S && S.find && !('center' in S.find)) S.find.center=null;
+})();
+</script>
+
+<script>
+/* ============================================================
+   V30 Phase 2: Profile, Settings, Notification Center, My
+   Offices pipeline, avatar account menu. Additive layer.
+   ============================================================ */
+(function(){
+if(typeof VIEWS==='undefined') return;
+
+/* ---- shared helpers ---- */
+function nrm(x){ return String(x==null?'':x).toLowerCase().trim(); }
+function ago(ts){ try{ var d=(Date.now()-new Date(ts).getTime())/1000;
+  if(d<3600) return Math.max(1,Math.round(d/60))+'m';
+  if(d<86400) return Math.round(d/3600)+'h';
+  return Math.round(d/86400)+'d'; }catch(e){ return ''; } }
+window.stageBarHTML=function(stage){
+  var steps=['Nominated','Contacted','Claimed','Verified','Member'];
+  var idx={received:0,nominated:0,contacted:1,interested:1,claimed:2,verified:3,accredited:4,member:4,reward_issued:4}[nrm(stage)]||0;
+  return '<div class="stagebar">'+steps.map(function(st,i){
+    return '<div class="sg '+(i<idx?'done':i===idx?'now':'')+'"><i></i><span>'+st+'</span></div>';
+  }).join('')+'</div>';
+};
+
+/* ---- data: feed, favorites, prefs ---- */
+var FEED=[], FAVS=[], PREFS={};
+function unread(){ return FEED.filter(function(f){ return !f.read_at; }).length; }
+function paintBell(){ var b=document.getElementById('bellBadge'); if(!b) return; var n=unread(); b.hidden=!n; b.textContent=n>9?'9+':n; }
+function loadExtras(){
+  if(!window.__ccUID||!window.__supa) return;
+  window.__supa.from('activity_feed').select('id,kind,title,body,crowns_delta,read_at,created_at').order('created_at',{ascending:false}).limit(30)
+    .then(function(r){ if(r&&r.data){ FEED=r.data; paintBell(); if(/inbox/.test(location.hash)) route(); } });
+  window.__supa.from('reward_wallets').select('network_status').eq('user_id',window.__ccUID).maybeSingle()
+    .then(function(r){ if(r&&r.data&&S.p){ S.p.networkStatus=r.data.network_status||'member'; } });
+  window.__supa.from('user_profiles').select('prefs').eq('user_id',window.__ccUID).maybeSingle()
+    .then(function(r){ if(r&&r.data&&r.data.prefs){ PREFS=r.data.prefs||{};
+      if(PREFS.radius && !prefHasFind()){ S.find.within=+PREFS.radius; } } });
+  window.__supa.from('saved_dentists').select('dentist_id,created_at').then(function(r){
+    var ids=((r&&r.data)||[]).map(function(x){ return x.dentist_id; }).filter(Boolean);
+    if(!ids.length) return;
+    window.__supa.from('dentists').select('id,practice_name,city,state,membership_tier,weighted_rating').in('id',ids.slice(0,12))
+      .then(function(r2){ if(r2&&r2.data){ FAVS=r2.data; if(/profile/.test(location.hash)) route(); } });
+  });
+}
+function prefHasFind(){ try{ return !!JSON.parse(localStorage.getItem('cc_find_pref')||'null'); }catch(e){ return false; } }
+(function waitBoot(n){ if(window.__ccUID){ loadExtras(); } else if(n<40){ setTimeout(function(){ waitBoot(n+1); },500); } })(0);
+
+/* ---- notification categories ---- */
+var NCATS=[
+  ['coverage','Coverage & PPO','Verification, activation, renewal, expiring plans'],
+  ['care','Appointments & treatment','Bookings, reminders, follow-ups'],
+  ['concierge','Concierge messages','Replies from your concierge'],
+  ['offices','My Offices progress','Your nominated offices moving through the pipeline'],
+  ['rewards','Rewards & status','Crowns, Diamond Crowns, level and honors'],
+  ['product','Product updates','New PPO plans, mobile app waitlist']
+];
+
+/* ---- PROFILE ---- */
+function vProfile(){
+  var p=S.p||{};
+  var loc=[p.city,p.state].filter(Boolean).join(', ')||(p.zip?('ZIP '+p.zip):'Add your location');
+  var cov=''; try{ cov=INS.summary(p).head; }catch(e){ cov='No coverage yet'; }
+  var ns=(p.networkStatus||'member');
+  var tierNames={sprout:'Sprout',sapling:'Sapling',oak:'Oak',sequoia:'Sequoia'};
+  return '<div class="page"><div class="phead"><div class="eyebrow">Account</div><h1>'+esc(p.name||'Your profile')+'</h1><div class="guide">Your coverage, contributions, and standing in the network.</div></div>'
+  +'<div class="cols2"><div class="stack">'
+  +'<div class="card pad"><div style="display:flex;gap:14px;align-items:center;margin-bottom:14px"><div style="width:62px;height:62px;border-radius:50%;background:'+(p.avbg||'var(--mint-soft)')+';color:'+(p.avc||'var(--mint-deep)')+';display:grid;place-items:center;font-weight:800;font-size:20px">'+esc(p.init||'')+'</div>'
+   +'<div><b style="font-size:17px">'+esc(p.name||'')+'</b><div class="muted" style="font-size:12.5px">'+esc(p.email||'')+'</div><div class="muted" style="font-size:12.5px">&#128205; '+esc(loc)+'</div></div></div>'
+   +'<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ink btn-sm" data-go="settings">Edit profile &amp; settings</button><button class="btn btn-ghost btn-sm" data-go="inbox">Notifications'+(unread()?' ('+unread()+')':'')+'</button></div></div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Standing</div>'
+   +'<div class="stat-grid" style="grid-template-columns:repeat(2,1fr)">'
+   +'<div class="stat"><b>&#128081; '+(p.crowns||0).toLocaleString('en-US')+'</b><span>Capy Crowns</span></div>'
+   +'<div class="stat"><b>&#128142; '+(p.diamonds||0).toLocaleString('en-US')+'</b><span>Diamond Crowns</span></div>'
+   +'<div class="stat"><b>'+(tierNames[p.tier]||'Sprout')+'</b><span>Contribution level</span></div>'
+   +'<div class="stat"><b>'+(ns==='founder_circle'?'Founder Circle':ns==='builder'?'Builder':'Member')+'</b><span>Network honors</span></div>'
+   +'</div></div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">Coverage</div><div class="serif" style="font-size:16px;margin-bottom:6px">'+esc(cov)+'</div><button class="btn btn-ghost btn-sm" data-go="coverage">Open coverage wallet</button></div>'
+  +'</div><div class="stack">'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Network contributions</div>'
+   +'<div class="stat-grid" style="grid-template-columns:repeat(2,1fr)"><div class="stat"><b>'+((p.noms||[]).length)+'</b><span>Offices nominated</span></div><div class="stat"><b>'+((p.noms||[]).filter(function(n){return /accredited|member|reward/.test(nrm(n.stage));}).length)+'</b><span>Offices joined</span></div></div>'
+   +'<button class="btn btn-gold btn-sm" data-go="noms" style="margin-top:10px">Open My Offices</button></div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Favorite offices</div>'
+   +(FAVS.length?FAVS.slice(0,4).map(function(d){return '<div class="lrow"><div class="lk">&#129463;</div><div class="lt"><b>'+esc(d.practice_name||'Office')+'</b><span>'+esc([d.city,d.state].filter(Boolean).join(', '))+(d.weighted_rating?' &#183; &#9733; '+(Math.round(d.weighted_rating*10)/10):'')+'</span></div></div>';}).join('')
+     :'<div class="muted" style="font-size:13px;margin-bottom:10px">No favorites yet. Save offices from Find a Dentist to keep them here.</div>')
+   +'<button class="btn btn-ghost btn-sm" data-go="find" style="margin-top:4px">Find a dentist</button></div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Recent activity</div>'
+   +(FEED.length?FEED.slice(0,5).map(function(f){return '<div class="lrow"><div class="lk">'+(f.crowns_delta?'&#128081;':'&#128276;')+'</div><div class="lt"><b>'+esc(f.title||f.kind||'Update')+'</b><span>'+esc((f.body||'').slice(0,90))+'</span></div><div class="amt" style="color:var(--slate);font-size:10.5px">'+ago(f.created_at)+'</div></div>';}).join('')
+     :'<div class="muted" style="font-size:13px">Your coverage, rewards, and office updates will land here.</div>')
+   +'</div>'
+  +'</div></div></div>';
+}
+
+/* ---- SETTINGS ---- */
+function npChecked(cat,ch){ var n=(PREFS.notif||{})[cat]; if(!n) return true; return n[ch]!==false; }
+function vSettings(){
+  var p=S.p||{};
+  return '<div class="page"><button class="btn btn-ghost btn-sm" data-go="profile" style="margin-bottom:14px">&#8592; Profile</button>'
+  +'<div class="phead"><div class="eyebrow">Account</div><h1>Settings</h1><div class="guide">Your details, search preferences, and how CoverCapy reaches you.</div></div>'
+  +'<div class="cols2"><div class="stack">'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:12px">Your details</div>'
+   +'<div class="field"><label>Full name</label><input id="sgName" value="'+esc(p.name||'')+'"></div>'
+   +'<div class="field"><label>Email</label><input value="'+esc(p.email||'')+'" disabled style="opacity:.6"></div>'
+   +'<div class="field"><label>Street address</label><input id="sgAddr" value="'+esc(p.address||'')+'" placeholder="123 Main St"></div>'
+   +'<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px">'
+    +'<div class="field"><label>City</label><input id="sgCity" value="'+esc(p.city||'')+'"></div>'
+    +'<div class="field"><label>State</label><input id="sgState" maxlength="2" value="'+esc(p.state||'')+'"></div>'
+    +'<div class="field"><label>ZIP</label><input id="sgZip" inputmode="numeric" maxlength="5" value="'+esc(p.zip||'')+'"></div></div>'
+  +'</div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:12px">Search preferences</div>'
+   +'<div class="field"><label>Preferred search radius</label><select id="sgRad">'+[5,8,15,25,30,50].map(function(r){return '<option value="'+r+'"'+(+(PREFS.radius||S.find.within||25)===r?' selected':'')+'>'+r+' miles</option>';}).join('')+'</select></div>'
+   +'<div class="field"><label>Preferred language</label><select id="sgLang">'+['English','Spanish','Mandarin','Cantonese','Korean','Vietnamese','Tagalog'].map(function(l){return '<option'+(((PREFS.language||'English')===l)?' selected':'')+'>'+l+'</option>';}).join('')+'</select></div>'
+  +'</div>'
+  +'</div><div class="stack">'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:4px">Notifications</div><div class="muted" style="font-size:12px;margin-bottom:12px">Choose how we reach you, per category. SMS and push arrive with the mobile app.</div>'
+   +'<div class="npgrid"><span></span><span class="nph">In-app</span><span class="nph">Email</span>'
+   +NCATS.map(function(c){
+     return '<div><b style="font-size:13px">'+c[1]+'</b><div class="muted" style="font-size:11px">'+c[2]+'</div></div>'
+      +'<input type="checkbox" data-np="'+c[0]+'|inapp" '+(npChecked(c[0],'inapp')?'checked':'')+'>'
+      +'<input type="checkbox" data-np="'+c[0]+'|email" '+(npChecked(c[0],'email')?'checked':'')+'>';
+   }).join('')+'</div></div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">Privacy &amp; account</div>'
+   +'<div class="muted" style="font-size:12.5px;line-height:1.55;margin-bottom:12px">Your coverage details are shared only with offices you book or verify with. We never sell personal data. Password and 2FA management arrive with the next auth update; today you sign in by email or Google.</div>'
+   +'<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" id="sgOut">Sign out</button><a class="btn btn-ghost btn-sm" style="color:#9b3b2e" href="mailto:hello@covercapy.com?subject=Delete%20my%20CoverCapy%20account">Request account deletion</a></div></div>'
+  +'<button class="btn btn-ink btn-full" id="sgSave">Save settings</button>'
+  +'<div class="muted" id="sgMsg" style="font-size:12px;text-align:center"></div>'
+  +'</div></div></div>';
+}
+function saveSettings(){
+  var v=function(id){ var el=document.getElementById(id); return el?el.value.trim():''; };
+  var zip=v('sgZip');
+  if(zip && !/^\d{5}$/.test(zip)){ var z=document.getElementById('sgZip'); if(z) z.style.borderColor='var(--gold)'; return; }
+  var notif={};
+  document.querySelectorAll('[data-np]').forEach(function(cb){
+    var pa=cb.dataset.np.split('|'); notif[pa[0]]=notif[pa[0]]||{}; notif[pa[0]][pa[1]]=cb.checked;
+  });
+  PREFS={radius:+v('sgRad')||25, language:v('sgLang')||'English', notif:notif};
+  S.p.name=v('sgName')||S.p.name; S.p.first=S.p.name.split(/\s+/)[0]; S.p.init=(typeof initials==='function'?initials(S.p.name):S.p.init);
+  S.p.address=v('sgAddr'); S.p.city=v('sgCity'); S.p.state=v('sgState').toUpperCase(); S.p.zip=zip;
+  S.find.within=PREFS.radius;
+  var msg=document.getElementById('sgMsg');
+  if(window.__ccUID&&window.__supa){
+    window.__supa.from('user_profiles').upsert({user_id:window.__ccUID, display_name:(S.p.name||null), address:(S.p.address||null), city:(S.p.city||null), state:(S.p.state||null), zip_code:(zip||null), prefs:PREFS},{onConflict:'user_id'})
+      .then(function(r){ if(msg) msg.textContent=r.error?('Could not save: '+r.error.message):'Saved.'; if(!r.error){ try{ renderChrome(); setActive('home'); }catch(e){} } });
+  } else { if(msg) msg.textContent='Saved for this session (demo mode).'; }
+}
+
+/* ---- NOTIFICATION CENTER ---- */
+var KIND_ICON={reward:'&#128081;',crowns:'&#128081;',coverage:'&#128737;',plan:'&#128737;',appointment:'&#128197;',visit:'&#128197;',concierge:'&#128172;',nomination:'&#11088;',office:'&#127968;',status:'&#127942;'};
+function vInbox(){
+  var rows=FEED;
+  return '<div class="page"><button class="btn btn-ghost btn-sm" data-go="profile" style="margin-bottom:14px">&#8592; Profile</button>'
+  +'<div class="phead" style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><div class="eyebrow">Notifications</div><h1>Your updates</h1><div class="guide">Coverage, rewards, concierge, and your offices, all in one place.</div></div>'
+  +(unread()?'<button class="btn btn-ghost btn-sm" id="inbRead">Mark all read</button>':'')+'</div>'
+  +(rows.length?rows.map(function(f){
+      var ic=KIND_ICON[nrm(f.kind)]||(f.crowns_delta?'&#128081;':'&#128276;');
+      return '<div class="inbrow'+(f.read_at?'':' unread')+'"><div class="ii">'+ic+'</div><div class="it"><b>'+esc(f.title||f.kind||'Update')+'</b><span>'+esc(f.body||'')+(f.crowns_delta?' ('+(f.crowns_delta>0?'+':'')+f.crowns_delta+' &#128081;)':'')+'</span></div><div class="when">'+ago(f.created_at)+'</div></div>';
+    }).join('')
+    :'<div class="card pad" style="text-align:center"><div style="font-size:30px;margin-bottom:8px">&#128276;</div><b>Nothing yet.</b><div class="muted" style="font-size:13px;margin-top:4px">Verify coverage, nominate an office, or book a visit, and your updates will land here.</div><div style="display:flex;gap:8px;justify-content:center;margin-top:12px"><button class="btn btn-ink btn-sm" data-go="coverage">Activate coverage</button><button class="btn btn-gold btn-sm" data-go="noms">Nominate an office</button></div></div>')
+  +'<div class="muted" style="font-size:11.5px;text-align:center;margin-top:14px">Manage what reaches you in <a href="#" data-go="settings" style="color:var(--ink)">notification settings</a>.</div></div>';
+}
+function markAllRead(){
+  FEED.forEach(function(f){ if(!f.read_at) f.read_at=new Date().toISOString(); });
+  paintBell(); try{ route(); }catch(e){}
+  if(window.__ccUID&&window.__supa){ window.__supa.from('activity_feed').update({read_at:new Date().toISOString()}).is('read_at',null).then(function(){}); }
+}
+
+/* ---- register routes + wiring ---- */
+VIEWS.profile=vProfile; VIEWS.settings=vSettings; VIEWS.inbox=vInbox;
+var _after2=afterRender;
+window.afterRender=function(id){
+  _after2(id);
+  if(id==='settings'){
+    var sv=document.getElementById('sgSave'); if(sv) sv.addEventListener('click',saveSettings);
+    var so=document.getElementById('sgOut'); if(so) so.addEventListener('click',function(){
+      if(window.__ccUID&&window.__supa){ window.__supa.auth.signOut().then(function(){ location.href=window.__CC.login; }); } else { location.href=window.__CC.login; }
+    });
+  }
+  if(id==='inbox'){
+    var mr=document.getElementById('inbRead'); if(mr) mr.addEventListener('click',markAllRead);
+    paintBell();
+  }
+  if(id==='profile'){ paintBell(); }
+};
+document.addEventListener('click',function(e){
+  var t=e.target.closest&&e.target.closest('[data-nav2]'); if(!t) return;
+  var k=t.dataset.nav2;
+  if(k==='inbox'){ go('inbox'); return; }
+  if(k==='menu'){
+    openSheet('<h3 class="serif">Your account</h3><div class="ssub">'+esc((S.p&&S.p.email)||'')+'</div>'
+      +'<button class="rowcard" data-go="profile"><div class="ic">&#129441;</div><div class="meta"><b>Profile</b><span>Standing, contributions, favorites</span></div><div class="arr">&#8250;</div></button>'
+      +'<button class="rowcard" data-go="settings"><div class="ic">&#9881;</div><div class="meta"><b>Settings</b><span>Details, preferences, notifications</span></div><div class="arr">&#8250;</div></button>'
+      +'<button class="rowcard" data-go="inbox"><div class="ic">&#128276;</div><div class="meta"><b>Notifications</b><span>'+(unread()?unread()+' unread':'All caught up')+'</span></div><div class="arr">&#8250;</div></button>'
+      +'<button class="rowcard" data-go="noms"><div class="ic">&#127968;</div><div class="meta"><b>My Offices</b><span>Every office you are helping join</span></div><div class="arr">&#8250;</div></button>'
+      +'<a class="rowcard" href="https://www.covercapy.com" style="text-decoration:none;color:inherit"><div class="ic">&#127758;</div><div class="meta"><b>Main site</b><span>covercapy.com</span></div><div class="arr">&#8250;</div></a>');
+  }
+});
+/* sheet menu rows: data-go inside sheets should close the sheet first */
+document.addEventListener('click',function(e){
+  var t=e.target.closest&&e.target.closest('#sheet [data-go]'); if(!t) return;
+  try{ closeSheet(); }catch(_){}
+});
 })();
 </script>
 </body>
