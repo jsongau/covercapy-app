@@ -906,7 +906,7 @@ function vFind(){
   function topt(){return '<option value="">Any reason</option>'+DEMO_DATA.treatmentOptions.map(function(t){return '<option value="'+t+'"'+(F.treatment===t?' selected':'')+'>'+t+'</option>';}).join('');}
   function popt(){var mine=INS.primary(S.p);var opts='<option value="">Any PPO</option>'+DEMO_DATA.ppoOptions.map(function(c){return '<option value="'+c+'"'+(F.ppo===c?' selected':'')+'>'+c+(mine&&mine.carrier===c?' (yours)':'')+'</option>';}).join('');return opts;}
   function ropt(){var opts=[[0,'Any rating'],[4,'4.0+'],[4.5,'4.5+'],[4.8,'4.8+']];return opts.map(function(o){return '<option value="'+o[0]+'"'+(F.minRating===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join('');}
-  var view=F.view||'rec';
+  var view=F.view||'split';
   function vbtn(v,lbl){return '<button class="btn '+(view===v?'btn-ink':'btn-ghost')+' btn-sm" data-view="'+v+'">'+lbl+'</button>';}
   var pr=null; try{ pr=INS.primary(S.p); }catch(e){}
   var hr=new Date().getHours(), greet=hr<12?'Good morning':hr<18?'Good afternoon':'Good evening';
@@ -918,7 +918,12 @@ function vFind(){
     ? '<div class="insstrip">&#128737; <b>'+esc(pr.carrier)+' PPO active</b>'+(pr.remaining?' &#183; $'+pr.remaining.toLocaleString('en-US')+' of your annual maximum left':'')+'<button class="btn btn-mint btn-sm" data-insgo="1">Find offices that accept '+esc(pr.carrier)+'</button></div>'
     : '<div class="insstrip noppo"><div><b>You currently have no PPO coverage.</b><div class="muted" style="font-size:12.5px;margin-top:2px">Most patients save more after activating a PPO plan; your dentist sees verified benefits when you book.</div></div><div style="display:flex;gap:8px;flex:none"><button class="btn btn-gold btn-sm" data-act="shop">Compare PPO plans</button><button class="btn btn-ghost btn-sm" data-cc="open">Ask concierge</button></div></div>';
   var body='';
-  if(view==='rec'){
+  if(view==='split'){
+    body='<div class="find-grid view-split"><div id="findList">'
+      +'<div class="muted" style="font-size:13px;margin-bottom:12px">'+list.length+' offices &#183; sorted by recommended</div>'
+      +(list.length?list.map(dcardHTML).join(''):'<div class="card pad" style="text-align:center"><div style="font-size:30px;margin-bottom:8px">&#129441;</div><b>No offices match those filters.</b><div class="muted" style="font-size:13px;margin-top:4px">Loosen a filter, widen the radius, or ask your concierge.</div></div>')
+      +'</div><div class="mapwrap show" id="mapwrap"><div id="lmap"></div><button class="btn btn-ink btn-sm fs-here" id="mapHere" onclick="ccFindHere()" style="display:none">&#8635; Search this area</button></div></div>';
+  } else if(view==='rec'){
     body=(typeof ccShelvesHTML==='function'?ccShelvesHTML(list):'')
       +'<div class="card pad" style="display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap;margin-top:8px"><div><b>Need help deciding?</b><div class="muted" style="font-size:12.5px;margin-top:2px">Tell your concierge what you need and get a shortlist that fits your plan.</div></div><button class="btn btn-ink btn-sm" data-cc="open">Ask concierge</button></div>';
   } else if(view==='list'){
@@ -942,7 +947,7 @@ function vFind(){
   +'</div>'
   +'<div class="fhead">'
    +'<div class="chips" style="margin-bottom:0">'+chip('weekends','Open weekends')+chip('offer','Has an offer or reward')+chip('acceptingNew','Accepting new patients')+chip('onlineBooking','Online booking')+chip('english','English')+chip('spanish','Spanish')+'</div>'
-   +'<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><select class="sortsel" id="findRating">'+ropt()+'</select><div class="map-toggle">'+vbtn('rec','For you')+vbtn('list','Browse')+vbtn('map','Map')+vbtn('grid','Grid')+'</div></div>'
+   +'<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><select class="sortsel" id="findRating">'+ropt()+'</select><div class="map-toggle">'+vbtn('split','List + Map')+vbtn('rec','For you')+vbtn('list','Browse')+vbtn('map','Map')+vbtn('grid','Grid')+'</div></div>'
   +'</div>'
   +'<div class="discover">'+[
      ['bestppo','&#128737;','Best PPO match'],['weekends','&#127774;','Open weekends'],['nominated','&#11088;','Most nominated'],
@@ -1484,25 +1489,32 @@ function nominateSheet(name,city){
     });
   }
   function submitNom(nm,ct,em2,site){
+    /* the email IS the nomination: pick an intent template first, then the
+       nomination is recorded when you send (or choose to skip the email) */
     var em=em2||officeEmail(nm)||null;
     S.nomTarget={name:nm,city:ct,email:em,website:site||null};
-    var chip='&#128142; +10 now &#183; +50 contacted &#183; +250 claimed &#183; +500 verified &#183; +10,000 if they join = $150 gift card';
-    var line= em
-      ? 'Now let '+esc(nm)+' hear it from you. We can email them at '+esc(em)+' on your behalf.'
-      : 'Now let '+esc(nm)+' hear it from you. We will look up their email, or you can add one to earn extra Diamond Crowns if they claim using it.';
+    S.nomPending={nm:nm,ct:ct,em:em,site:site||null,pickId:(S.nomPick&&S.nomPick.id)||null};
+    closeSheet();
+    setTimeout(function(){ noteSheet('intro'); },170);
+  }
+  window.ccNomInsert=function(cb){
+    var p=S.nomPending; if(!p){ if(cb) cb(null); return; }
+    var nm=p.nm, ct=p.ct;
     function afterSave(nid){
-      S.p.noms.push({id:nid,name:nm,city:ct,stage:'received',email:em,website:site||null,nudges:{}});
+      S.nomPending=null;
+      S.p.noms.push({id:nid,name:nm,city:ct,stage:'received',email:p.em,website:p.site,nudges:{}});
       S.nomIdx=S.p.noms.length-1; S.nomKind='intro';
-      bump(10,'d'); route();
-      celebrate({em:'&#127775;',title:'Nomination submitted',chip:chip,body:line,cta:'&#9993; Email the office',then:function(){noteSheet('intro');}});
+      bump(10,'d');
+      if(cb) cb(nid);
     }
     if(window.__ccUID&&window.__supa){
       var parts=(ct||'').split(','), stAbbr=(parts.length>1?parts[parts.length-1].trim():''), cityNm=(parts.length>1?parts.slice(0,-1).join(',').trim():(ct||''))||null;
-      var rec={ user_id:window.__ccUID, nominee_name:nm, nominee_city:cityNm, would_recommend:true, proof_url:site||null };
+      var rec={ user_id:window.__ccUID, nominee_name:nm, nominee_city:cityNm, would_recommend:true, proof_url:p.site||null };
       if(stAbbr){ rec.nominee_state=stAbbr; }
-      if(S.nomPick&&S.nomPick.id){ rec.dentist_id=S.nomPick.id; }
+      if(p.pickId){ rec.dentist_id=p.pickId; }
       window.__supa.from('dentist_nominations').insert(rec).select('id').single().then(function(r){
         if(r.error){
+          S.nomPending=null; closeSheet();
           var dup=/nomination_unique_user_office|duplicate key/i.test(r.error.message||'');
           var lim=/nomination limit/i.test(r.error.message||'');
           celebrate(dup
@@ -1516,7 +1528,7 @@ function nominateSheet(name,city){
       return;
     }
     afterSave(null);
-  }
+  };
   $('nomQ').addEventListener('input',function(){results(this.value); if(S.nomPick){S.nomPick=null; $('nomEmailWrap').classList.add('hidden'); $('nmGo').classList.add('hidden');}});
   $('nomManualBtn').addEventListener('click',function(){
     $('nomManual').classList.remove('hidden');
@@ -1573,17 +1585,20 @@ function noteSheet(kind){
     T={review:{label:'Review follow up',html:'Hi <b>'+office+'</b> team,<br><br>I just left you a <b>review on Yelp</b> so more people hear what my visit was like.<br><br>I have also nominated your office for Capy Accreditation on CoverCapy, where my <b>'+carrier+'</b> coverage is verified. I would love to see you in the network.'+credit+'<br><br><b>'+first+'</b>'},
        own:{label:'Write my own',html:'Hi <b>'+office+'</b> team,<br><br><b>Tell them about your Yelp review and why you nominated them.</b>'+credit+'<br><br><b>'+first+'</b>'}};
   } else {
-    T={research:{label:'Did my research',html:'Hi <b>'+office+'</b> team,<br><br>I found your office on CoverCapy and did my research, and I would like to come in as a patient with my verified <b>'+carrier+'</b> coverage.<br><br>I also nominated your office for Capy Accreditation. Joining the network makes booking and benefits easier for patients like me, and claiming your profile is free.'+credit+'<br><br>Hope to see you soon.<br><br><b>'+first+'</b>'},
+    T={research:{label:'I want to become a patient',html:'Hi <b>'+office+'</b> team,<br><br>I found your office on CoverCapy and did my research, and I would like to come in as a patient with my verified <b>'+carrier+'</b> coverage.<br><br>I also nominated your office for Capy Accreditation. Joining the network makes booking and benefits easier for patients like me, and claiming your profile is free.'+credit+'<br><br>Hope to see you soon.<br><br><b>'+first+'</b>'},
+       loyal:{label:'I loved my past visits',html:'Hi <b>'+office+'</b> team,<br><br>You have taken great care of me, so I nominated your office for Capy Accreditation on CoverCapy. My <b>'+carrier+'</b> coverage is verified there, which makes my visits easier, and joining helps more patients like me find you.'+credit+'<br><br>Thank you for everything,<br><b>'+first+'</b>'},
+       refer:{label:'Refer friends &amp; family',html:'Hi <b>'+office+'</b> team,<br><br>I keep recommending your office to my friends and family, so I nominated you for <b>Capy Accreditation</b> on CoverCapy.<br><br>I am hoping you join soon: once you are accredited, the people I send your way can activate <b>individual PPO insurance</b> through CoverCapy, show up with verified benefits, and be referred straight to your office. Easier visits for them, easy-to-book new patients for you.'+credit+'<br><br><b>'+first+'</b>'},
        direct:{label:'Short and direct',html:'Hi <b>'+office+'</b>,<br><br>I am a patient with verified <b>'+carrier+'</b> coverage and I want to book with your office. I nominated you for Capy Accreditation on CoverCapy. Claiming your profile is free and makes booking easier for both of us.'+credit+'<br><br><b>'+first+'</b>'},
-       loyal:{label:'Loyal patient',html:'Hi <b>'+office+'</b> team,<br><br>You have taken great care of me, so I nominated your office for Capy Accreditation on CoverCapy. My <b>'+carrier+'</b> coverage is verified there, which makes my visits easier, and joining helps more patients like me find you.'+credit+'<br><br>Thank you for everything,<br><b>'+first+'</b>'},
        own:{label:'Write my own',html:'Hi <b>'+office+'</b> team,<br><br><b>Write your own message here. Say what you appreciated and why you nominated them.</b>'+credit+'<br><br><b>'+first+'</b>'}};
   }
   var mode='cc', tkey=Object.keys(T)[0];
+  var pending=!!S.nomPending;
   var _d=null; try{ _d=dentByName(t.name); }catch(e){}
   var _ph=(_d&&_d.phone)?String(_d.phone):'';
   var noEmailBanner = t.email ? '' :
     '<div style="background:var(--gold-soft);color:var(--gold-deep);border-radius:14px;padding:12px 14px;font-size:12.5px;line-height:1.55;margin-bottom:12px"><b>&#128222; No email on file.</b> You can still use these templates: copy one and read it to the office over the phone'+(_ph?' at <a href="tel:'+_ph.replace(/[^0-9+]/g,'')+'" style="color:inherit;font-weight:800">'+esc(_ph)+'</a>':'')+', or ask the front desk for their email and add it here for +25 &#128142;.</div>';
-  openSheet('<h3 class="serif">Email '+office+'</h3>'
+  openSheet('<h3 class="serif">'+(pending?'Nominate '+office:'Email '+office)+'</h3>'
+   +(pending?'<div class="ssub">Why are you nominating them? Pick how you want to reach out; your nomination is recorded when you send. &#128142; +10 now, bigger drops as the office moves.</div>':'')
    +'<div class="ssub" id="noteHint"></div>'
    +noEmailBanner
    +'<div class="chips" id="noteTpls" style="margin-bottom:10px"></div>'
@@ -1627,21 +1642,45 @@ function noteSheet(kind){
       tkey=c.dataset.tpl; $('noteBody').innerHTML=T[tkey].html; paintTpls();
     });});
   }
+  function nomThen(extra){
+    /* in nominate mode the insert happens here, then the send is logged */
+    window.ccNomInsert(function(){
+      markDone(); closeSheet(); route();
+      celebrate({em:'&#127775;',title:'Nomination submitted',
+        chip:'&#128142; +10 now &#183; +50 contacted &#183; +250 claimed &#183; +500 verified &#183; +10,000 if they join = $150 gift card',
+        body:(extra||'')+' Track '+office+' in My Offices; every stage it reaches drops more Diamond Crowns.'});
+    });
+  }
   function paintActs(){
     if(mode==='cc'){
-      $('noteActs').innerHTML='<button class="btn btn-gold btn-full" id="noteSend">&#129441; Have CoverCapy send it</button>';
+      $('noteActs').innerHTML='<button class="btn btn-gold btn-full" id="noteSend">&#129441; '+(pending?'Nominate + have CoverCapy send it':'Have CoverCapy send it')+'</button>'
+        +(pending?'<button class="btn btn-ghost btn-full" id="noteSkip" style="margin-top:8px">Nominate without sending an email</button>':'');
       $('noteFoot').innerHTML='The office receives the template with their nomination notice, and the send is logged on your nomination.';
-      $('noteSend').addEventListener('click',function(){markDone();closeSheet();route();
+      $('noteSend').addEventListener('click',function(){
+        if(pending){ nomThen('We emailed '+office+(t.email?' at '+esc(t.email):'')+' with your note and their nomination notice.'); return; }
+        markDone();closeSheet();route();
         celebrate({em:'&#128238;',title:'Sent on your behalf',body:'We emailed '+office+(t.email?' at '+esc(t.email):'')+' with your note and their nomination notice. When they join and mention your name, the 10,000 &#128142; credit is yours.'});});
+      var sk=$('noteSkip'); if(sk) sk.addEventListener('click',function(){
+        window.ccNomInsert(function(){ closeSheet(); route();
+          celebrate({em:'&#127775;',title:'Nomination submitted',chip:'&#128142; +10 now',body:office+' is on your list. You can send a template anytime from My Offices; outreach moves nominations faster.'});});});
     } else {
-      $('noteActs').innerHTML='<div style="display:flex;gap:10px"><button class="btn btn-ink btn-full" id="noteCopy">Copy draft</button><button class="btn btn-ghost btn-full" id="noteMail">Open mail app</button></div>';
+      $('noteActs').innerHTML='<div style="display:flex;gap:10px"><button class="btn btn-ink btn-full" id="noteCopy">'+(pending?'Copy &amp; nominate':'Copy draft')+'</button><button class="btn btn-ghost btn-full" id="noteMail">Open mail app</button></div>'
+        +(pending?'<button class="btn btn-ghost btn-full" id="noteSkip" style="margin-top:8px">Nominate without sending an email</button>':'');
       $('noteFoot').innerHTML='Your edits travel with you. Sending it yourself lands even harder: offices listen to their own patients.';
-      $('noteCopy').addEventListener('click',function(){if(navigator.clipboard)navigator.clipboard.writeText(plain());this.textContent='Copied';markDone();route();});
+      $('noteCopy').addEventListener('click',function(){
+        if(navigator.clipboard)navigator.clipboard.writeText(plain());
+        this.textContent='Copied';
+        if(pending){ nomThen('Your note is on the clipboard, ready to send or read over the phone.'); return; }
+        markDone();route();});
       $('noteMail').addEventListener('click',function(){
-        markDone();
         var href='mailto:'+(t.email||'')+'?subject='+encodeURIComponent('A patient nomination for '+(t.name||'your office')+' on CoverCapy')+'&body='+encodeURIComponent(plain());
+        if(pending){ nomThen('Your mail app has the draft.'); setTimeout(function(){ window.location.href=href; },250); return; }
+        markDone();
         window.location.href=href;
       });
+      var sk2=$('noteSkip'); if(sk2) sk2.addEventListener('click',function(){
+        window.ccNomInsert(function(){ closeSheet(); route();
+          celebrate({em:'&#127775;',title:'Nomination submitted',chip:'&#128142; +10 now',body:office+' is on your list. You can send a template anytime from My Offices; outreach moves nominations faster.'});});});
     }
   }
   if(!t.email){ mode='me'; }
