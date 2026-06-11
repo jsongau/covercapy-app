@@ -587,6 +587,15 @@ body.sheet-open #view,body.sheet-open #topnav{filter:blur(2px) saturate(.92);tra
 @media(min-width:900px){.grab{display:none}}
 .sheet h3{font-size:21px;margin-bottom:6px}
 .sheet .ssub{color:var(--slate);font-size:14px;margin-bottom:18px}
+.senv{position:sticky;top:-2px;z-index:6;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:-6px -2px 12px;padding:8px 0 10px;background:linear-gradient(var(--paper) 78%,rgba(251,248,242,0))}
+.senv .grab{position:absolute;left:50%;top:10px;transform:translateX(-50%);margin:0;cursor:pointer}
+.senv-x{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--line);background:var(--cream);font-size:13px;color:var(--ink);cursor:pointer;display:grid;place-items:center;transition:all .25s cubic-bezier(.22,.8,.24,1)}
+.senv-x:hover{border-color:var(--gold);background:var(--gold-soft);transform:rotate(90deg)}
+.senv-done{border:none;border-radius:999px;padding:10px 18px;background:linear-gradient(135deg,#C9A24B,#92702E);color:#FBF1DD;font-weight:800;font-size:13px;cursor:pointer;box-shadow:0 6px 16px rgba(146,112,46,.32),inset 0 1px 0 rgba(255,255,255,.25);transition:transform .25s cubic-bezier(.22,.8,.24,1)}
+.senv-done:active{transform:scale(.96)}
+.sapply{position:sticky;bottom:-2px;display:flex;gap:8px;margin:20px -2px -6px;padding:12px 0 10px;background:linear-gradient(rgba(251,248,242,0),var(--paper) 26%)}
+.pposep{flex-basis:100%;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);margin:6px 0 0}
+.selcount{font-size:11px;font-weight:700;color:var(--gold-deep);margin-left:6px}
 .celebrate{text-align:center;padding:4px 0}
 .celebrate .em{font-size:44px;margin-bottom:10px}
 .celebrate h3{font-size:22px}
@@ -642,7 +651,7 @@ body.sheet-open #view,body.sheet-open #topnav{filter:blur(2px) saturate(.92);tra
 <script>
 window.__CC={url:"https://hfvbeqlefwwjlrbyxpbj.supabase.co",key:"sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf",login:"./index.html"};
 window.__supa=window.supabase.createClient(__CC.url,__CC.key);
-window.__CC_BUILD='v40';
+window.__CC_BUILD='v41';
 try{ console.log('CoverCapy build', window.__CC_BUILD); }catch(e){}
 </script>
 <script>
@@ -1054,13 +1063,21 @@ function filteredDentists(){
   var f=S.find.filters,lm=S.find.landmark,F=S.find;
   return DEMO_DATA.dentists.filter(function(d){
     if(lm!=='all'&&d.landmark!==lm) return false;
-    if(F.treatment){
-      var tk=F.treatment.toLowerCase().replace(/\s*dentistry$/,'');
-      if(!(d.treatments||[]).some(function(t){ t=String(t).toLowerCase(); return t.indexOf(tk)>-1||tk.indexOf(t)>-1; })) return false;
+    var TS=(F.treats&&F.treats.length)?F.treats:(F.treatment?[F.treatment]:[]);
+    if(TS.length){
+      var tok=TS.some(function(sel){
+        var tk=String(sel).toLowerCase().replace(/\s*dentistry$/,'');
+        return (d.treatments||[]).some(function(t){ t=String(t).toLowerCase(); return t.indexOf(tk)>-1||tk.indexOf(t)>-1; });
+      });
+      if(!tok) return false;
     }
-    if(F.ppo){
-      var pk=F.ppo.toLowerCase().replace(/\s*(ppo|pdp|dppo)$/,'').trim();
-      if(!(d.accepts||[]).some(function(c){ return String(c).toLowerCase().indexOf(pk)>-1; })) return false;
+    var PS=(F.ppos&&F.ppos.length)?F.ppos:(F.ppo?[F.ppo]:[]);
+    if(PS.length){
+      var pok=PS.some(function(sel){
+        var pk=String(sel).toLowerCase().replace(/\s*(ppo|pdp|dppo)$/,'').trim();
+        return (d.accepts||[]).some(function(c){ return String(c).toLowerCase().indexOf(pk)>-1; });
+      });
+      if(!pok) return false;
     }
     if(F.within&&(typeof d.mi==='number')&&d.mi>((d.tier==='elite')?Math.max(F.within,18):(d.tier==='tier')?Math.max(F.within,10):F.within)) return false;
     if(F.minRating&&d.rating<F.minRating) return false;
@@ -1121,6 +1138,7 @@ function vFind(){
   +(function(){
      var n=0; ['weekends','offer','acceptingNew','onlineBooking','english','spanish'].forEach(function(k){ if(f[k]) n++; });
      if(F.minRating>0) n++; if(F.preset) n++;
+     n+=((F.treats&&F.treats.length)||(F.treatment?1:0))+((F.ppos&&F.ppos.length)||(F.ppo?1:0));
      return '<div class="fhead">'
       +'<div class="map-toggle">'+vbtn('split','List + Map')+vbtn('rec','For you')+vbtn('list','Browse')+vbtn('map','Map')+vbtn('grid','Grid')+'</div>'
       +'<button class="btn '+(n?'btn-ink':'btn-ghost')+' btn-sm" data-morefilters="1">&#9881; Filters'+(n?' &#183; '+n:'')+'</button>'
@@ -1129,8 +1147,8 @@ function vFind(){
   +(function(){
      var pills=[];
      function pill(k,txt){ return '<span class="fpill" data-morefilters="1">'+txt+'<button class="fpx" data-clearf="'+k+'" aria-label="Clear">&#10005;</button></span>'; }
-     if(F.treatment) pills.push(pill('treatment','&#10024; '+esc(F.treatment)));
-     if(F.ppo) pills.push(pill('ppo','&#128737; '+esc(F.ppo)));
+     ((F.treats&&F.treats.length)?F.treats:(F.treatment?[F.treatment]:[])).forEach(function(t){ pills.push(pill('t:'+esc(t),'&#10024; '+esc(t))); });
+     ((F.ppos&&F.ppos.length)?F.ppos:(F.ppo?[F.ppo]:[])).forEach(function(c){ pills.push(pill('p:'+esc(c),'&#128737; '+esc(c))); });
      if(F.minRating>0) pills.push(pill('rating','&#11088; '+F.minRating+'+'));
      if(f.weekends) pills.push(pill('pref:weekends','&#127774; Weekends'));
      if(f.acceptingNew) pills.push(pill('pref:acceptingNew','New patients'));
@@ -1509,7 +1527,7 @@ function openSheet(html){
   clearTimeout(_shT);
   var sh=$('sheet');
   sh.classList.remove('closing');
-  $('sheetIn').innerHTML='<div class="grab"></div>'+html;
+  $('sheetIn').innerHTML=(html.indexOf('senv')>-1?'':'<div class="grab"></div>')+html;
   $('sheetIn').scrollTop=0;
   sh.classList.add('open');
   document.body.classList.add('sheet-open');
@@ -2340,7 +2358,7 @@ function ccIntent(v){
   var tmap=[['invisalign','Invisalign'],['implant','Implants'],['veneer','Veneers'],['whiten','Whitening'],['root canal','Root Canal'],['emergency','Emergency'],['cosmetic','Cosmetic'],['clean','Cleaning'],['ortho','Orthodontics']];
   for(var i=0;i<tmap.length;i++){ if(q.indexOf(tmap[i][0])>-1){
     var match=(DEMO_DATA.treatmentOptions||[]).filter(function(t){ return t.toLowerCase().indexOf(tmap[i][0])>-1; })[0];
-    if(match){ S.find.treatment=match; acted.push(match); }
+    if(match){ S.find.treatment=match; S.find.treats=[match]; acted.push(match); }
     else { S.find.preset=(tmap[i][0]==='invisalign'?'invisalign':tmap[i][0]==='cosmetic'?'cosmetic':S.find.preset); if(S.find.preset) acted.push(tmap[i][1]); }
     break; } }
   if(/saturday|sunday|weekend/.test(q)){ S.find.filters.weekends=1; acted.push('open weekends'); }
@@ -3888,8 +3906,10 @@ document.addEventListener('click',function(e){
   var x=e.target.closest&&e.target.closest('[data-clearf]'); if(!x) return;
   e.stopPropagation();
   var k=x.dataset.clearf;
-  if(k==='treatment') S.find.treatment='';
-  else if(k==='ppo') S.find.ppo='';
+  if(k==='treatment'){ S.find.treatment=''; S.find.treats=[]; }
+  else if(k==='ppo'){ S.find.ppo=''; S.find.ppos=[]; }
+  else if(k.indexOf('t:')===0){ S.find.treats=(S.find.treats||[]).filter(function(x){return x!==k.slice(2);}); S.find.treatment=S.find.treats[0]||''; }
+  else if(k.indexOf('p:')===0){ S.find.ppos=(S.find.ppos||[]).filter(function(x){return x!==k.slice(2);}); S.find.ppo=S.find.ppos[0]||''; }
   else if(k==='rating') S.find.minRating=0;
   else if(k==='preset') S.find.preset=null;
   else if(k.indexOf('pref:')===0) delete S.find.filters[k.slice(5)];
@@ -3905,16 +3925,21 @@ document.addEventListener('click',function(e){
   var PPOLIST=['Delta Dental PPO','MetLife PDP','Guardian PPO','UnitedHealthcare PPO','Aetna PPO','Cigna DPPO','Ameritas PPO','Principal PPO','Humana PPO','GEHA','Anthem PPO','United Concordia'];
   function dchip(k,label){return '<button class="chip '+(f[k]?'on':'')+'" data-filter="'+k+'">'+label+'</button>';}
   function pchip(k,em,label){return '<button type="button" class="dchip2 '+(F.preset===k?'on':'')+'" data-preset="'+k+'">'+em+' '+label+'</button>';}
-  function tchip(t){return '<button class="chip '+(F.treatment===t?'on':'')+'" data-tsel="'+esc(t)+'">'+esc(t)+'</button>';}
-  function ppochip(c){return '<button class="chip '+(F.ppo===c?'on':'')+'" data-psel="'+esc(c)+'">'+esc(c)+'</button>';}
-  openSheet('<h3 class="serif">Curate your care</h3><div class="ssub">Tell us what matters; we shape the list around you.</div>'
-   +'<div class="eyebrow" style="margin-bottom:8px">Care type</div>'
-   +'<div class="chips" id="drTreats">'+TREATLIST.map(tchip).join('')+'</div>'
-   +'<div class="eyebrow" style="margin:16px 0 8px">Insurance match</div>'
+  if(!F.treats) F.treats=F.treatment?[F.treatment]:[];
+  if(!F.ppos) F.ppos=F.ppo?[F.ppo]:[];
+  function tchip(t){return '<button class="chip '+(F.treats.indexOf(t)>-1?'on':'')+'" data-tsel="'+esc(t)+'">'+esc(t)+'</button>';}
+  function ppochip(c){return '<button class="chip '+(F.ppos.indexOf(c)>-1?'on':'')+'" data-psel="'+esc(c)+'">'+esc(c)+'</button>';}
+  var PPOTOP=PPOLIST.slice(0,6), PPOMORE=PPOLIST.slice(6);
+  openSheet('<div class="senv"><button type="button" class="senv-x" data-close="1" aria-label="Close filters">&#10005;</button><div class="grab" data-close="1"></div><button type="button" class="senv-done" id="drDone" data-close="1">Done</button></div>'
+   +'<h3 class="serif">Curate your care</h3><div class="ssub">Tell us what matters; we shape the list around you. Pick as many as you like.</div>'
+   +'<div class="eyebrow" style="margin-bottom:8px">Care type<span class="selcount" id="tCount"></span></div>'
+   +'<div class="chips" id="drTreats"><button class="chip '+(F.treats.length?'':'on')+'" data-tall="1" id="tAll">All treatments</button>'+TREATLIST.map(tchip).join('')+'</div>'
+   +'<div class="eyebrow" style="margin:16px 0 8px">Insurance match<span class="selcount" id="pCount"></span></div>'
    +'<input id="ppoSearch" class="ppofind" placeholder="Search your PPO carrier" autocomplete="off">'
-   +'<div class="chips" id="drPpos" style="margin-top:8px">'+PPOLIST.map(ppochip).join('')
-   +'<button class="chip '+(F.ppo===''?'on':'')+'" data-psel="">No insurance yet</button></div>'
-   +'<div class="muted" id="noInsHint" style="font-size:11.5px;margin-top:6px;'+(F.ppo?'display:none':'')+'">No PPO yet? Most patients save more after activating one. <a href="#" data-act="shop" style="color:var(--ink)">Compare plans</a>.</div>'
+   +'<div class="chips" id="drPpos" style="margin-top:8px"><button class="chip '+(F.ppos.length||F.noins?'':'on')+'" data-pall="1" id="pAll">All carriers</button>'+PPOTOP.map(ppochip).join('')
+   +'<div class="pposep">More carriers</div>'+PPOMORE.map(ppochip).join('')
+   +'<button class="chip '+(F.noins?'on':'')+'" data-pnone="1" id="pNone">No insurance yet</button></div>'
+   +'<div class="muted" id="noInsHint" style="font-size:11.5px;margin-top:6px;'+(F.noins?'':'display:none')+'">No PPO yet? Most patients save more after activating one. <a href="#" data-act="shop" style="color:var(--ink)">Compare plans</a>.</div>'
    +'<div class="eyebrow" style="margin:16px 0 8px">Care preferences</div>'
    +'<div class="chips">'+dchip('weekends','Open weekends')+dchip('acceptingNew','Accepting new patients')+dchip('onlineBooking','Online booking')+dchip('offer','Has an offer or reward')+dchip('english','English')+dchip('spanish','Spanish')+'</div>'
    +'<div class="eyebrow" style="margin:16px 0 8px">Experience level</div>'
@@ -3922,7 +3947,7 @@ document.addEventListener('click',function(e){
    +pchip('accredited','&#127942;','Capy Accredited')+pchip('platinum','&#128081;','Platinum Elite')+'</div>'
    +'<div class="eyebrow" style="margin:16px 0 8px">Explore</div>'
    +'<div class="chips">'+pchip('bestppo','&#128737;','Best PPO match')+pchip('nominated','&#11088;','Most nominated')+pchip('families','&#128106;','Families')+pchip('concierge','&#129441;','Concierge picks')+'</div>'
-   +'<div style="display:flex;gap:8px;margin-top:20px"><button class="btn btn-ink btn-full" id="drApply" data-close="1">View results</button><button class="btn btn-ghost btn-sm" id="filtClear" style="flex:none">Reset</button></div>');
+   +'<div class="sapply"><button class="btn btn-ink btn-full" id="drApply" data-close="1">View results</button><button class="btn btn-ghost btn-sm" id="filtClear" style="flex:none">Reset</button></div>');
   var ps=document.getElementById('ppoSearch');
   if(ps) ps.addEventListener('input',function(){
     var q=this.value.toLowerCase();
@@ -3936,19 +3961,38 @@ window.ccDrawerSync=function(){
   var btn=document.getElementById('drApply'); if(!btn) return;
   var n=0; try{ n=filteredDentists().length; }catch(e){}
   btn.innerHTML=n?('View '+n+' dentist'+(n===1?'':'s')+' &#8594;'):'View results';
-  var hint=document.getElementById('noInsHint'); if(hint) hint.style.display=S.find.ppo?'none':'';
+  var done=document.getElementById('drDone'); if(done) done.innerHTML=n?('Done &#183; '+n):'Done';
+  var F=S.find;
+  var tc=document.getElementById('tCount'); if(tc) tc.textContent=(F.treats&&F.treats.length)?F.treats.length+' selected':'all';
+  var pc=document.getElementById('pCount'); if(pc) pc.textContent=(F.ppos&&F.ppos.length)?F.ppos.length+' selected':(F.noins?'no insurance yet':'all');
+  var ta=document.getElementById('tAll'); if(ta) ta.classList.toggle('on',!(F.treats&&F.treats.length));
+  var pa=document.getElementById('pAll'); if(pa) pa.classList.toggle('on',!((F.ppos&&F.ppos.length)||F.noins));
+  var pn=document.getElementById('pNone'); if(pn) pn.classList.toggle('on',!!F.noins);
+  var hint=document.getElementById('noInsHint'); if(hint) hint.style.display=F.noins?'':'none';
 };
 document.addEventListener('click',function(e){
   if(e.target.closest&&e.target.closest('#sheetIn')) setTimeout(function(){ try{ window.ccDrawerSync(); }catch(_){ } },60);
 });
 document.addEventListener('click',function(e){
+  var F=S.find;
+  function mirror(){ F.treatment=(F.treats&&F.treats[0])||''; F.ppo=(F.ppos&&F.ppos[0])||''; F.page=1; try{ route(); }catch(_){ } }
   var t=e.target.closest&&e.target.closest('[data-tsel]');
-  if(t){ S.find.treatment=(S.find.treatment===t.dataset.tsel?'':t.dataset.tsel); S.find.page=1;
-    document.querySelectorAll('[data-tsel]').forEach(function(x){ x.classList.toggle('on', x.dataset.tsel===S.find.treatment); });
-    try{ route(); }catch(_){ } return; }
+  if(t){ if(!F.treats) F.treats=[]; var v=t.dataset.tsel, i=F.treats.indexOf(v);
+    if(i>-1) F.treats.splice(i,1); else F.treats.push(v);
+    t.classList.toggle('on',i===-1); mirror(); return; }
+  if(e.target.closest&&e.target.closest('[data-tall]')){ F.treats=[]; document.querySelectorAll('[data-tsel]').forEach(function(x){x.classList.remove('on');}); mirror(); return; }
   var p=e.target.closest&&e.target.closest('[data-psel]');
-  if(p){ S.find.ppo=p.dataset.psel; S.find.page=1;
-    document.querySelectorAll('[data-psel]').forEach(function(x){ x.classList.toggle('on', x.dataset.psel===S.find.ppo); });
+  if(p){ if(!F.ppos) F.ppos=[]; F.noins=false; var pv=p.dataset.psel, pi=F.ppos.indexOf(pv);
+    if(pi>-1) F.ppos.splice(pi,1); else F.ppos.push(pv);
+    p.classList.toggle('on',pi===-1); mirror(); return; }
+  if(e.target.closest&&e.target.closest('[data-pall]')){ F.ppos=[]; F.noins=false; document.querySelectorAll('[data-psel]').forEach(function(x){x.classList.remove('on');}); mirror(); return; }
+  if(e.target.closest&&e.target.closest('[data-pnone]')){ F.noins=!F.noins; if(F.noins){ F.ppos=[]; document.querySelectorAll('[data-psel]').forEach(function(x){x.classList.remove('on');}); } mirror(); return; }
+  if(e.target.closest&&e.target.closest('#filtClear')){
+    F.treats=[]; F.ppos=[]; F.noins=false; F.treatment=''; F.ppo=''; F.minRating=0; F.preset=null; F.filters={}; F.page=1;
+    document.querySelectorAll('#sheetIn .chip.on').forEach(function(x){x.classList.remove('on');});
+    var ta=document.getElementById('tAll'); if(ta) ta.classList.add('on');
+    var pa=document.getElementById('pAll'); if(pa) pa.classList.add('on');
+    document.querySelectorAll('#sheetIn [data-minrate="0"]').forEach(function(x){x.classList.add('on');});
     try{ route(); }catch(_){ } return; }
 });
 /* swipe to dismiss the sheet */
@@ -4025,7 +4069,8 @@ document.addEventListener('click',function(e){
   var c=e.target.closest&&e.target.closest('[data-chg]');
   if(c){
     var k=c.dataset.chg;
-    var el=document.getElementById(k==='loc'?'findQ':k==='ppo'?'findPPO':'findWithin');
+    if(k==='ppo'){ var mf=document.querySelector('[data-morefilters]'); if(mf) mf.click(); return; }
+    var el=document.getElementById(k==='loc'?'findQ':'findWithin');
     if(el){ try{ el.scrollIntoView({behavior:'smooth',block:'center'}); }catch(_){ } setTimeout(function(){ el.focus(); },300); }
     return;
   }
