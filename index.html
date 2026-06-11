@@ -399,5 +399,23 @@ window.__supa=window.supabase.createClient(__CC.url,__CC.key);
   })();
 })();
 </script>
+
+<script>
+(function(){
+ function init(){
+  var seg=document.getElementById("seg"); if(!seg) return;
+  if(document.getElementById("roleChooser")) return;
+  var card=seg.parentNode;
+  var w=document.createElement("div"); w.id="roleChooser";
+  w.style.cssText="display:flex;gap:8px;margin:0 0 16px";
+  function mk(t,a){var b=document.createElement("button");b.type="button";b.textContent=t;b.style.cssText="flex:1;padding:11px 14px;border-radius:999px;font-weight:700;font-size:13.5px;cursor:pointer;-webkit-tap-highlight-color:transparent;border:1.5px solid "+(a?"transparent":"rgba(11,59,54,.18)")+";background:"+(a?"#0B3B36":"#fff")+";color:"+(a?"#fff":"#0B3B36")+";";return b;}
+  var p=mk("I\u2019m a patient",true), d=mk("I\u2019m a dentist",false);
+  d.addEventListener("click",function(){window.location.href="/dentist.html";});
+  w.appendChild(p); w.appendChild(d);
+  card.insertBefore(w, seg);
+ }
+ if(document.readyState!=="loading") init(); else document.addEventListener("DOMContentLoaded", init);
+})();
+</script>
 </body>
 </html>
