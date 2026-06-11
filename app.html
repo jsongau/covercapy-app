@@ -226,6 +226,7 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 /* collectible cards */
 .dcard{transition:transform .18s cubic-bezier(.2,.8,.2,1),box-shadow .18s}
 .dcard:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.dscore{display:inline-block;margin-left:6px;font-size:10.5px;font-weight:800;color:var(--gold-deep);background:var(--gold-soft);border-radius:999px;padding:2px 8px;letter-spacing:.02em}
 .btn:active{transform:scale(.965)}
 .avwrap{display:grid;place-items:center;width:100%;height:100%;border-radius:inherit;overflow:hidden}
 .avwrap img{width:100%;height:100%;object-fit:cover;border-radius:inherit;opacity:1;transition:opacity .4s}
@@ -961,8 +962,8 @@ function dcardHTML(d){
   var tierChip='<span class="mini '+(d.tier==='elite'?'elite':d.tier==='tier'?'tier':'pend')+'">'+d.tag+'</span>';
   return '<div class="dcard" id="dc-'+d.id+'"><div class="cov '+fb[0]+'"><span>'+fb[1]+'</span><span>'+(d.tier==='elite'?'<b style="color:var(--plum)">Featured</b> &#183; ':'')+d.mi+' mi</span></div>'
   +'<div class="body"><div class="av">'+((window.ccAvatarHTML?ccAvatarHTML(d):d.av))+'</div><div class="info"><div class="nm">'+d.name+'</div>'
-  +'<div class="sub">'+d.doc+' &#183; '+d.city+' &#183; &#9733; '+d.rating+' ('+d.reviews+')</div>'
-  +'<div class="persona-line">'+d.line+'</div>'
+  +'<div class="sub">'+d.doc+' &#183; '+d.city+' &#183; &#9733; '+d.rating+' ('+d.reviews+')'+(window.ccDiscovery?' <span class="dscore" title="Discovery index: PPO friendliness, verification, access, and engagement">&#9670; '+ccDiscovery(d).toFixed(1)+'</span>':'')+'</div>'
+  +'<div class="persona-line">'+(window.ccWhyLine?ccWhyLine(d):d.line)+'</div>'
   +'<div class="chiprow">'+tierChip
     +d.langs.map(function(l){return '<span class="mini lang">'+l+'</span>';}).join('')
     +(d.weekends?'<span class="mini">Open weekends</span>':'')
@@ -2072,6 +2073,7 @@ function treatConfirm(key,name,office,cost){
   });
 }
 function profileSheet(id){
+  try{ if(window.ccViewLog) ccViewLog(id); }catch(e){}
   var d=null; DEMO_DATA.dentists.forEach(function(x){if(x.id===id)d=x;});
   if(!d) return;
   openSheet('<div style="text-align:center"><div style="width:72px;height:72px;border-radius:20px;background:var(--cream);display:grid;place-items:center;font-size:34px;margin:0 auto 12px">'+d.av+'</div>'
@@ -2226,7 +2228,39 @@ function ccReply(q){
     return 'Membership is $369 per month after a merit review. It unlocks coverage snapshots, blended reviews from four sources, a 10 mile visibility radius, promotions, and the coverage widget for your own website.';
   return 'Good question. Tell me the office or the treatment and I will get specific, or tap a suggestion below.';
 }
-function ccSend(v){if(!v.trim())return;ccPush(esc(v),'me');setTimeout(function(){ccPush(ccReply(v),'capy');},400);}
+function ccIntent(v){
+  /* translate plain requests into search state; returns a reply when handled */
+  var q=v.toLowerCase();
+  var acted=[];
+  var tmap=[['invisalign','Invisalign'],['implant','Implants'],['veneer','Veneers'],['whiten','Whitening'],['root canal','Root Canal'],['emergency','Emergency'],['cosmetic','Cosmetic'],['clean','Cleaning'],['ortho','Orthodontics']];
+  for(var i=0;i<tmap.length;i++){ if(q.indexOf(tmap[i][0])>-1){
+    var match=(DEMO_DATA.treatmentOptions||[]).filter(function(t){ return t.toLowerCase().indexOf(tmap[i][0])>-1; })[0];
+    if(match){ S.find.treatment=match; acted.push(match); }
+    else { S.find.preset=(tmap[i][0]==='invisalign'?'invisalign':tmap[i][0]==='cosmetic'?'cosmetic':S.find.preset); if(S.find.preset) acted.push(tmap[i][1]); }
+    break; } }
+  if(/saturday|sunday|weekend/.test(q)){ S.find.filters.weekends=1; acted.push('open weekends'); }
+  if(/family|kids|child/.test(q)){ S.find.preset='families'; acted.push('family friendly'); }
+  var nm=q.match(/near ([a-z .]+?)(?:\.|,|$)/);
+  var cityReq=nm?nm[1].trim():null;
+  if(/activates quickly|activate.*fast|fast.*ppo|ppo.*quick/.test(q)){
+    return 'For fast activation, plans like UHC Primary cover preventive care from day one. Open Coverage and I will walk you through the quickest options. <button class="btn btn-mint btn-sm" data-act="go:coverage" style="margin-top:8px">Open coverage</button>';
+  }
+  if(acted.length||cityReq){
+    var done=function(){ S.find.page=1; try{ go('find'); }catch(e){} };
+    if(cityReq&&window.__supa){
+      window.__supa.rpc('nav_search_suggest',{q:cityReq,max_n:2}).then(function(r){
+        var hit=(((r&&r.data)||[]).filter(function(x){ return x.lat!=null; }))[0];
+        if(hit&&window.ccGoSearch){ S.find.q=hit.label; window.ccGoSearch(+hit.lat,+hit.lng,hit.label); }
+        done();
+      });
+    } else { done(); }
+    return 'On it. I set up the search'+(acted.length?' for <b>'+esc(acted.join(', '))+'</b>':'')+(cityReq?' near <b>'+esc(cityReq)+'</b>':'')+' and opened Find a Dentist with everything applied.';
+  }
+  return null;
+}
+function ccSend(v){if(!v.trim())return;ccPush(esc(v),'me');
+  var smart=null; try{ smart=ccIntent(v); }catch(e){}
+  setTimeout(function(){ccPush(smart||ccReply(v),'capy');},400);}
 $('ccSend').addEventListener('click',function(){ccSend($('ccInput').value);$('ccInput').value='';});
 $('ccInput').addEventListener('keydown',function(e){if(e.key==='Enter'){ccSend(this.value);this.value='';}});
 $('fab').addEventListener('click',ccOpen);
@@ -3303,7 +3337,11 @@ window.ccShelvesHTML=function(list){
   var nm=(typeof NOM_COUNTS!=='undefined'&&NOM_COUNTS)?NOM_COUNTS:{};
   var nominated=list.slice().sort(function(a,b){ return (nm[b.id]||0)-(nm[a.id]||0); }).filter(function(d){ return (nm[d.id]||0)>0; });
   var html='';
+  var favs=list.filter(function(d){ return window.ccIsFav&&ccIsFav(d.id); });
+  var recent=(window.ccRecentRows?ccRecentRows():[]);
   html+=shelf('Recommended for you', list, 'concierge');
+  if(favs.length>=2) html+=shelf('Your saved offices', favs, null);
+  if(recent.length>=2) html+=shelf('Recently viewed', recent, null);
   html+=shelf('Near you', byMi, null);
   if(pr) html+=shelf('Best '+esc(pr.carrier)+' match', ppoMatch, 'bestppo');
   html+=shelf('Open weekends', list.filter(function(d){return d.weekends;}), 'weekends');
@@ -3366,6 +3404,49 @@ document.addEventListener('click',function(e){
   var p=b.dataset.rgo.split('|');
   try{ window.ccGoSearch(+p[0],+p[1],p[2]); }catch(err){ console.error(err); }
 });
+
+/* ---- Why Patients Choose engine: reasons generated from office data ---- */
+window.ccWhyLine=function(d){
+  if(d.line) return d.line;
+  var t=(d.treatments||[]).join(' ').toLowerCase();
+  if((d.accepts||[]).length>=2) return 'Patients often choose this office for PPO savings across '+d.accepts.length+' networks.';
+  if((d.accepts||[]).length===1) return 'Patients often choose this office for '+esc(d.accepts[0])+' PPO savings.';
+  if(d.weekends && d.reviews>=50) return 'Known for weekend availability with consistently strong reviews.';
+  if(d.weekends) return 'Known for weekend availability.';
+  if(/cosmetic|veneer|whiten|smile/.test(t)) return 'Popular for cosmetic consultations and smile planning.';
+  if(/invisalign|aligner|ortho/.test(t)) return 'Frequently selected for Invisalign and alignment care.';
+  if(/famil|pediatric|kid|child/.test(t)) return 'Frequently selected for family appointments.';
+  if(d.reviews>=100 && d.rating>=4.7) return 'Chosen for review consistency: '+d.rating+' across '+d.reviews+' patient reviews.';
+  if(d.booking_url) return 'Patients like the easy online booking here.';
+  return 'A '+(d.city?String(d.city).split(',')[0]:'local')+' office patients are getting to know on CoverCapy.';
+};
+
+/* ---- Discovery Score: a browsing aid, not a rating ---- */
+window.ccDiscovery=function(d){
+  var p=0;
+  p+=Math.min((d.accepts||[]).length,3)*1.0;          /* PPO friendliness */
+  p+=(d.booking_url?0.8:0)+(d.website?0.4:0)+(d.phone?0.3:0); /* completeness */
+  p+=Math.min(Math.log10((d.reviews||0)+1)/2,1)*1.5;  /* engagement */
+  p+=(d.rating>=4.5?1:d.rating>=4?0.5:0);             /* consistency */
+  p+=(d.tier==='elite'?1.4:d.tier==='tier'?1:0);      /* concierge verification */
+  p+=(d.weekends?0.8:0);                              /* access */
+  p+=((window.ccIsFav&&ccIsFav(d.id))?0.3:0);         /* saves */
+  return Math.min(10,Math.round((3+p)*10)/10);
+};
+
+/* ---- Recently viewed collection ---- */
+function rvGet(){ try{ return JSON.parse(localStorage.getItem('cc_recent_offices')||'[]')||[]; }catch(e){ return []; } }
+window.ccViewLog=function(id){
+  try{
+    var a=rvGet().filter(function(x){ return x!==id; });
+    a.unshift(id); localStorage.setItem('cc_recent_offices', JSON.stringify(a.slice(0,10)));
+  }catch(e){}
+};
+window.ccRecentRows=function(){
+  var ids=rvGet(); if(!ids.length) return [];
+  var by={}; (DEMO_DATA.dentists||[]).forEach(function(d){ by[d.id]=d; });
+  return ids.map(function(id){ return by[id]; }).filter(Boolean);
+};
 
 /* ---- city crest SVG system: deterministic, inline, lightweight ---- */
 window.ccCitySVG=function(name){
