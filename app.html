@@ -221,6 +221,28 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .idlenudge b{display:block;font-size:14px;margin-bottom:3px}
 .idlenudge span{display:block;font-size:12.5px;color:var(--slate);line-height:1.5;margin-bottom:10px}
 .idlenudge .in-act{display:flex;gap:8px}
+.cshell{display:grid;grid-template-columns:225px minmax(0,1fr);gap:22px;align-items:start}
+.crail{position:sticky;top:86px;background:var(--paper);border:1.5px solid var(--line);border-radius:18px;padding:12px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:4px}
+.crail-w{display:flex;gap:10px;background:var(--cream);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+.crail-w .cw-row{flex:1;font-size:12px;display:flex;flex-direction:column;gap:1px}
+.crail-w .cw-row b{font-size:14px}
+.crail-w .cw-row span{font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--slate)}
+.crail-it{display:flex;align-items:center;gap:10px;border:none;background:none;text-align:left;padding:10px 11px;border-radius:11px;cursor:pointer;font-size:13.5px;font-weight:700;color:var(--ink);width:100%}
+.crail-it:hover{background:var(--cream)}
+.crail-it.on{background:var(--ink);color:var(--paper)}
+.crail-it .ci{flex:none;font-size:15px}
+.crail-it .cl{flex:1}
+.crail-it .cb{flex:none;background:var(--gold);color:#fff;font-size:10px;font-weight:800;border-radius:999px;min-width:18px;height:18px;display:grid;place-items:center;padding:0 5px}
+.crail-it.on .cb{background:var(--mint);color:var(--ink)}
+.crail-sep{height:1px;background:var(--line);margin:6px 4px}
+@media(max-width:899px){
+  .cshell{grid-template-columns:1fr;gap:12px}
+  .crail{position:static;flex-direction:row;overflow-x:auto;padding:8px;gap:6px;scrollbar-width:none}
+  .crail::-webkit-scrollbar{display:none}
+  .crail-w{display:none}
+  .crail-it{width:auto;white-space:nowrap;padding:9px 12px}
+  .crail-sep{display:none}
+}
 .lpop{font-family:Inter,system-ui,sans-serif;min-width:190px}
 .lpop b{font-size:13.5px}
 .lpop-sub{font-size:11.5px;color:var(--slate);margin:4px 0 9px}
@@ -759,7 +781,10 @@ function renderChrome(){
   var ts=$('dTierSel'); if(ts) ts.addEventListener('change',function(){S.dTier=this.value;route();});
 }
 function setActive(id){
-  document.querySelectorAll('[data-go]').forEach(function(a){a.classList.toggle('on',a.dataset.go===id);});
+  document.querySelectorAll('[data-go]').forEach(function(a){
+    if(a.closest&&a.closest('.crail')) return; /* hub rail manages its own active state */
+    a.classList.toggle('on',a.dataset.go===id);
+  });
 }
 
 /* ===== shared components ===== */
@@ -1098,7 +1123,7 @@ function vNoms(){
         return '<div class="lrow '+(done?'hit':'')+'"><div class="lk">'+(done?'&#10003;':st[1])+'</div><div class="lt"><b>'+st[2]+'</b><span>'+st[3]+'</span></div><button class="btn '+(done?'btn-ghost':'btn-gold')+' btn-sm" data-nudge="'+i+'|'+st[0]+'">'+(done?'Send again':'Send')+'</button></div>';
       }).join('');
   }
-  return '<div class="page"><button class="btn btn-ghost btn-sm" data-go="community" style="margin-bottom:14px">&#8592; Community</button><div class="phead"><div class="eyebrow">My Offices</div><h1>Offices you are bringing in</h1><div class="guide">Every accredited office started with a patient who vouched for them. Keep yours moving with the ladder below; the office credits one nomination when it joins, so make yours the one they remember.</div></div>'
+  return '<div class="page"><div class="phead"><div class="eyebrow">My Offices</div><h1>Offices you are bringing in</h1><div class="guide">Every accredited office started with a patient who vouched for them. Keep yours moving with the ladder below; the office credits one nomination when it joins, so make yours the one they remember.</div></div>'
   +'<div class="cols2"><div class="stack">'
   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:12px">Your list</div>'
   +(p.noms.length? p.noms.map(function(nm,i){
@@ -1263,8 +1288,10 @@ function route(){
   if(!S.role){renderGate();return;}
   var id=h[1]||(S.role==='patient'?'home':'ddash');
   if(!VIEWS[id]) id=S.role==='patient'?'home':'ddash';
-  $('view').innerHTML=VIEWS[id]();
-  setActive((id==='noms'||id==='rewards')?'community':id);
+  var _vh=VIEWS[id]();
+  if(S.role==='patient' && window.ccShell && ['community','noms','rewards','inbox'].indexOf(id)>-1){ _vh=window.ccShell(id,_vh); }
+  $('view').innerHTML=_vh;
+  setActive((id==='noms'||id==='rewards'||id==='inbox')?'community':id);
   afterRender(id);
   var pill=$('dTierPill'); if(pill){pill.textContent=tierLabel(); pill.style.cssText+=';'+tierPillStyle();}
   var ct=$('crownTop'); if(ct&&S.p) ct.textContent=S.p.crowns.toLocaleString('en-US');
@@ -1888,7 +1915,7 @@ function ambassadorSheet(){
 }
 function vRewards(){
   var p=S.p, bal=p.diamonds, can=bal>=10000, start=Math.min(bal,10000);
-  return '<div class="page"><button class="btn btn-ghost btn-sm" data-go="community" style="margin-bottom:14px">&#8592; Community</button>'
+  return '<div class="page">'
   +'<div class="phead"><div class="eyebrow">Rewards network</div><h1>The gift card wall</h1><div class="guide">Every card is $150, delivered through Tango by email. Slide your Diamond Crowns to 10,000 and pick any card on the wall.</div></div>'
   +'<div class="rw-commit contrib vault" style="margin-bottom:22px"><div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px"><div class="eyebrow" style="color:var(--mint)">Commit your Diamond Crowns</div><div class="rw-big"><span class="dgem">&#128142;</span> <span id="rwVal">'+start.toLocaleString('en-US')+'</span> <small>of '+bal.toLocaleString('en-US')+'</small></div></div>'
   +'<input type="range" id="rwSlider" min="0" max="'+Math.max(bal,10000)+'" step="100" value="'+start+'" aria-label="Diamond Crowns to commit">'
@@ -2839,6 +2866,7 @@ window.stageBarHTML=function(stage){
 /* ---- data: feed, favorites, prefs ---- */
 var FEED=[], FAVS=[], PREFS={};
 function unread(){ return FEED.filter(function(f){ return !f.read_at; }).length; }
+window.ccUnread=unread;
 function paintBell(){ var b=document.getElementById('bellBadge'); if(!b) return; var n=unread(); b.hidden=!n; b.textContent=n>9?'9+':n; }
 function loadExtras(){
   if(!window.__ccUID||!window.__supa) return;
@@ -2962,7 +2990,7 @@ function saveSettings(){
 var KIND_ICON={reward:'&#128081;',crowns:'&#128081;',coverage:'&#128737;',plan:'&#128737;',appointment:'&#128197;',visit:'&#128197;',concierge:'&#128172;',nomination:'&#11088;',office:'&#127968;',status:'&#127942;'};
 function vInbox(){
   var rows=FEED;
-  return '<div class="page"><button class="btn btn-ghost btn-sm" data-go="profile" style="margin-bottom:14px">&#8592; Profile</button>'
+  return '<div class="page">'
   +'<div class="phead" style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><div class="eyebrow">Notifications</div><h1>Your updates</h1><div class="guide">Coverage, rewards, concierge, and your offices, all in one place.</div></div>'
   +(unread()?'<button class="btn btn-ghost btn-sm" id="inbRead">Mark all read</button>':'')+'</div>'
   +(rows.length?rows.map(function(f){
@@ -3153,6 +3181,29 @@ document.addEventListener('click',function(e){
   var p=b.dataset.rgo.split('|');
   try{ window.ccGoSearch(+p[0],+p[1],p[2]); }catch(err){ console.error(err); }
 });
+
+/* ---- Community hub shell: sticky rail (desktop) / segmented bar (mobile) ---- */
+window.ccShell=function(active, inner){
+  var p=S.p||{};
+  var unread=0; try{ unread=window.ccUnread?window.ccUnread():0; }catch(e){}
+  var noms=(p.noms||[]).length;
+  function item(id,ic,label,badge){
+    return '<button class="crail-it'+(active===id?' on':'')+'" data-go="'+id+'">'
+      +'<span class="ci">'+ic+'</span><span class="cl">'+label+'</span>'
+      +(badge?'<span class="cb">'+badge+'</span>':'')+'</button>';
+  }
+  var rail='<aside class="crail">'
+    +'<div class="crail-w"><div class="cw-row">&#128081; <b>'+(p.crowns||0).toLocaleString('en-US')+'</b><span>Crowns</span></div>'
+    +'<div class="cw-row">&#128142; <b>'+(p.diamonds||0).toLocaleString('en-US')+'</b><span>Diamond</span></div></div>'
+    +item('community','&#129441;','Overview','')
+    +item('noms','&#127968;','My Offices',noms||'')
+    +item('rewards','&#127873;','Rewards','')
+    +item('inbox','&#128276;','Notifications',unread||'')
+    +'<div class="crail-sep"></div>'
+    +item('profile','&#128100;','Profile','')
+    +'</aside>';
+  return '<div class="cshell">'+rail+'<div class="cbody">'+inner+'</div></div>';
+};
 
 /* ---- More Filters drawer (hybrid filter architecture) ---- */
 document.addEventListener('click',function(e){
