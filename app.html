@@ -581,6 +581,8 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 <script>
 window.__CC={url:"https://hfvbeqlefwwjlrbyxpbj.supabase.co",key:"sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf",login:"./index.html"};
 window.__supa=window.supabase.createClient(__CC.url,__CC.key);
+window.__CC_BUILD='v34';
+try{ console.log('CoverCapy build', window.__CC_BUILD); }catch(e){}
 </script>
 <script>
 (function(){
@@ -1020,7 +1022,7 @@ function vFind(){
   var body='';
   if(view==='split'){
     body='<div class="find-grid view-split"><div id="findList">'
-      +'<div class="muted" style="font-size:13px;margin-bottom:12px">'+list.length+' offices &#183; sorted by recommended</div>'
+      +'<div class="muted" style="font-size:13px;margin-bottom:12px">'+list.length+' offices'+((F.center&&F.center.label)?(' within '+F.within+' mi of '+esc(F.center.label)):'')+' &#183; live directory &#183; sorted by recommended</div>'
       +(list.length?list.map(dcardHTML).join(''):'<div class="card pad" style="text-align:center"><div style="font-size:30px;margin-bottom:8px">&#129441;</div><b>No offices match those filters.</b><div class="muted" style="font-size:13px;margin-top:4px">Loosen a filter, widen the radius, or ask your concierge.</div></div>')
       +'</div><div class="mapwrap show" id="mapwrap"><div id="lmap"></div><button class="btn btn-ink btn-sm fs-here" id="mapHere" onclick="ccFindHere()" style="display:none">&#8635; Search this area</button></div></div>';
   } else if(view==='rec'){
@@ -1028,13 +1030,13 @@ function vFind(){
       +'<div class="card pad" style="display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap;margin-top:8px"><div><b>Need help deciding?</b><div class="muted" style="font-size:12.5px;margin-top:2px">Tell your concierge what you need and get a shortlist that fits your plan.</div></div><button class="btn btn-ink btn-sm" data-cc="open">Ask concierge</button></div>';
   } else if(view==='list'){
     body='<div class="lgrid"><div class="rtree card pad" id="rtree">'+((typeof window!=='undefined'&&window.__ccRegionHTML)||'<div class="muted" style="font-size:12.5px">Loading regions&hellip;</div>')+'</div>'
-      +'<div id="findList"><div class="muted" style="font-size:13px;margin-bottom:12px">'+list.length+' offices &#183; sorted by recommended</div>'
+      +'<div id="findList"><div class="muted" style="font-size:13px;margin-bottom:12px">'+list.length+' offices'+((F.center&&F.center.label)?(' within '+F.within+' mi of '+esc(F.center.label)):'')+' &#183; live directory &#183; sorted by recommended</div>'
       +(list.length?list.map(dcardHTML).join(''):'<div class="card pad" style="text-align:center"><b>No offices match.</b><div class="muted" style="font-size:13px;margin-top:4px">Pick a city on the left, widen the radius, or ask your concierge.</div></div>')
       +'</div></div>';
   } else if(view==='map'){
     body='<div class="mapwrap show" id="mapwrap" style="position:static"><div id="lmap" style="height:min(78vh,720px)"></div><button class="btn btn-ink btn-sm fs-here" id="mapHere" onclick="ccFindHere()" style="display:none">&#8635; Search this area</button></div>';
   } else {
-    body='<div id="findList" class="gridv"><div class="muted" style="font-size:13px;margin-bottom:2px;grid-column:1/-1">'+list.length+' offices &#183; sorted by recommended</div>'
+    body='<div id="findList" class="gridv"><div class="muted" style="font-size:13px;margin-bottom:2px;grid-column:1/-1">'+list.length+' offices'+((F.center&&F.center.label)?(' within '+F.within+' mi of '+esc(F.center.label)):'')+' &#183; live directory &#183; sorted by recommended</div>'
       +(list.length?list.map(dcardHTML).join(''):'<div class="card pad" style="text-align:center;grid-column:1/-1"><b>No offices match those filters.</b><div class="muted" style="font-size:13px;margin-top:4px">Loosen a filter or widen the radius.</div></div>')
       +'</div>';
   }
@@ -2785,7 +2787,8 @@ function ccRefreshUI(){
   var fl=document.getElementById('findList');
   if(fl){
     var cards=list.length?list.map(dcardHTML).join(''):'<div class="card pad" style="text-align:center"><b>No offices in this radius.</b><div class="muted" style="font-size:13px;margin-top:4px">Widen the radius or change the location.</div></div>';
-    fl.innerHTML='<div class="muted" style="font-size:13px;margin-bottom:12px">'+list.length+' offices &#183; sorted by recommended</div>'+cards;
+    var scope=(S.find.center&&S.find.center.label)?(' within '+S.find.within+' mi of '+esc(S.find.center.label)):'';
+    fl.innerHTML='<div class="muted" style="font-size:13px;margin-bottom:12px">'+list.length+' offices'+scope+' &#183; live directory &#183; sorted by recommended</div>'+cards;
     try{ ccFindPaginate(); }catch(e){}
   }
   try{ ccRegionChips(); }catch(e){}
@@ -2887,7 +2890,10 @@ window.ccFindPaginate=function(){
   var p=S.find.page;
   cards.forEach(function(cd,i){ cd.style.display=(i>=(p-1)*PAGE_SIZE && i<p*PAGE_SIZE)?'':'none'; });
   var cnt=listEl.querySelector('.muted');
-  if(cnt) cnt.innerHTML=n+' office'+(n===1?'':'s')+' &#183; sorted by recommended'+(pages>1?' &#183; page '+p+' of '+pages:'');
+  if(cnt){
+    var scope=(S.find.center&&S.find.center.label)?(' within '+S.find.within+' mi of '+esc(S.find.center.label)):'';
+    cnt.innerHTML=n+' office'+(n===1?'':'s')+scope+' &#183; live directory'+(pages>1?' &#183; page '+p+' of '+pages:'');
+  }
   if(pages>1){
     var pg=document.createElement('div'); pg.id='fpager'; pg.className='fpager';
     pg.innerHTML='<button class="btn btn-ghost btn-sm" '+(p<=1?'disabled':'')+' onclick="ccFindPage(-1)">&#8592; Previous</button>'
@@ -2940,6 +2946,17 @@ function autoDefault(){
     refresh();
   }
   setTimeout(fallback,4000);
+  setTimeout(function(){
+    if(!S.find.center){
+      console.error('CoverCapy: no location anchor; results are the unscoped fallback list');
+      var fl=document.getElementById('findList');
+      if(fl && !document.getElementById('anchorWarn')){
+        var w=document.createElement('div'); w.id='anchorWarn'; w.className='insstrip noppo'; w.style.marginBottom='12px';
+        w.innerHTML='<div><b>Location not set.</b><div class="muted" style="font-size:12px;margin-top:2px">You are seeing a small sample. Pick a city or tap the pin to load every office near you.</div></div><button class="btn btn-ink btn-sm" onclick="ccFindLocate()">&#128205; Use my location</button>';
+        fl.parentNode.insertBefore(w,fl);
+      }
+    }
+  },6000);
   window.__supa.rpc('nav_search_suggest',{q:q,max_n:3}).then(function(r){
     if(settled) return;
     var hit=((r&&r.data)||[]).filter(function(x){ return x.lat!=null&&x.lng!=null; })[0];
