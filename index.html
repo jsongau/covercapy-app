@@ -316,8 +316,11 @@ window.__supa=window.supabase.createClient(__CC.url,__CC.key);
     supa.auth.signUp({email:e.value.trim(),password:p.value,options:{emailRedirectTo:location.origin+'/app.html'}}).then(function(r){
       cbtn.removeAttribute('aria-busy');
       if(r.error){ err.textContent=r.error.message; err.classList.add('show'); return; }
-      if(r.data && r.data.session){ window.__pendingConfirm=false; runCelebrate('Welcome to CoverCapy.'); }
-      else { window.__pendingConfirm=true; runCelebrate('Check your email to confirm.'); }
+      if(r.data && r.data.session){ window.__pendingConfirm=false; runCelebrate('Welcome to CoverCapy.'); return; }
+      supa.auth.signInWithPassword({email:e.value.trim(),password:p.value}).then(function(r2){
+        if(r2.data && r2.data.session){ window.__pendingConfirm=false; runCelebrate('Welcome to CoverCapy.'); }
+        else { window.__pendingConfirm=true; runCelebrate('Check your email to confirm.'); }
+      });
     });
   });
 
