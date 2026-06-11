@@ -183,6 +183,8 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .locbtn{flex:none;width:30px;height:30px;border-radius:9px;border:1.5px solid var(--line);background:var(--cream);cursor:pointer;font-size:13px;display:grid;place-items:center;padding:0}
 .locbtn:hover{border-color:var(--mint);background:var(--mint-soft)}
 .locbtn.busy{opacity:.5;pointer-events:none}
+.radbtn{flex:none;width:26px;height:26px;border-radius:8px;border:1.5px solid var(--line);background:var(--cream);cursor:pointer;font-size:14px;font-weight:800;display:grid;place-items:center;padding:0;color:var(--ink)}
+.radbtn:hover{border-color:var(--mint);background:var(--mint-soft)}
 .fcell.omni{position:relative}
 .fomni{position:absolute;top:calc(100% + 8px);left:-1.5px;right:-1.5px;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);z-index:60;max-height:380px;overflow:auto;padding:6px}
 .fomni-sec{font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);padding:9px 11px 4px}
@@ -305,7 +307,7 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .pin.tier .pb{background:var(--gold);color:#fff}
 .pin.elite .pb{background:var(--plum);color:#fff}
 .pin.on .pb{background:var(--mint);color:var(--ink);transform:scale(1.12)}
-.map-toggle{display:none;margin-bottom:12px}
+.map-toggle{display:flex;gap:8px;margin-bottom:0}
 @media(max-width:899px){.map-toggle{display:flex;gap:8px}}
 
 /* rich dentist card */
@@ -708,7 +710,7 @@ var INS={
 };
 
 
-var S={role:null,p:null,dTier:'accredited',find:{filters:{},landmark:'all',q:'Costa Mesa, CA',treatment:'',ppo:'',within:25,minRating:0,compare:[]},nomTarget:null,nomIdx:null,nomKind:'intro',nomPick:null,chosenPlan:null,ownPlan:false,addKind:null,switchFrom:null,dCredit:null};
+var S={role:null,p:null,dTier:'accredited',find:{filters:{},landmark:'all',q:'Costa Mesa, CA',treatment:'',ppo:'',within:50,minRating:0,compare:[]},nomTarget:null,nomIdx:null,nomKind:'intro',nomPick:null,chosenPlan:null,ownPlan:false,addKind:null,switchFrom:null,dCredit:null};
 
 /* ===== gate ===== */
 function renderGate(){
@@ -936,7 +938,7 @@ function vFind(){
    +'<div class="fcell" style="position:relative"><label>Location</label><div style="display:flex;gap:6px;align-items:center"><input value="'+esc(F.q)+'" id="findQ" placeholder="City, ZIP, office, or dentist" aria-label="Location" style="flex:1;min-width:0"><button type="button" class="locbtn" onclick="ccFindLocate()" title="Use my current location" aria-label="Use my current location">&#128205;</button></div></div>'
    +'<div class="fcell"><label>Treatment</label><select id="findTreat">'+topt()+'</select></div>'
    +'<div class="fcell"><label>Your PPO</label><select id="findPPO">'+popt()+'</select></div>'
-   +'<div class="fcell"><label>Within <b id="findWithinLbl">'+F.within+' mi</b></label><div class="within-row"><input type="range" id="findWithin" min="5" max="50" step="5" value="'+F.within+'"></div></div>'
+   +'<div class="fcell"><label>Within <b id="findWithinLbl">'+F.within+' mi</b></label><div class="within-row"><button type="button" class="radbtn" data-rstep="-1" aria-label="Decrease radius">&#8722;</button><input type="range" id="findWithin" min="5" max="50" step="1" value="'+F.within+'"><button type="button" class="radbtn" data-rstep="1" aria-label="Increase radius">+</button></div></div>'
   +'</div>'
   +'<div class="fhead">'
    +'<div class="chips" style="margin-bottom:0">'+chip('weekends','Open weekends')+chip('offer','Has an offer or reward')+chip('acceptingNew','Accepting new patients')+chip('onlineBooking','Online booking')+chip('english','English')+chip('spanish','Spanish')+'</div>'
@@ -2270,10 +2272,10 @@ function ccLoadNoms(){
     });
   }).catch(function(e){ console.error('CoverCapy boot error', e); location.replace(window.__CC.login); });
 })();
-})();
-</script>
 
-<script>
+
+/* ===== merged feature layers (run inside the app closure) ===== */
+
 /* ============================================================
    Find a Dentist: real location search (omnibox layer).
    - Suggestions from Supabase nav_search_suggest (cities/ZIPs/
@@ -2397,6 +2399,10 @@ function go(lat,lng,label){
   recAdd(label,lat,lng); prefSave();
   refresh();
 }
+window.ccGoSearch=go;
+window.profileSheet=profileSheet;
+window.nominateSheet=nominateSheet;
+window.ccFindMapRetry=function(){ _mapTries=0; ccFindMap(); };
 function byName(name){
   if(!window.__supa){ return; }
   window.__supa.rpc('search_dentists_near_location',{location_name:name,radius_miles:S.find.within||25}).then(function(r){
@@ -2488,7 +2494,7 @@ function scoreOf(d){
 }
 /* typed-but-unselected text still filters the loaded list */
 var _filtered=filteredDentists;
-window.filteredDentists=function(){
+filteredDentists=function(){
   var list=_filtered();
   var q=(S.find.q||'').trim();
   var c=S.find.center;
@@ -2644,7 +2650,7 @@ function ccFindMap(){
   if(!window.L){
     _mapTries++;
     if(_mapTries>20){
-      el.innerHTML='<div style="height:100%;display:grid;place-items:center;text-align:center;padding:24px"><div><div style="font-size:26px;margin-bottom:8px">&#128506;</div><b>The map could not load.</b><div class="muted" style="font-size:12.5px;margin:6px 0 12px;max-width:260px">Your network may block the map library. The office list and search still work.</div><button class="btn btn-ink btn-sm" onclick="_mapTries=0;ccFindMap()">Try again</button></div></div>';
+      el.innerHTML='<div style="height:100%;display:grid;place-items:center;text-align:center;padding:24px"><div><div style="font-size:26px;margin-bottom:8px">&#128506;</div><b>The map could not load.</b><div class="muted" style="font-size:12.5px;margin:6px 0 12px;max-width:260px">Your network may block the map library. The office list and search still work.</div><button class="btn btn-ink btn-sm" onclick="ccFindMapRetry()">Try again</button></div></div>';
       return;
     }
     setTimeout(ccFindMap,400); return;
@@ -2710,7 +2716,7 @@ window.ccRegionGo=function(i){ var r=window.__ccRegs[i]; if(!r) return; go(r.lat
 
 /* ---- nomination state shows on cards ---- */
 var _dcard=dcardHTML;
-window.dcardHTML=function(d){
+dcardHTML=function(d){
   var h=_dcard(d);
   try{
     var nom=((S.p&&S.p.noms)||[]).filter(function(n){ return norm(n.name)===norm(d.name); })[0];
@@ -2721,12 +2727,11 @@ window.dcardHTML=function(d){
 };
 
 var _after=afterRender;
-window.afterRender=function(id){ _after(id); if(id==='find'){ try{ wire(); }catch(e){} try{ ccFindPaginate(); }catch(e){} try{ ccFindMap(); }catch(e){} try{ ccRegionChips(); }catch(e){} } };
+afterRender=function(id){ _after(id); if(id==='find'){ try{ wire(); }catch(e){} try{ ccFindPaginate(); }catch(e){} try{ ccFindMap(); }catch(e){} try{ ccRegionChips(); }catch(e){} } };
 if(S && S.find && !('center' in S.find)) S.find.center=null;
 })();
-</script>
 
-<script>
+
 /* ============================================================
    V30 Phase 2: Profile, Settings, Notification Center, My
    Offices pipeline, avatar account menu. Additive layer.
@@ -2893,7 +2898,7 @@ function markAllRead(){
 /* ---- register routes + wiring ---- */
 VIEWS.profile=vProfile; VIEWS.settings=vSettings; VIEWS.inbox=vInbox;
 var _after2=afterRender;
-window.afterRender=function(id){
+afterRender=function(id){
   _after2(id);
   if(id==='settings'){
     var sv=document.getElementById('sgSave'); if(sv) sv.addEventListener('click',saveSettings);
@@ -2946,9 +2951,8 @@ document.addEventListener('click',function(e){
   try{ closeSheet(); }catch(_){}
 });
 })();
-</script>
 
-<script>
+
 /* ============================================================
    V31: shelves, region hierarchy, favorites, header controls.
    ============================================================ */
@@ -3064,7 +3068,18 @@ window.__ccRegionHTML=null;
 document.addEventListener('click',function(e){
   var b=e.target.closest&&e.target.closest('[data-rgo]'); if(!b) return;
   var p=b.dataset.rgo.split('|');
-  try{ go(+p[0],+p[1],p[2]); }catch(err){ console.error(err); }
+  try{ window.ccGoSearch(+p[0],+p[1],p[2]); }catch(err){ console.error(err); }
+});
+
+/* ---- radius stepper (+/- in 1-mile increments) ---- */
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-rstep]'); if(!b) return;
+  var fw=document.getElementById('findWithin'); if(!fw) return;
+  var v=Math.max(5,Math.min(50,(+fw.value||50)+(+b.dataset.rstep)));
+  fw.value=v;
+  var lbl=document.getElementById('findWithinLbl'); if(lbl) lbl.textContent=v+' mi';
+  S.find.within=v;
+  try{ fw.dispatchEvent(new Event('change',{bubbles:true})); }catch(err){}
 });
 
 /* ---- header change chips + insurance one-click ---- */
@@ -3080,6 +3095,10 @@ document.addEventListener('click',function(e){
   if(g){ S.find.preset='bestppo'; S.find.view='grid'; S.find.page=1; try{ route(); }catch(_){ } }
 });
 })();
-</script>
+
+})();</script>
+
+
+
 </body>
 </html>
