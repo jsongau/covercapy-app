@@ -1922,6 +1922,33 @@ function ccLoadDentists(){ try{
     });
 }catch(e){ console.warn('dentists load failed', e); } }
 ccLoadDentists();
+function ccMapPlan(w){
+  var bs=(w.benefits_summary&&typeof w.benefits_summary==='object')?w.benefits_summary:{};
+  var wp=(w.waiting_periods&&typeof w.waiting_periods==='object')?w.waiting_periods:{};
+  var dc=w.deductible_cents, dm=w.deductible_met_cents, mx=w.annual_maximum_cents, us=w.annual_used_cents;
+  return { id:w.id, carrier:w.carrier||'', name:w.plan_name||w.carrier||'Dental plan',
+    type:((w.plan_type||'ppo')+'').toUpperCase(), role:w.plan_role||'primary', status:w.status||'active',
+    source:w.plan_source||'', cc:!!w.enrolled_via_covercapy, member:w.member_id||'',
+    effective:w.effective_date||null, renewal:w.renewal_date||null,
+    premium:(w.monthly_premium_cents!=null?Math.round(w.monthly_premium_cents/100):0),
+    deductible:(dc!=null?Math.round(dc/100):0), deductibleMet:(dc!=null?((dm||0)>=dc):false),
+    annualMax:(mx!=null?Math.round(mx/100):0), remaining:(mx!=null?Math.round((mx-(us||0))/100):0),
+    prev:(bs.preventive||bs.prev||100), basic:(bs.basic||80), major:(bs.major||50),
+    waiting:(wp.summary||wp.note||'None'), network:(bs.network||'Confirm with your office at booking'),
+    dependents:(Array.isArray(w.dependents)?w.dependents.map(function(d){return (typeof d==='string')?d:((d&&(d.name||d.relation))||'Dependent');}):[]),
+    requestedAt:(w.verification_requested_at?(''+w.verification_requested_at).slice(0,10):null),
+    verifiedAt:(w.last_verified_at?(''+w.last_verified_at).slice(0,10):null),
+    verifySource:w.verify_source||'CoverCapy team' };
+}
+function ccLoadCoverage(){
+  if(!window.__ccUID||!window.__supa){ return; }
+  window.__supa.from('insurance_wallets').select('id,carrier,plan_name,plan_type,plan_role,status,plan_source,member_id,effective_date,renewal_date,monthly_premium_cents,deductible_cents,deductible_met_cents,annual_maximum_cents,annual_used_cents,enrolled_via_covercapy,verify_source,last_verified_at,verification_requested_at,benefits_summary,waiting_periods,dependents').then(function(res){
+    if(res.error||!res.data){ return; }
+    S.p.plans=res.data.map(ccMapPlan);
+    try{ S.p.journey.plan = S.p.plans.some(function(x){return x.status==='active';})?1:0; }catch(e){}
+    if(/coverage|home/.test(location.hash||'')&&typeof route==='function'){ route(); }
+  });
+}
 function ccLoadNoms(){
   if(!window.__ccUID||!window.__supa){ return; }
   window.__supa.from('dentist_nominations').select('id,nominee_name,nominee_city,nominee_state,stage,credited,created_at,dentist_id').order('created_at',{ascending:true}).then(function(res){
@@ -1958,7 +1985,7 @@ function ccLoadNoms(){
         blurb:'Live CoverCapy account', email:email, uid:uid };
       var g=$('gate'); if(g) g.classList.add('hidden');
       renderChrome();
-      go('home'); route(); window.__ccUID=uid; ccLoadNoms();
+      go('home'); route(); window.__ccUID=uid; ccLoadNoms(); ccLoadCoverage();
       var sw=$('switchSeat');
       if(sw){ sw.textContent='Sign out'; var sw2=sw.cloneNode(true); sw.parentNode.replaceChild(sw2,sw);
         sw2.addEventListener('click',function(){ supa.auth.signOut().then(function(){ location.replace(window.__CC.login); }); }); }
