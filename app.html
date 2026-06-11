@@ -202,7 +202,11 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .fpager{display:flex;align-items:center;justify-content:center;gap:14px;margin:18px 0 6px}
 .fpager .fpg-lbl{font-size:12.5px;font-weight:700;color:var(--slate)}
 .fpager button[disabled]{opacity:.4;pointer-events:none}
-#lmap{height:min(72vh,640px);border-radius:var(--rad);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden;z-index:1}
+#lmap{height:min(72vh,640px);min-height:420px;border-radius:var(--rad);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden;z-index:1;position:relative}
+#findList{min-height:420px;position:relative}
+.busyveil::after{content:"";position:absolute;inset:0;background:rgba(251,246,236,.55);z-index:40;border-radius:inherit}
+.busyveil::before{content:"";position:absolute;top:50%;left:50%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--ink);animation:ccspin .7s linear infinite;z-index:41}
+@keyframes ccspin{to{transform:rotate(360deg)}}
 .fs-here{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:800;box-shadow:var(--shadow-lg)}
 .lpin-w{background:none;border:none}
 .lpin{display:flex;flex-direction:column;align-items:center;transform:translate(-50%,-100%);cursor:pointer}
@@ -763,7 +767,7 @@ var INS={
 };
 
 
-var S={role:null,p:null,dTier:'accredited',find:{filters:{},landmark:'all',q:'Costa Mesa, CA',treatment:'',ppo:'',within:50,minRating:0,compare:[]},nomTarget:null,nomIdx:null,nomKind:'intro',nomPick:null,chosenPlan:null,ownPlan:false,addKind:null,switchFrom:null,dCredit:null};
+var S={role:null,p:null,dTier:'accredited',find:{filters:{},landmark:'all',q:'Costa Mesa, CA',treatment:'',ppo:'',within:30,minRating:0,compare:[]},nomTarget:null,nomIdx:null,nomKind:'intro',nomPick:null,chosenPlan:null,ownPlan:false,addKind:null,switchFrom:null,dCredit:null};
 
 /* ===== gate ===== */
 function renderGate(){
@@ -999,7 +1003,7 @@ function vFind(){
    +'<div class="fcell" style="position:relative"><label>Location</label><div style="display:flex;gap:6px;align-items:center"><input value="'+esc(F.q)+'" id="findQ" placeholder="City, ZIP, office, or dentist" aria-label="Location" style="flex:1;min-width:0"><button type="button" class="locbtn" onclick="ccFindLocate()" title="Use my current location" aria-label="Use my current location">&#128205;</button></div></div>'
    +'<div class="fcell"><label>Treatment</label><select id="findTreat">'+topt()+'</select></div>'
    +'<div class="fcell"><label>Your PPO</label><select id="findPPO">'+popt()+'</select></div>'
-   +'<div class="fcell"><label>Within <b id="findWithinLbl">'+F.within+' mi</b></label><div class="within-row"><button type="button" class="radbtn" data-rstep="-1" aria-label="Decrease radius">&#8722;</button><input type="range" id="findWithin" min="5" max="50" step="1" value="'+F.within+'"><button type="button" class="radbtn" data-rstep="1" aria-label="Increase radius">+</button></div></div>'
+   +'<div class="fcell"><label>Within <b id="findWithinLbl">'+F.within+' mi</b></label><div class="within-row"><button type="button" class="radbtn" data-rstep="-1" aria-label="Decrease radius">&#8722;</button><input type="range" id="findWithin" min="1" max="30" step="1" value="'+F.within+'"><button type="button" class="radbtn" data-rstep="1" aria-label="Increase radius">+</button></div></div>'
   +'</div>'
   +(function(){
      var n=0; ['weekends','offer','acceptingNew','onlineBooking','english','spanish'].forEach(function(k){ if(f[k]) n++; });
@@ -1328,7 +1332,10 @@ function afterRender(id){
     var ft=$('findTreat'); if(ft) ft.addEventListener('change',function(){S.find.treatment=this.value;route();});
     var fp=$('findPPO'); if(fp) fp.addEventListener('change',function(){S.find.ppo=this.value;route();});
     var fr=$('findRating'); if(fr) fr.addEventListener('change',function(){S.find.minRating=parseFloat(this.value);route();});
-    var fw=$('findWithin'); if(fw) fw.addEventListener('change',function(){S.find.within=+this.value;route();});
+    var fw=$('findWithin'); if(fw) fw.addEventListener('change',function(){
+      var v=Math.max(1,Math.min(30,+this.value||30)); this.value=v; S.find.within=v;
+      if(window.ccRadiusGo){ window.ccRadiusGo(); } else { route(); }
+    });
     if(fw){var lbl=$('findWithinLbl'); fw.addEventListener('input',function(){if(lbl)lbl.textContent=this.value+' mi';});}
     var ml=$('mtList'),mm=$('mtMap'),mw=$('mapwrap'),fl=$('findList');
     if(ml&&mm){ml.addEventListener('click',function(){mw.classList.remove('show');fl.classList.remove('hidden');ml.className='btn btn-ink btn-sm';mm.className='btn btn-ghost btn-sm';});
@@ -1986,7 +1993,7 @@ function vRewards(){
      return '<button class="gcard" data-gift="'+g[0]+'|'+g[1].replace(/&#39;/g,"&#39;")+'" style="background:linear-gradient(135deg,'+g[2]+')">'+(m[1]?'<span class="gtag">'+m[1]+'</span>':'')+'<span class="gb">'+g[1]+'</span><div class="gfoot"><span class="gv">$150</span><span class="gd">10,000 &#128142;</span></div></button>';
    }).join('')+'</div>'
   +(can?'':'<div class="muted" style="font-size:12px;margin-top:8px;text-align:center">The wall unlocks at 10,000 Diamond Crowns. You are '+pct+'% of the way.</div>')
-  /* LOCAL REWARDS — the marketplace seed */
+  /* LOCAL REWARDS, the marketplace seed */
   +'<div class="slabel" style="margin-top:26px"><h3>Local rewards</h3><span class="muted" style="font-size:12px">&#128081; crowns &#183; funded by participating offices near you</span></div>'
   +'<div class="muted" style="font-size:11.5px;margin:0 0 10px;line-height:1.5">Real treatments at real offices: this is the start of the CoverCapy local marketplace. The whitening session unlocks at a participating office once a friend you referred visits it.</div>'
   +TREATS.map(function(t){var ok=p.crowns>=t[3];
@@ -2592,7 +2599,7 @@ function refresh(){
     try{ route(); }catch(e){}
   }
   setTimeout(clientFallback,5000);
-  window.__supa.rpc('search_dentists_near_coordinates',{in_lat:c.lat,in_lng:c.lng,radius_miles:Math.max(S.find.within||25, PLAT_REACH)}).then(function(r){
+  window.__supa.rpc('search_dentists_near_coordinates',{in_lat:c.lat,in_lng:c.lng,radius_miles:Math.max(1,Math.min(30,S.find.within||30))}).then(function(r){
     if(done) return;
     if(r&&r.error){ console.error('CoverCapy: geo search failed', r.error); clientFallback(); return; }
     done=true;
@@ -2612,33 +2619,97 @@ window.ccFindLocate=function(){
     alert('Could not get your location. Check the browser location permission and try again.');
   }, {enableHighAccuracy:false, timeout:8000, maximumAge:300000});
 };
+function rowFromRpc(x,i){
+  var t=x.tier==='platinum_elite'?'elite':x.tier==='capy_accredited'?'tier':'pend';
+  var pend=['Pending Verification','Pending Profile Claim','Recently Added'];
+  var tag=t==='elite'?'Platinum Elite':t==='tier'?'Capy Accredited':pend[i%3];
+  var mi=+x.distance_miles;
+  return { id:x.id, name:x.practice_name||'Dental office', doc:x.doctor||'General dentistry',
+    city:x.city||'', zip:x.zip||'', mi:(isFinite(mi)?Math.round(mi*10)/10:0),
+    rating:Math.round(((+x.rating)||0)*10)/10, reviews:x.review_count||0,
+    tier:t, tag:tag, av:'&#129441;', fit:'ask', cost:'Ask the office', accepts:[],
+    line:'', themes:[], langs:[], weekends:false, kids:false, offer:false, acceptingNew:true,
+    onlineBooking:false, treatments:[], landmark:'all', hasEmail:true, missing:[],
+    website:'', booking_url:'', phone:'', lat:+x.lat, lng:+x.lng, _lite:true };
+}
+var ORDER_IDX={};
 function loadByIds(data){
-  var ids=data.map(function(x){ return x.id; }).slice(0,60);
-  var dist={}; data.forEach(function(x){ dist[x.id]=+x.distance_miles; });
-  if(!ids.length){ DEMO_DATA.dentists=[]; try{ route(); }catch(e){} return; }
+  /* hold the full result set in memory, keep server order, no second bulk fetch */
+  var rows=data.map(rowFromRpc);
+  ORDER_IDX={}; rows.forEach(function(d,i){ ORDER_IDX[d.id]=i; });
+  DEMO_DATA.dentists=rows;
+  S.find.page=1;
+  ccBusy(false);
+  if(window.__radiusLive){ window.__radiusLive=false; ccRefreshUI(); }
+  else { try{ route(); }catch(e){} }
+  enrichPage();
+}
+var ENRICH_CACHE={};
+function enrichPage(){
+  if(!window.__supa) return;
+  var per=12, p=S.find.page||1;
+  var list=filteredDentists();
+  var ids=list.slice((p-1)*per,p*per).filter(function(d){ return d._lite&&!ENRICH_CACHE[d.id]; }).map(function(d){ return d.id; });
+  if(!ids.length) return;
+  ids.forEach(function(id){ ENRICH_CACHE[id]=1; });
   window.__supa.from('dentists')
-    .select('id,name,practice_name,doctor_name,city,state,zip,website,booking_url,phone,short_description,insurance_networks,procedures,specialties,languages,review_themes,open_weekends,accreditation_status,membership_tier,featured_tier,pending_display_label,weighted_rating,weighted_review_count,aggregate_rating,aggregate_review_count,google_rating,google_review_count,latitude,longitude,distance_miles,email')
-    .in('id',ids).then(function(res){
-      if(res.error||!res.data){ return; }
-      var rows=res.data.map(ccMapDentist);
-      rows.forEach(function(d){ if(dist[d.id]!=null&&isFinite(dist[d.id])){ d.mi=Math.round(dist[d.id]*10)/10; } });
-      /* ppodentists visibility rule: hide offices past the radius, EXCEPT Platinum Elite which stays visible to 18 mi */
-      var within=S.find.within||25;
-      rows=rows.filter(function(d){
-        var dm=(typeof d.mi==='number')?d.mi:null; if(dm==null) return true;
-        var reach=(d.tier==='elite')?Math.max(within,PLAT_REACH):within;
-        return dm<=reach+0.5;
+    .select('id,doctor_name,website,booking_url,phone,short_description,insurance_networks,procedures,specialties,languages,review_themes,open_weekends,pending_display_label,email')
+    .in('id',ids).then(function(r){
+      if(r.error||!r.data) return;
+      var by={}; (DEMO_DATA.dentists||[]).forEach(function(d){ by[d.id]=d; });
+      r.data.forEach(function(x){
+        var d=by[x.id]; if(!d) return;
+        d.doc=x.doctor_name||d.doc;
+        d.website=x.website||''; d.booking_url=x.booking_url||''; d.phone=x.phone||'';
+        d.onlineBooking=!!x.booking_url;
+        d.line=x.short_description||'';
+        d.accepts=Array.isArray(x.insurance_networks)?x.insurance_networks:[];
+        d.fit=d.accepts.length?'strong':'ask';
+        d.treatments=(Array.isArray(x.procedures)&&x.procedures.length)?x.procedures:(Array.isArray(x.specialties)?x.specialties:[]);
+        d.langs=(Array.isArray(x.languages)&&x.languages.length)?x.languages:['English'];
+        d.weekends=!!x.open_weekends;
+        d.hasEmail=!!x.email;
+        d.missing=[]; if(!x.email) d.missing.push('email'); if(!x.website) d.missing.push('website');
+        if(d.tier==='pend'&&x.pending_display_label) d.tag=x.pending_display_label;
+        var themes=[];
+        if(Array.isArray(x.review_themes)){ x.review_themes.forEach(function(t){
+          if(Array.isArray(t)&&t.length>=2){ themes.push([String(t[0]),ccNum(t[1])]); }
+          else if(t&&typeof t==='object'){ var lbl=t.theme||t.label||t.name, pct=ccNum(t.pct||t.percent||t.count); if(lbl&&pct){ themes.push([String(lbl),pct]); } }
+        }); }
+        d.themes=themes;
+        d._lite=false;
       });
-      /* one card per Platinum practice: keep the nearest location */
-      rows.sort(function(a,b){ return ((+a.mi||999)-(+b.mi||999)); });
-      var seenP={};
-      rows=rows.filter(function(d){ if(d.tier!=='elite') return true; var k=(d.name||'').toLowerCase(); if(seenP[k]) return false; seenP[k]=1; return true; });
-      rows.sort(function(a,b){ return scoreOf(b)-scoreOf(a); });
-      ccLayoutPins(rows); DEMO_DATA.dentists=rows;
-      S.find.page=1;
-      try{ route(); }catch(e){}
+      ccRefreshUI();
     });
 }
+function ccBusy(on){
+  ['findList','lmap'].forEach(function(id){ var el=document.getElementById(id); if(el) el.classList.toggle('busyveil',!!on); });
+}
+function ccRefreshUI(){
+  /* refresh results and markers in place; never rebuild the page or the map node */
+  var list=filteredDentists();
+  var fl=document.getElementById('findList');
+  if(fl){
+    var cards=list.length?list.map(dcardHTML).join(''):'<div class="card pad" style="text-align:center"><b>No offices in this radius.</b><div class="muted" style="font-size:13px;margin-top:4px">Widen the radius or change the location.</div></div>';
+    fl.innerHTML='<div class="muted" style="font-size:13px;margin-bottom:12px">'+list.length+' offices &#183; sorted by recommended</div>'+cards;
+    try{ ccFindPaginate(); }catch(e){}
+  }
+  try{ ccRegionChips(); }catch(e){}
+  try{ ccFindMap(); }catch(e){}
+  var g=document.querySelector('.phead .guide b');
+  if(g&&S.find.center&&S.find.center.label) g.textContent=S.find.center.label;
+}
+var _radT=null;
+window.ccRadiusGo=function(){
+  /* debounced radius search: a burst of clicks fires one query, no layout teardown */
+  prefSave();
+  clearTimeout(_radT);
+  ccBusy(true);
+  _radT=setTimeout(function(){
+    if(S.find.center&&S.find.center.lat!=null){ window.__radiusLive=true; refresh(); }
+    else { ccBusy(false); try{ route(); }catch(e){} }
+  },300);
+};
 
 /* ppodentists ranking, ported: distance 40%, tier 30%, profile quality 10%,
    rewards 10% (no signal yet -> 0), engagement 10%. A close Capy Accredited
@@ -2663,7 +2734,7 @@ filteredDentists=function(){
     var f=list.filter(function(d){ return fzMatch(q,[d.name,d.doc,d.city,String(d.zip||'')].filter(Boolean).join(' ')); });
     if(f.length) list=f;
   }
-  if(c && c.lat!=null){ list=list.slice().sort(function(a,b){ return scoreOf(b)-scoreOf(a); }); }
+  if(c && c.lat!=null && Object.keys(ORDER_IDX).length){ list=list.slice().sort(function(a,b){ return (ORDER_IDX[a.id]||0)-(ORDER_IDX[b.id]||0); }); }
   list=applyPreset(list);
   return list;
 };
@@ -2712,7 +2783,7 @@ document.addEventListener('click',function(e){
 
 /* ---- 12 results per page ---- */
 var PAGE_SIZE=12;
-window.ccFindPage=function(d){ S.find.page=(S.find.page||1)+d; ccFindPaginate(); try{ document.getElementById('findList').scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){} };
+window.ccFindPage=function(d){ S.find.page=(S.find.page||1)+d; ccFindPaginate(); try{ enrichPage(); }catch(e){} try{ document.getElementById('findList').scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){} };
 window.ccFindPaginate=function(){
   var listEl=document.getElementById('findList'); if(!listEl) return;
   var cards=[].slice.call(listEl.querySelectorAll('.dcard'));
@@ -2797,7 +2868,7 @@ function wire(){
   inp.addEventListener('keydown', key);
   inp.addEventListener('focus', function(){ if(this.value.trim()) suggest(this.value.trim()); else home(); });
   var fw=document.getElementById('findWithin');
-  if(fw && !fw._omni){ fw._omni=1; fw.addEventListener('change', function(){ prefSave(); if(S.find.center&&S.find.center.lat!=null){ refresh(); } }); }
+  if(fw && !fw._omni){ fw._omni=1; }
 }
 document.addEventListener('mousedown', function(e){
   var b=box(); if(!b) return;
@@ -2817,10 +2888,19 @@ function ccFindMap(){
     setTimeout(ccFindMap,400); return;
   }
   _mapTries=0;
-  try{ if(window.__lmap){ window.__lmap.remove(); window.__lmap=null; } }catch(e){}
+  /* reuse the live map when its container is still in the document; only marker
+     contents change. A new container (full page render) gets a fresh instance. */
+  var m=window.__lmap;
+  var reuse = m && m._container===el && el.isConnected && window.__lgroup;
+  if(!reuse){
+    try{ if(m){ m.remove(); } }catch(e){}
+    m=L.map('lmap'); window.__lmap=m;
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',{maxZoom:19,subdomains:'abcd',attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(m);
+    window.__lgroup=L.layerGroup().addTo(m);
+    m.on('movestart',function(){ var b=document.getElementById('mapHere'); if(b) b.style.display=''; });
+  }
+  window.__lgroup.clearLayers();
   var list=filteredDentists().filter(function(d){ return d.lat&&d.lng; });
-  var m=L.map('lmap'); window.__lmap=m;
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',{maxZoom:19,subdomains:'abcd',attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(m);
   var pts=[];
   list.forEach(function(d){
     var cls=d.tier==='elite'?' elite':d.tier==='tier'?' tier':'';
@@ -2829,7 +2909,7 @@ function ccFindMap(){
     var ic=L.divIcon({className:'lpin-w',html:'<div class="ldot'+cls+'"'+(d.tier==='elite'?' title="Platinum Elite"':'')+'></div>',iconSize:[sz,sz],iconAnchor:[sz/2,sz/2]});
     var nm=String(d.name||'').replace(/\\/g,'').replace(/'/g,"\\'").replace(/"/g,'');
     var ct=String(d.city||'').replace(/\\/g,'').replace(/'/g,"\\'").replace(/"/g,'');
-    L.marker([d.lat,d.lng],{icon:ic}).addTo(m).bindTooltip(esc(d.name)+' &#183; &#9733; '+d.rating,{direction:'top',offset:[0,-6]}).bindPopup(
+    L.marker([d.lat,d.lng],{icon:ic}).addTo(window.__lgroup).bindTooltip(esc(d.name)+' &#183; &#9733; '+d.rating,{direction:'top',offset:[0,-6]}).bindPopup(
       '<div class="lpop"><b>'+esc(d.name)+'</b>'
       +'<div class="lpop-sub">'+esc(d.doc||'')+' &#183; '+(typeof d.mi==='number'?d.mi+' mi &#183; ':'')+'&#9733; '+d.rating+' ('+d.reviews+')'+(d.tier==='elite'?' &#183; <b style="color:var(--plum)">Featured</b>':'')+'</div>'
       +'<div class="lpop-act"><button class="btn btn-ink btn-sm" onclick="profileSheet(\''+d.id+'\')">View office</button>'
@@ -2838,8 +2918,8 @@ function ccFindMap(){
     pts.push([d.lat,d.lng]);
   });
   if(S.find.center&&S.find.center.lat!=null) pts.push([S.find.center.lat,S.find.center.lng]);
+  try{ m.invalidateSize(); }catch(e){}
   if(pts.length){ m.fitBounds(pts,{padding:[36,36],maxZoom:14}); } else { m.setView([33.68,-117.82],10); }
-  m.on('movestart',function(){ var b=document.getElementById('mapHere'); if(b) b.style.display=''; });
   setTimeout(function(){ try{ m.invalidateSize(); }catch(e){} },150);
 }
 window.ccFindHere=function(){
@@ -3327,11 +3407,11 @@ idleArm();
 document.addEventListener('click',function(e){
   var b=e.target.closest&&e.target.closest('[data-rstep]'); if(!b) return;
   var fw=document.getElementById('findWithin'); if(!fw) return;
-  var v=Math.max(5,Math.min(50,(+fw.value||50)+(+b.dataset.rstep)));
+  var v=Math.max(1,Math.min(30,(+fw.value||30)+(+b.dataset.rstep)));
   fw.value=v;
   var lbl=document.getElementById('findWithinLbl'); if(lbl) lbl.textContent=v+' mi';
   S.find.within=v;
-  try{ fw.dispatchEvent(new Event('change',{bubbles:true})); }catch(err){}
+  if(window.ccRadiusGo) window.ccRadiusGo();
 });
 
 /* ---- header change chips + insurance one-click ---- */

@@ -1003,7 +1003,7 @@ function vFind(){
    +'<div class="fcell" style="position:relative"><label>Location</label><div style="display:flex;gap:6px;align-items:center"><input value="'+esc(F.q)+'" id="findQ" placeholder="City, ZIP, office, or dentist" aria-label="Location" style="flex:1;min-width:0"><button type="button" class="locbtn" onclick="ccFindLocate()" title="Use my current location" aria-label="Use my current location">&#128205;</button></div></div>'
    +'<div class="fcell"><label>Treatment</label><select id="findTreat">'+topt()+'</select></div>'
    +'<div class="fcell"><label>Your PPO</label><select id="findPPO">'+popt()+'</select></div>'
-   +'<div class="fcell"><label>Within <b id="findWithinLbl">'+F.within+' mi</b></label><div class="within-row"><button type="button" class="radbtn" data-rstep="-1" aria-label="Decrease radius">&#8722;</button><input type="range" id="findWithin" min="5" max="30" step="1" value="'+F.within+'"><button type="button" class="radbtn" data-rstep="1" aria-label="Increase radius">+</button></div></div>'
+   +'<div class="fcell"><label>Within <b id="findWithinLbl">'+F.within+' mi</b></label><div class="within-row"><button type="button" class="radbtn" data-rstep="-1" aria-label="Decrease radius">&#8722;</button><input type="range" id="findWithin" min="1" max="30" step="1" value="'+F.within+'"><button type="button" class="radbtn" data-rstep="1" aria-label="Increase radius">+</button></div></div>'
   +'</div>'
   +(function(){
      var n=0; ['weekends','offer','acceptingNew','onlineBooking','english','spanish'].forEach(function(k){ if(f[k]) n++; });
@@ -1333,7 +1333,7 @@ function afterRender(id){
     var fp=$('findPPO'); if(fp) fp.addEventListener('change',function(){S.find.ppo=this.value;route();});
     var fr=$('findRating'); if(fr) fr.addEventListener('change',function(){S.find.minRating=parseFloat(this.value);route();});
     var fw=$('findWithin'); if(fw) fw.addEventListener('change',function(){
-      var v=Math.max(5,Math.min(30,+this.value||30)); this.value=v; S.find.within=v;
+      var v=Math.max(1,Math.min(30,+this.value||30)); this.value=v; S.find.within=v;
       if(window.ccRadiusGo){ window.ccRadiusGo(); } else { route(); }
     });
     if(fw){var lbl=$('findWithinLbl'); fw.addEventListener('input',function(){if(lbl)lbl.textContent=this.value+' mi';});}
@@ -2599,7 +2599,7 @@ function refresh(){
     try{ route(); }catch(e){}
   }
   setTimeout(clientFallback,5000);
-  window.__supa.rpc('search_dentists_near_coordinates',{in_lat:c.lat,in_lng:c.lng,radius_miles:Math.max(5,Math.min(30,S.find.within||30))}).then(function(r){
+  window.__supa.rpc('search_dentists_near_coordinates',{in_lat:c.lat,in_lng:c.lng,radius_miles:Math.max(1,Math.min(30,S.find.within||30))}).then(function(r){
     if(done) return;
     if(r&&r.error){ console.error('CoverCapy: geo search failed', r.error); clientFallback(); return; }
     done=true;
@@ -3407,7 +3407,7 @@ idleArm();
 document.addEventListener('click',function(e){
   var b=e.target.closest&&e.target.closest('[data-rstep]'); if(!b) return;
   var fw=document.getElementById('findWithin'); if(!fw) return;
-  var v=Math.max(5,Math.min(30,(+fw.value||30)+(+b.dataset.rstep)));
+  var v=Math.max(1,Math.min(30,(+fw.value||30)+(+b.dataset.rstep)));
   fw.value=v;
   var lbl=document.getElementById('findWithinLbl'); if(lbl) lbl.textContent=v+' mi';
   S.find.within=v;
