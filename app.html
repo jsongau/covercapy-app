@@ -1673,6 +1673,15 @@ function addInsSheet(){
       [['aiCarrier',carrier.length<2],['aiMember',member.length<3]].forEach(function(f){var el=$(f[0]);if(el&&f[1])el.style.borderColor='var(--gold)';});
       return;
     }
+    if(window.__ccUID&&window.__supa){
+      var lrole=INS.primary(S.p)?'secondary':'primary';
+      window.__supa.from('insurance_wallets').insert({user_id:window.__ccUID,carrier:carrier,plan_name:carrier+' plan',plan_type:'ppo',plan_role:lrole,status:'pending',member_id:member,group_number:group||null}).then(function(r){
+        if(r.error){ celebrate({em:'&#9888;',title:'Could not submit',body:r.error.message||'Please try again.'}); return; }
+        if(typeof ccLoadCoverage==='function'){ ccLoadCoverage(); }
+        celebrate({em:'&#129695;',title:'Submitted for verification',chip:'In review, usually same day',body:'Our team is checking your '+esc(carrier)+' plan with the carrier, usually same day. It shows as Verification requested until it clears, then your benefits and any crowns post automatically.'});
+      });
+      return;
+    }
     var today=fmtToday();
     var role=INS.primary(S.p)?'secondary':'primary';
     var award=firstEver?500:0;
@@ -1701,6 +1710,7 @@ function deletePlanSheet(id){
    +'<button class="btn btn-gold btn-full" id="delGo">Remove plan</button>'
    +'<button class="btn btn-ghost btn-full btn-sm" data-close="1" style="margin-top:8px">Keep it</button>');
   $('delGo').addEventListener('click',function(){
+    if(window.__ccUID&&window.__supa){ window.__supa.from('insurance_wallets').delete().eq('id',id); }
     S.p.plans=S.p.plans.filter(function(x){return x.id!==id;});
     if(!INS.primary(S.p)){
       // if the main plan was removed, promote an active additional plan
