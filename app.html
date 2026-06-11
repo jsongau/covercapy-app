@@ -210,6 +210,17 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .lpin .pt{width:2px;height:7px;background:var(--ink)}
 .lpin.tier .pb{background:var(--gold);color:#fff}
 .lpin.elite .pb{background:var(--plum);color:#fff}
+.ldot{width:100%;height:100%;border-radius:50%;background:var(--ink);border:2.5px solid #fff;box-shadow:0 2px 8px rgba(8,42,48,.4);cursor:pointer;transition:transform .12s}
+.ldot:hover{transform:scale(1.35)}
+.ldot.tier{background:var(--gold)}
+.ldot.elite{background:var(--plum);box-shadow:0 0 0 4px rgba(90,60,110,.22),0 3px 10px rgba(8,42,48,.4)}
+.ldot.sv{border-color:#ffd9d8}
+.leaflet-tooltip{font-family:Inter,system-ui,sans-serif;font-weight:700;font-size:11.5px;border-radius:9px;border:1px solid var(--line);box-shadow:var(--shadow)}
+.idlenudge{position:fixed;left:24px;bottom:24px;z-index:95;background:var(--paper);border:1.5px solid var(--line);border-radius:18px;box-shadow:var(--shadow-lg);padding:16px 18px;max-width:320px;opacity:0;transform:translateY(14px);transition:.3s}
+.idlenudge.show{opacity:1;transform:none}
+.idlenudge b{display:block;font-size:14px;margin-bottom:3px}
+.idlenudge span{display:block;font-size:12.5px;color:var(--slate);line-height:1.5;margin-bottom:10px}
+.idlenudge .in-act{display:flex;gap:8px}
 .lpop{font-family:Inter,system-ui,sans-serif;min-width:190px}
 .lpop b{font-size:13.5px}
 .lpop-sub{font-size:11.5px;color:var(--slate);margin:4px 0 9px}
@@ -945,15 +956,14 @@ function vFind(){
    +'<div class="fcell"><label>Your PPO</label><select id="findPPO">'+popt()+'</select></div>'
    +'<div class="fcell"><label>Within <b id="findWithinLbl">'+F.within+' mi</b></label><div class="within-row"><button type="button" class="radbtn" data-rstep="-1" aria-label="Decrease radius">&#8722;</button><input type="range" id="findWithin" min="5" max="50" step="1" value="'+F.within+'"><button type="button" class="radbtn" data-rstep="1" aria-label="Increase radius">+</button></div></div>'
   +'</div>'
-  +'<div class="fhead">'
-   +'<div class="chips" style="margin-bottom:0">'+chip('weekends','Open weekends')+chip('offer','Has an offer or reward')+chip('acceptingNew','Accepting new patients')+chip('onlineBooking','Online booking')+chip('english','English')+chip('spanish','Spanish')+'</div>'
-   +'<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><select class="sortsel" id="findRating">'+ropt()+'</select><div class="map-toggle">'+vbtn('split','List + Map')+vbtn('rec','For you')+vbtn('list','Browse')+vbtn('map','Map')+vbtn('grid','Grid')+'</div></div>'
-  +'</div>'
-  +'<div class="discover">'+[
-     ['bestppo','&#128737;','Best PPO match'],['weekends','&#127774;','Open weekends'],['nominated','&#11088;','Most nominated'],
-     ['families','&#128106;','Best for families'],['invisalign','&#128516;','Invisalign'],['cosmetic','&#10024;','Cosmetic'],
-     ['accredited','&#127942;','Recently accredited'],['concierge','&#129441;','Concierge picks']
-   ].map(function(p){return '<button type="button" class="dchip2 '+(F.preset===p[0]?'on':'')+'" data-preset="'+p[0]+'">'+p[1]+' '+p[2]+'</button>';}).join('')+'</div>'
+  +(function(){
+     var n=0; ['weekends','offer','acceptingNew','onlineBooking','english','spanish'].forEach(function(k){ if(f[k]) n++; });
+     if(F.minRating>0) n++; if(F.preset) n++;
+     return '<div class="fhead">'
+      +'<div class="map-toggle">'+vbtn('split','List + Map')+vbtn('rec','For you')+vbtn('list','Browse')+vbtn('map','Map')+vbtn('grid','Grid')+'</div>'
+      +'<button class="btn '+(n?'btn-ink':'btn-ghost')+' btn-sm" data-morefilters="1">&#9881; Filters'+(n?' &#183; '+n:'')+'</button>'
+     +'</div>';
+   })()
   +'<div class="regrow" id="regRow"></div>'
   +body
   +'<div class="foot-note">Results are organized using distance, office information, patient reviews, accreditation status, and availability signals. Paid members carry their tier badge; other offices show their listing status. Featured placement is a Platinum Elite benefit and is always labeled.</div></div>';
@@ -1720,14 +1730,37 @@ function provideEmailSheet(d){
 }
 function verifySheet(office){
   var d=dentByName(office);
-  if(d && d.hasEmail===false){ provideEmailSheet(d); return; }
   var pr=INS.primary(S.p), sec=INS.secondaries(S.p)[0], covered=!!pr;
+  if(covered && d && d.hasEmail===false){ provideEmailSheet(d); return; }
+  if(!covered){
+    /* verification growth loop: pick a carrier, CoverCapy contacts the office */
+    openSheet('<h3 class="serif">Verify insurance at '+esc(office)+'</h3><div class="ssub">Pick the PPO you have (or are considering) and we ask the office directly. Their answer lands in your notifications, and it improves this listing for every patient.</div>'
+     +'<div class="chips" id="vCars">'+['UnitedHealthcare PPO','Delta Dental PPO','Aetna PPO','Cigna PPO','MetLife PPO','Guardian PPO','Other / not sure'].map(function(c){return '<button class="chip" data-vcar="'+esc(c)+'">'+esc(c)+'</button>';}).join('')+'</div>'
+     +'<button class="btn btn-ink btn-full" id="vAsk" style="margin-top:14px" disabled>Ask the office</button>'
+     +'<div class="muted" style="font-size:11.5px;text-align:center;margin-top:10px">Most offices answer within 2 business days. Want coverage of your own? <a href="#" data-act="shop" style="color:var(--ink)">Compare PPO plans</a>.</div>');
+    var chosen=null;
+    document.querySelectorAll('[data-vcar]').forEach(function(c){ c.addEventListener('click',function(){
+      chosen=this.dataset.vcar;
+      document.querySelectorAll('[data-vcar]').forEach(function(x){ x.classList.toggle('on', x===c); });
+      var btn=$('vAsk'); if(btn) btn.disabled=false;
+    });});
+    var ask=$('vAsk');
+    if(ask) ask.addEventListener('click',function(){
+      if(!chosen) return;
+      closeSheet();
+      var dd=null; try{ dd=dentByName(office); }catch(e){}
+      if(window.__ccUID&&window.__supa&&dd&&dd.id){
+        window.__supa.from('verification_requests').insert({user_id:window.__ccUID,dentist_id:dd.id,carrier:chosen,reason:'patient_inquiry',status:'pending'}).then(function(){});
+      }
+      celebrate({em:'&#128172;',title:'Verification request sent',body:'We are asking '+esc(office)+' whether they work with '+esc(chosen)+'. You will hear back in your notifications, and the answer gets added to their listing so the next patient knows too.'});
+    });
+    return;
+  }
   openSheet('<h3 class="serif">Check '+esc(office)+'</h3><div class="ssub">We ask the office to confirm they work with your plan and send their answer here.</div>'
-   +(covered?'<div class="okpill" style="margin-bottom:10px">'+pr.carrier+' primary &#183; verified</div>'+(sec?'<div class="pendpill" style="margin-bottom:14px">'+sec.carrier+' secondary &#183; office confirms</div>':''):'<div class="pendpill" style="margin-bottom:14px">Add coverage first and we attach your benefits</div>')
-   +'<button class="btn btn-ink btn-full" id="vGo">'+(covered?'Send verification request':'Get covered first')+'</button>');
+   +'<div class="okpill" style="margin-bottom:10px">'+pr.carrier+' primary &#183; verified</div>'+(sec?'<div class="pendpill" style="margin-bottom:14px">'+sec.carrier+' secondary &#183; office confirms</div>':'')
+   +'<button class="btn btn-ink btn-full" id="vGo">Send verification request</button>');
   $('vGo').addEventListener('click',function(){
     closeSheet();
-    if(!covered){go('coverage');return;}
     celebrate({em:'&#128172;',title:'Request sent',body:'We asked '+esc(office)+' to confirm they work with your '+pr.carrier+' PPO'+(sec?' and your '+sec.carrier+' secondary, including how they coordinate':'')+'. You will hear back here and by email.'});
   });
 }
@@ -2698,14 +2731,16 @@ function ccFindMap(){
   try{ if(window.__lmap){ window.__lmap.remove(); window.__lmap=null; } }catch(e){}
   var list=filteredDentists().filter(function(d){ return d.lat&&d.lng; });
   var m=L.map('lmap'); window.__lmap=m;
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(m);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',{maxZoom:19,subdomains:'abcd',attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(m);
   var pts=[];
   list.forEach(function(d){
     var cls=d.tier==='elite'?' elite':d.tier==='tier'?' tier':'';
-    var ic=L.divIcon({className:'lpin-w',html:'<div class="lpin'+cls+'"><span class="pb">&#9733; '+d.rating+'</span><span class="pt"></span></div>',iconSize:null});
+    if(window.ccIsFav&&window.ccIsFav(d.id)) cls+=' sv';
+    var sz=d.tier==='elite'?24:d.tier==='tier'?17:12;
+    var ic=L.divIcon({className:'lpin-w',html:'<div class="ldot'+cls+'"'+(d.tier==='elite'?' title="Platinum Elite"':'')+'></div>',iconSize:[sz,sz],iconAnchor:[sz/2,sz/2]});
     var nm=String(d.name||'').replace(/\\/g,'').replace(/'/g,"\\'").replace(/"/g,'');
     var ct=String(d.city||'').replace(/\\/g,'').replace(/'/g,"\\'").replace(/"/g,'');
-    L.marker([d.lat,d.lng],{icon:ic}).addTo(m).bindPopup(
+    L.marker([d.lat,d.lng],{icon:ic}).addTo(m).bindTooltip(esc(d.name)+' &#183; &#9733; '+d.rating,{direction:'top',offset:[0,-6]}).bindPopup(
       '<div class="lpop"><b>'+esc(d.name)+'</b>'
       +'<div class="lpop-sub">'+esc(d.doc||'')+' &#183; '+(typeof d.mi==='number'?d.mi+' mi &#183; ':'')+'&#9733; '+d.rating+' ('+d.reviews+')'+(d.tier==='elite'?' &#183; <b style="color:var(--plum)">Featured</b>':'')+'</div>'
       +'<div class="lpop-act"><button class="btn btn-ink btn-sm" onclick="profileSheet(\''+d.id+'\')">View office</button>'
@@ -2744,8 +2779,17 @@ function ccRegionChips(){
     var k=norm(c); if(!k||k===cur) return;
     g[k]=g[k]||{c:c,n:0,la:0,lo:0}; g[k].n++; g[k].la+=d.lat; g[k].lo+=d.lng;
   });
-  var regs=Object.keys(g).map(function(k){ var x=g[k]; return {c:x.c,n:x.n,lat:x.la/x.n,lng:x.lo/x.n}; })
-    .sort(function(a,b){ return b.n-a.n; }).slice(0,6);
+  var regs=Object.keys(g).map(function(k){ var x=g[k]; return {c:x.c,n:x.n,lat:x.la/x.n,lng:x.lo/x.n}; });
+  var ctr=S.find.center;
+  if(ctr&&ctr.lat!=null){
+    var R=3958.8,toR=Math.PI/180;
+    regs=regs.filter(function(r){
+      var dLat=(r.lat-ctr.lat)*toR,dLng=(r.lng-ctr.lng)*toR;
+      var h=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(ctr.lat*toR)*Math.cos(r.lat*toR)*Math.sin(dLng/2)*Math.sin(dLng/2);
+      return R*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h))<=80;
+    });
+  }
+  regs=regs.sort(function(a,b){ return b.n-a.n; }).slice(0,6);
   window.__ccRegs=regs;
   el.innerHTML = regs.length ? '<span class="reg-lbl">Browse nearby</span>'+regs.map(function(r,i){
     return '<button type="button" class="regchip" onclick="ccRegionGo('+i+')">'+esc(r.c)+'<span>'+r.n+'</span></button>';
@@ -3109,6 +3153,55 @@ document.addEventListener('click',function(e){
   var p=b.dataset.rgo.split('|');
   try{ window.ccGoSearch(+p[0],+p[1],p[2]); }catch(err){ console.error(err); }
 });
+
+/* ---- More Filters drawer (hybrid filter architecture) ---- */
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-morefilters]'); if(!b) return;
+  var f=S.find.filters, F=S.find;
+  function dchip(k,label){return '<button class="chip '+(f[k]?'on':'')+'" data-filter="'+k+'">'+label+'</button>';}
+  function pchip(k,em,label){return '<button type="button" class="dchip2 '+(F.preset===k?'on':'')+'" data-preset="'+k+'">'+em+' '+label+'</button>';}
+  openSheet('<h3 class="serif">Filters</h3><div class="ssub">Everything beyond location, treatment, PPO, and distance.</div>'
+   +'<div class="eyebrow" style="margin-bottom:8px">Practical</div>'
+   +'<div class="chips">'+dchip('weekends','Open weekends')+dchip('offer','Has an offer or reward')+dchip('acceptingNew','Accepting new patients')+dchip('onlineBooking','Online booking')+'</div>'
+   +'<div class="eyebrow" style="margin:14px 0 8px">Languages</div>'
+   +'<div class="chips">'+dchip('english','English')+dchip('spanish','Spanish')+'</div>'
+   +'<div class="eyebrow" style="margin:14px 0 8px">Minimum rating</div>'
+   +'<div class="chips">'+[[0,'Any'],[4,'4.0+'],[4.5,'4.5+'],[4.8,'4.8+']].map(function(o){return '<button class="chip '+(F.minRating===o[0]?'on':'')+'" data-minrate="'+o[0]+'">'+o[1]+'</button>';}).join('')+'</div>'
+   +'<div class="eyebrow" style="margin:14px 0 8px">Discover</div>'
+   +'<div class="chips">'+pchip('bestppo','&#128737;','Best PPO match')+pchip('weekends','&#127774;','Open weekends')+pchip('nominated','&#11088;','Most nominated')+pchip('families','&#128106;','Families')+pchip('invisalign','&#128516;','Invisalign')+pchip('cosmetic','&#10024;','Cosmetic')+pchip('accredited','&#127942;','Recently accredited')+pchip('concierge','&#129441;','Concierge picks')+'</div>'
+   +'<div style="display:flex;gap:8px;margin-top:18px"><button class="btn btn-ink btn-full" data-close="1">Show results</button><button class="btn btn-ghost btn-sm" id="filtClear" style="flex:none">Reset</button></div>');
+  var fc=document.getElementById('filtClear');
+  if(fc) fc.addEventListener('click',function(){
+    ['weekends','offer','acceptingNew','onlineBooking','english','spanish'].forEach(function(k){ delete S.find.filters[k]; });
+    S.find.minRating=0; S.find.preset=null; closeSheet(); try{ route(); }catch(_){}});
+});
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-minrate]'); if(!b) return;
+  S.find.minRating=parseFloat(b.dataset.minrate)||0;
+  document.querySelectorAll('[data-minrate]').forEach(function(x){ x.classList.toggle('on', x===b); });
+  try{ route(); }catch(_){}
+});
+
+/* ---- idle nudge: one gentle assist per session ---- */
+var _idleT=null,_idleShown=false;
+function idleArm(){
+  if(_idleShown||!/find/.test(location.hash||'')) return;
+  clearTimeout(_idleT);
+  _idleT=setTimeout(function(){
+    if(_idleShown||!/find/.test(location.hash||'')) return;
+    _idleShown=true;
+    var n=document.createElement('div'); n.className='idlenudge';
+    n.innerHTML='<b>Want help choosing?</b><span>Tell the concierge what matters to you, or compare two offices side by side.</span><div class="in-act"><button class="btn btn-ink btn-sm" data-cc="open">Ask concierge</button><button class="btn btn-ghost btn-sm" data-idleoff="1">Dismiss</button></div>';
+    document.body.appendChild(n);
+    setTimeout(function(){ n.classList.add('show'); },30);
+  },45000);
+}
+['click','scroll','keydown'].forEach(function(ev){ document.addEventListener(ev,function(){ if(!_idleShown) idleArm(); },{passive:true}); });
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-idleoff],[data-cc]');
+  if(b){ var n=document.querySelector('.idlenudge'); if(n) n.remove(); }
+});
+idleArm();
 
 /* ---- radius stepper (+/- in 1-mile increments) ---- */
 document.addEventListener('click',function(e){
