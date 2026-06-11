@@ -196,9 +196,9 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .fpills .fpill:nth-child(n+5){animation-delay:.24s}
 @keyframes pillin{from{opacity:0;transform:translateY(-8px) scale(.92)}to{opacity:1;transform:none}}
 .dcard{position:relative}
-.dcard.plat{border:2px solid transparent;background-image:linear-gradient(var(--paper),var(--paper)),linear-gradient(135deg,#E4CB8E 0%,#92702E 35%,#F4E3BC 60%,#92702E 100%);background-origin:border-box;background-clip:padding-box,border-box;box-shadow:0 14px 38px rgba(146,112,46,.20)}
-.dcard.plat:hover{box-shadow:0 18px 46px rgba(146,112,46,.30)}
-.plat-ribbon{position:absolute;top:-11px;left:18px;background:linear-gradient(135deg,#92702E,#C9A55C);color:#FBF1DD;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:4px 12px;box-shadow:0 4px 12px rgba(146,112,46,.4);z-index:2}
+.dcard.plat{border:2px solid transparent;background-image:linear-gradient(var(--paper),var(--paper)),linear-gradient(135deg,#FFC58A 0%,#E8771E 35%,#FFE2C2 60%,#E8771E 100%);background-origin:border-box;background-clip:padding-box,border-box;box-shadow:0 14px 38px rgba(232,119,30,.20)}
+.dcard.plat:hover{box-shadow:0 18px 46px rgba(232,119,30,.30)}
+.plat-ribbon{position:absolute;top:-11px;left:18px;background:linear-gradient(135deg,#E8771E,#FFA050);color:#FFF6EC;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:4px 12px;box-shadow:0 4px 12px rgba(232,119,30,.4);z-index:2}
 .dcard.accr{border:2px solid #A9E1C6;box-shadow:0 10px 28px rgba(31,138,91,.12)}
 .dcard.accr:hover{box-shadow:0 14px 34px rgba(31,138,91,.18)}
 .cov-r{display:inline-flex;align-items:center;gap:10px}
@@ -283,13 +283,23 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .ldot.tier{background:var(--gold)}
 .ldot.elite{background:var(--plum);box-shadow:0 0 0 4px rgba(90,60,110,.22),0 3px 10px rgba(8,42,48,.4)}
 .ldot.sv{border-color:#ffd9d8}
-.facepin{position:relative;width:52px;height:66px;display:flex;flex-direction:column;align-items:center;cursor:pointer;filter:drop-shadow(0 10px 14px rgba(8,42,48,.35))}
-.facepin .fp-face{width:52px;height:52px;border-radius:50%;overflow:hidden;background:var(--cream);border:3px solid #E4CB8E;box-shadow:0 0 0 3px #92702E;display:grid;place-items:center}
+.facepin{position:relative;display:flex;flex-direction:column;align-items:center;cursor:pointer;filter:drop-shadow(0 10px 14px rgba(8,42,48,.35))}
+.facepin .fp-face{border-radius:50%;overflow:hidden;background:var(--cream);display:grid;place-items:center}
 .facepin .fp-face img,.facepin .fp-face svg{width:100%;height:100%;object-fit:cover;display:block}
-.facepin .fp-emoji{font-size:26px}
-.facepin .fp-crown{position:absolute;top:-13px;left:50%;transform:translateX(-50%) rotate(-8deg);font-size:17px;z-index:2;filter:drop-shadow(0 2px 3px rgba(8,42,48,.3))}
-.facepin .fp-tail{width:3px;height:12px;background:#92702E;border-radius:2px;margin-top:-1px}
-.facepin:hover .fp-face{box-shadow:0 0 0 3px #92702E,0 0 18px rgba(228,203,142,.9)}
+.facepin .fp-crown{position:absolute;top:-13px;left:50%;transform:translateX(-50%) rotate(-8deg);font-size:18px;z-index:2;filter:drop-shadow(0 2px 3px rgba(8,42,48,.3))}
+.facepin .fp-tail{width:3px;height:12px;border-radius:2px;margin-top:-1px}
+.facepin.plat{width:58px;height:74px}
+.facepin.plat .fp-face{width:58px;height:58px;border:3px solid #FFC58A;box-shadow:0 0 0 3px #E8771E,0 0 16px rgba(232,119,30,.45)}
+.facepin.plat .fp-emoji{font-size:29px}
+.facepin.plat .fp-tail{background:#E8771E}
+.facepin.plat:hover .fp-face{box-shadow:0 0 0 3px #E8771E,0 0 24px rgba(255,165,80,.95)}
+.facepin.accr{width:46px;height:60px}
+.facepin.accr .fp-face{width:46px;height:46px;border:3px solid #A9E1C6;box-shadow:0 0 0 3px #1F8A5B,0 0 12px rgba(31,138,91,.35)}
+.facepin.accr .fp-emoji{font-size:23px}
+.facepin.accr .fp-tail{background:#1F8A5B}
+.facepin.accr:hover .fp-face{box-shadow:0 0 0 3px #1F8A5B,0 0 18px rgba(169,225,198,.95)}
+.facepin .fp-capy{position:absolute;top:-11px;left:50%;transform:translateX(-50%);z-index:2;background:#1F8A5B;color:#E6F7EE;border-radius:999px;padding:2px 7px;display:flex;align-items:center;box-shadow:0 2px 6px rgba(8,42,48,.3)}
+.facepin .fp-capy svg{width:16px;height:11px}
 @keyframes pindrop{0%{opacity:0;transform:translateY(-26px) scale(.7)}62%{opacity:1;transform:translateY(3px) scale(1.04)}82%{transform:translateY(-2px) scale(.99)}100%{opacity:1;transform:none}}
 .drop{animation:pindrop .5s cubic-bezier(.2,.8,.3,1.1) both}
 .badge-paid{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 11px;font-size:11px;font-weight:800;letter-spacing:.02em}
@@ -651,7 +661,7 @@ body.sheet-open #view,body.sheet-open #topnav{filter:blur(2px) saturate(.92);tra
 <script>
 window.__CC={url:"https://hfvbeqlefwwjlrbyxpbj.supabase.co",key:"sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf",login:"./index.html"};
 window.__supa=window.supabase.createClient(__CC.url,__CC.key);
-window.__CC_BUILD='v41';
+window.__CC_BUILD='v42';
 try{ console.log('CoverCapy build', window.__CC_BUILD); }catch(e){}
 </script>
 <script>
@@ -2512,10 +2522,16 @@ function ccEnterDemo(){
   var sw=$('switchSeat');
   if(sw){ sw.textContent='Create account'; var sw2=sw.cloneNode(true); sw.parentNode.replaceChild(sw2,sw); sw2.addEventListener('click',function(){ location.href=window.__CC.login; }); }
 }
+function ccTierOf(r){
+  /* any platinum/accredited signal in ANY tier column wins; a stale pending label can never demote a paying member */
+  var s=String((r.membership_tier||'')+' '+(r.featured_tier||'')+' '+(r.accreditation_status||'')+' '+(r.tier||'')).toLowerCase();
+  if(s.indexOf('platinum')>-1||/(^|\s)elite(\s|$)/.test(s)) return 'elite';
+  if(/capy[\s_-]*accredited/.test(s)||/(^|\s_-)accredited(\s|$)/.test(s)) return 'tier';
+  return 'pend';
+}
 function ccMapDentist(r){
-  var acc=r.accreditation_status, mt=r.membership_tier, ft=r.featured_tier;
-  var tier=(mt==='platinum'||ft==='elite'||ft==='platinum')?'elite':(acc==='accredited'||mt==='accredited'||ft==='accredited')?'tier':'pend';
-  var tag=r.pending_display_label||(tier==='elite'?'Platinum Elite':tier==='tier'?'Capy Accredited':'Public Listing');
+  var tier=ccTierOf(r);
+  var tag=(tier==='elite')?'Platinum Elite':(tier==='tier')?'Capy Accredited':(r.pending_display_label||'Public Listing');
   var rating=ccNum(r.weighted_rating)||ccNum(r.aggregate_rating)||ccNum(r.google_rating);
   var reviews=r.weighted_review_count||r.aggregate_review_count||r.google_review_count||0;
   var accepts=Array.isArray(r.insurance_networks)?r.insurance_networks:[];
@@ -2830,8 +2846,8 @@ function refresh(){
           var ddLat=(la-c.lat)*toR, ddLng=(ln-c.lng)*toR;
           var h=Math.sin(ddLat/2)*Math.sin(ddLat/2)+Math.cos(c.lat*toR)*Math.cos(la*toR)*Math.sin(ddLng/2)*Math.sin(ddLng/2);
           var mi=R*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h));
-          var mt=x.membership_tier, ft=x.featured_tier;
-          var tier=(mt==='platinum'||ft==='elite'||ft==='platinum')?'platinum_elite':(x.accreditation_status==='accredited'||mt==='accredited'||ft==='accredited')?'capy_accredited':'public';
+          var t0=ccTierOf(x);
+          var tier=(t0==='elite')?'platinum_elite':(t0==='tier')?'capy_accredited':'public';
           return { id:x.id, practice_name:x.practice_name, doctor:x.doctor_name, city:x.city, zip:x.zip,
             distance_miles:mi.toFixed(1), rating:x.weighted_rating||x.aggregate_rating||x.google_rating||0,
             review_count:x.weighted_review_count||x.aggregate_review_count||x.google_review_count||0,
@@ -3237,12 +3253,13 @@ function ccFindMap(){
   list.forEach(function(d){
     var cls=d.tier==='elite'?' elite':d.tier==='tier'?' tier':'';
     if(window.ccIsFav&&window.ccIsFav(d.id)) cls+=' sv';
-    var sz=d.tier==='elite'?52:d.tier==='tier'?18:12;
+    var sz=d.tier==='elite'?58:d.tier==='tier'?46:12;
     var ic;
-    if(d.tier==='elite'){
-      /* the KING: a face card pin with a crown and a staged drop */
+    if(d.tier==='elite'||d.tier==='tier'){
+      /* the face cards: platinum = the KING (orange, biggest, crowned); accredited = green capy card */
       var face=d.image_url?'<img src="'+esc(d.image_url)+'" alt="">':(window.CapyAvatar&&CapyAvatar.ready()&&CapyAvatar.svg(d))||'<span class="fp-emoji">'+((window.ccAnimal&&ccAnimal(d))||'&#129441;')+'</span>';
-      ic=L.divIcon({className:'lpin-w',html:'<div class="facepin drop" style="animation-delay:'+(dropIdx++*90)+'ms" title="Platinum Elite"><span class="fp-crown">&#128081;</span><span class="fp-face">'+face+'</span><span class="fp-tail"></span></div>',iconSize:[sz,sz+16],iconAnchor:[sz/2,sz+14]});
+      var crest=(d.tier==='elite')?'<span class="fp-crown">&#128081;</span>':'<span class="fp-capy">'+(window.CAPY_ICON_APP||'&#10003;')+'</span>';
+      ic=L.divIcon({className:'lpin-w',html:'<div class="facepin '+(d.tier==='elite'?'plat':'accr')+' drop" style="animation-delay:'+(dropIdx++*(d.tier==='elite'?90:70))+'ms" title="'+(d.tier==='elite'?'Platinum Elite':'Capy Accredited')+'">'+crest+'<span class="fp-face">'+face+'</span><span class="fp-tail"></span></div>',iconSize:[sz,sz+18],iconAnchor:[sz/2,sz+16]});
     } else {
       ic=L.divIcon({className:'lpin-w',html:'<div class="ldot'+cls+' drop" style="animation-delay:'+(dropIdx++*40)+'ms"></div>',iconSize:[sz,sz],iconAnchor:[sz/2,sz/2]});
     }
@@ -3250,7 +3267,7 @@ function ccFindMap(){
     var ct=String(d.city||'').replace(/\\/g,'').replace(/'/g,"\\'").replace(/"/g,'');
     L.marker([d.lat,d.lng],{icon:ic}).addTo(window.__lgroup).bindTooltip(esc(d.name)+' &#183; &#9733; '+d.rating,{direction:'top',offset:[0,-6]}).bindPopup(
       '<div class="lpop"><b>'+esc(d.name)+'</b>'
-      +'<div class="lpop-sub">'+esc(d.doc||'')+' &#183; '+(typeof d.mi==='number'?d.mi+' mi &#183; ':'')+'&#9733; '+d.rating+' ('+d.reviews+')'+(d.tier==='elite'?' &#183; <b style="color:var(--plum)">Featured</b>':'')+'</div>'
+      +'<div class="lpop-sub">'+esc(d.doc||'')+' &#183; '+(typeof d.mi==='number'?d.mi+' mi &#183; ':'')+'&#9733; '+d.rating+' ('+d.reviews+')'+(d.tier==='elite'?' &#183; <b style="color:#E8771E">Platinum Elite</b>':d.tier==='tier'?' &#183; <b style="color:#1F8A5B">Capy Accredited</b>':'')+'</div>'
       +'<div class="lpop-act"><button class="btn btn-ink btn-sm" onclick="profileSheet(\''+d.id+'\')">View office</button>'
       +(d.tier==='pend'?'<button class="btn btn-gold btn-sm" onclick="nominateSheet(\''+nm+'\',\''+ct+'\')">Nominate</button>':'')
       +'</div></div>');
@@ -3767,7 +3784,8 @@ var PENDING_PALETTE_APP={
   'Awaiting Accreditation':{bg:'#F8F3F7',text:'#82627D',border:'#EAD8E5'},
   'Accreditation Available':{bg:'#FBF3F5',text:'#97636E',border:'#F1DADF'}
 };
-var CAPY_ICON_APP='<svg class="capy-ic" viewBox="0 0 48 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g fill="currentColor"><ellipse cx="19" cy="17" rx="15.5" ry="9.5"/><ellipse cx="35.5" cy="15.5" rx="9" ry="7.8"/><rect x="43" y="12.6" width="4" height="6" rx="1.8"/><circle cx="31.5" cy="8.2" r="2.7"/><circle cx="38.5" cy="8.4" r="2.4"/><rect x="11" y="23" width="3.6" height="6.6" rx="1.8"/><rect x="18.5" y="24" width="3.6" height="6" rx="1.8"/><rect x="27.5" y="23" width="3.6" height="6.6" rx="1.8"/></g></svg>';
+window.CAPY_ICON_APP=undefined;
+var CAPY_ICON_APP=window.CAPY_ICON_APP='<svg class="capy-ic" viewBox="0 0 48 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g fill="currentColor"><ellipse cx="19" cy="17" rx="15.5" ry="9.5"/><ellipse cx="35.5" cy="15.5" rx="9" ry="7.8"/><rect x="43" y="12.6" width="4" height="6" rx="1.8"/><circle cx="31.5" cy="8.2" r="2.7"/><circle cx="38.5" cy="8.4" r="2.4"/><rect x="11" y="23" width="3.6" height="6.6" rx="1.8"/><rect x="18.5" y="24" width="3.6" height="6" rx="1.8"/><rect x="27.5" y="23" width="3.6" height="6.6" rx="1.8"/></g></svg>';
 window.ccTierBadge=function(d){
   if(d.tier==='elite') return '<span class="badge-paid" style="background:'+TIER_BADGE_APP.elite.bg+';color:'+TIER_BADGE_APP.elite.color+';border:1px solid '+TIER_BADGE_APP.elite.border+'"><span class="badge-coin">&#128081;</span>Platinum Elite</span>';
   if(d.tier==='tier') return '<span class="badge-paid" style="background:'+TIER_BADGE_APP.tier.bg+';color:'+TIER_BADGE_APP.tier.color+';border:1px solid '+TIER_BADGE_APP.tier.border+'"><span class="badge-coin">'+CAPY_ICON_APP+'</span>Capy Accredited</span>';
