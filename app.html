@@ -596,7 +596,7 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 <script>
 window.__CC={url:"https://hfvbeqlefwwjlrbyxpbj.supabase.co",key:"sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf",login:"./index.html"};
 window.__supa=window.supabase.createClient(__CC.url,__CC.key);
-window.__CC_BUILD='v35';
+window.__CC_BUILD='v36';
 try{ console.log('CoverCapy build', window.__CC_BUILD); }catch(e){}
 </script>
 <script>
@@ -2681,23 +2681,52 @@ function refresh(){
   var c=S.find.center; if(!c||c.lat==null){ try{ route(); }catch(e){} return; }
   if(!window.__supa){ try{ route(); }catch(e){} return; }
   var done=false;
+  var rpcWon=false;
   function clientFallback(){
-    if(done) return; done=true;
-    console.error('CoverCapy: coordinate search unavailable, using client-side distances');
-    var R=3958.8,toR=Math.PI/180;
-    (DEMO_DATA.dentists||[]).forEach(function(d){
-      if(!d.lat||!d.lng) return;
-      var dLat=(d.lat-c.lat)*toR,dLng=(d.lng-c.lng)*toR;
-      var h=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(c.lat*toR)*Math.cos(d.lat*toR)*Math.sin(dLng/2)*Math.sin(dLng/2);
-      d.mi=Math.round(R*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h))*10)/10;
-    });
-    try{ route(); }catch(e){}
+    if(done||rpcWon) return; done=true;
+    console.error('CoverCapy: coordinate RPC unavailable, querying the directory table directly');
+    /* bounding box read straight from the dentists table: plain GET, works even
+       when RPC posts are blocked. ~31 mi box, distance computed client side. */
+    var rad=Math.max(1,Math.min(30,S.find.within||30));
+    var dLat=rad/69, dLng=rad/55;
+    window.__supa.from('dentists')
+      .select('id,practice_name,doctor_name,city,state,zip,latitude,longitude,weighted_rating,weighted_review_count,aggregate_rating,aggregate_review_count,google_rating,google_review_count,membership_tier,featured_tier,accreditation_status,pending_display_label')
+      .gte('latitude',c.lat-dLat).lte('latitude',c.lat+dLat)
+      .gte('longitude',c.lng-dLng).lte('longitude',c.lng+dLng)
+      .limit(600)
+      .then(function(r){
+        if(rpcWon) return;
+        if(r.error||!r.data||!r.data.length){ console.error('CoverCapy: direct table fallback failed', r.error); ccBusy(false); try{ route(); }catch(e){} return; }
+        var R=3958.8,toR=Math.PI/180;
+        var rows=r.data.map(function(x){
+          var la=+x.latitude, ln=+x.longitude;
+          var ddLat=(la-c.lat)*toR, ddLng=(ln-c.lng)*toR;
+          var h=Math.sin(ddLat/2)*Math.sin(ddLat/2)+Math.cos(c.lat*toR)*Math.cos(la*toR)*Math.sin(ddLng/2)*Math.sin(ddLng/2);
+          var mi=R*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h));
+          var mt=x.membership_tier, ft=x.featured_tier;
+          var tier=(mt==='platinum'||ft==='elite'||ft==='platinum')?'platinum_elite':(x.accreditation_status==='accredited'||mt==='accredited'||ft==='accredited')?'capy_accredited':'public';
+          return { id:x.id, practice_name:x.practice_name, doctor:x.doctor_name, city:x.city, zip:x.zip,
+            distance_miles:mi.toFixed(1), rating:x.weighted_rating||x.aggregate_rating||x.google_rating||0,
+            review_count:x.weighted_review_count||x.aggregate_review_count||x.google_review_count||0,
+            tier:tier, tier_rank:(tier==='platinum_elite'?1:tier==='capy_accredited'?2:4), lat:la, lng:ln, _pend:x.pending_display_label };
+        }).filter(function(x){ return +x.distance_miles<=rad || x.tier==='platinum_elite'; });
+        rows.sort(function(a,b){ return a.tier_rank-b.tier_rank || (+a.distance_miles)-(+b.distance_miles) || (+b.rating)-(+a.rating); });
+        console.log('CoverCapy: direct fallback loaded', rows.length, 'offices');
+        loadByIds(rows);
+      });
   }
-  setTimeout(clientFallback,5000);
+  setTimeout(clientFallback,6000);
   window.__supa.rpc('search_dentists_near_coordinates',{in_lat:c.lat,in_lng:c.lng,radius_miles:Math.max(1,Math.min(30,S.find.within||30))}).then(function(r){
-    if(done) return;
-    if(r&&r.error){ console.error('CoverCapy: geo search failed', r.error); clientFallback(); return; }
-    done=true;
+    if(r&&r.error){ console.error('CoverCapy: geo search failed, retrying once', r.error);
+      setTimeout(function(){
+        window.__supa.rpc('search_dentists_near_coordinates',{in_lat:c.lat,in_lng:c.lng,radius_miles:Math.max(1,Math.min(30,S.find.within||30))}).then(function(r2){
+          if(r2&&!r2.error&&r2.data&&r2.data.length){ rpcWon=true; loadByIds(r2.data); }
+          else { clientFallback(); }
+        }).catch(function(){ clientFallback(); });
+      },800);
+      return; }
+    /* late RPC results still replace the fallback: exact server ordering wins */
+    rpcWon=true;
     loadByIds((r&&r.data)||[]);
   }).catch(function(e){ console.error('CoverCapy: geo search threw', e); clientFallback(); });
 }
