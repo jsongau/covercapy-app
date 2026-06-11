@@ -251,6 +251,37 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .contrib .big small{font-size:17px;color:rgba(246,240,230,.6);font-weight:400}
 .contrib .bar{height:8px;border-radius:99px;background:rgba(246,240,230,.16);overflow:hidden;margin:14px 0 6px}
 .contrib .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--mint),#8FF0C2)}
+/* ===== Diamond Crowns flair ===== */
+.dchip{background:linear-gradient(120deg,var(--mint-soft),#E2F8EF 45%,var(--mint-soft) 65%)!important;position:relative;overflow:hidden}
+.dchip::after{content:"";position:absolute;top:0;left:-70%;width:45%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.9),transparent);transform:skewX(-18deg);animation:dshine 3.4s ease-in-out infinite;pointer-events:none}
+@keyframes dshine{0%,55%{left:-70%}85%,100%{left:140%}}
+.contrib.vault{position:relative;overflow:hidden;border:1px solid rgba(143,240,194,.25)}
+.contrib.vault::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 86% 10%,rgba(143,240,194,.22),transparent 42%),radial-gradient(circle at 6% 96%,rgba(143,240,194,.12),transparent 38%);pointer-events:none}
+.contrib.vault .bar{box-shadow:inset 0 0 0 1px rgba(143,240,194,.18)}
+.contrib.vault .bar i{background:linear-gradient(90deg,#5ED0B5,#8FF0C2,#D8FCEC,#8FF0C2);background-size:220% 100%;animation:dflow 2.8s linear infinite;box-shadow:0 0 12px rgba(143,240,194,.55)}
+@keyframes dflow{to{background-position:-220% 0}}
+.dgem{display:inline-block;animation:dtwirl 4.5s ease-in-out infinite}
+@keyframes dtwirl{0%,72%,100%{transform:none;filter:none}80%{transform:scale(1.22) rotate(-9deg);filter:drop-shadow(0 0 7px rgba(143,240,194,.85))}88%{transform:scale(1.06) rotate(5deg)}}
+@media (prefers-reduced-motion:reduce){.dchip::after,.contrib.vault .bar i,.dgem{animation:none}}
+/* ===== Office journey pipeline ===== */
+.pipe{position:relative;margin:2px 0 0}
+.pipe::before{content:"";position:absolute;left:16px;top:16px;bottom:16px;width:2px;background:linear-gradient(180deg,var(--line) 0%,var(--mint) 100%);border-radius:2px}
+.pipe-step{display:flex;gap:12px;align-items:center;padding:8px 0;position:relative}
+.pipe-step .pk{width:34px;height:34px;border-radius:12px;background:var(--cream);display:grid;place-items:center;font-size:15px;flex:0 0 auto;position:relative;z-index:1;box-shadow:0 0 0 3px var(--paper)}
+.pipe-step .pt{flex:1;min-width:0}
+.pipe-step .pt b{font-size:13.5px;display:block;line-height:1.3}
+.pipe-step .pt span{font-size:11.5px;color:var(--slate);line-height:1.4}
+.pipe-amt{font-weight:800;font-size:12px;color:var(--mint-deep);background:var(--mint-soft);border-radius:999px;padding:5px 11px;white-space:nowrap;flex:0 0 auto}
+.pipe-step.jack{margin-top:8px;border-radius:16px;background:linear-gradient(135deg,#15535C,#0E3A41);padding:13px 14px;color:var(--paper);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.pipe-step.jack::after{content:"";position:absolute;top:0;left:-70%;width:45%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.14),transparent);transform:skewX(-18deg);animation:dshine 3.4s ease-in-out infinite;pointer-events:none}
+.pipe-step.jack .pk{background:rgba(143,240,194,.16);box-shadow:none}
+.pipe-step.jack .pt b{color:var(--paper)}
+.pipe-step.jack .pt span{color:rgba(246,240,230,.7)}
+.pipe-step.jack .pipe-amt{background:rgba(143,240,194,.18);color:#8FF0C2;box-shadow:0 0 12px rgba(143,240,194,.35);font-size:13px}
+.boost-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.boost{display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:12px;padding:9px 11px;font-size:12px;font-weight:650;background:var(--paper)}
+.boost span{margin-left:auto;color:var(--mint-deep);font-weight:800;font-size:11.5px}
+@media (max-width:560px){.boost{font-size:11px;padding:8px 9px}}
 .lrow{display:flex;align-items:center;gap:13px;padding:12px 2px;border-bottom:1px solid var(--line-soft)}
 .lrow:last-child{border:none}
 .lrow .lk{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:13px;background:var(--cream);flex-shrink:0;font-weight:700}
@@ -385,7 +416,7 @@ var DEMO_DATA={
          deductible:50,deductibleMet:false,annualMax:1500,remaining:1500,
          prev:100,basic:80,major:60,waiting:'12 months on major work',network:'Confirm office is in Guardian network',
          dependents:[],requestedAt:'2026-05-19',verifiedAt:'2026-05-20',verifySource:'CoverCapy team'}],
-      blurb:'Two verified plans. 10,400 diamonds, a $150 card ready.'},
+      blurb:'Two verified plans. 10,400 Diamond Crowns, a $150 card ready.'},
     mina:{name:'Mina Kim',first:'Mina',init:'MK',avbg:'var(--cream)',avc:'var(--slate)',
       crowns:300,diamonds:0,
       journey:{plan:0,visit:0,review:0,refer:0},noms:[],
@@ -596,7 +627,7 @@ var DNAV=[['ddash','Dashboard','&#9737;'],['demand','Demand','&#9650;'],['patien
 function renderChrome(){
   var nav=S.role==='patient'?PNAV:DNAV;
   var right = S.role==='patient'
-    ? '<div class="crown-chip">&#128081; <span id="crownTop">0</span></div><div class="crown-chip" style="background:var(--mint-soft);color:var(--mint-deep)">&#128142; <span id="diamondTop">0</span></div><button class="btn btn-ink btn-sm" data-cc="open">Ask concierge</button><button class="btn btn-ghost btn-sm" data-act="settings" aria-label="Profile and settings" style="padding:7px 11px">&#9881;</button>'
+    ? '<div class="crown-chip">&#128081; <span id="crownTop">0</span></div><div class="crown-chip dchip" style="color:var(--mint-deep)" title="Diamond Crowns"><span class="dgem">&#128142;</span> <span id="diamondTop">0</span></div><button class="btn btn-ink btn-sm" data-cc="open">Ask concierge</button><button class="btn btn-ghost btn-sm" data-act="settings" aria-label="Profile and settings" style="padding:7px 11px">&#9881;</button>'
     : '<span class="tierpill" id="dTierPill"></span><select id="dTierSel" style="border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12px;font-weight:700;background:var(--paper)"><option value="unclaimed">Demo: Unclaimed</option><option value="free">Demo: Claimed free</option><option value="accredited" selected>Demo: Capy Accredited</option><option value="platinum">Demo: Platinum Elite</option></select>';
   $('topnav').innerHTML='<div class="tn-in"><div class="tn-logo"><div class="lm">&#129441;</div>CoverCapy'+(S.role==='dentist'?' <span class="muted" style="font-family:var(--fb);font-size:12px;font-weight:600">&#183; Practice portal</span>':'')+'</div>'
     +'<nav class="tn-links">'+nav.map(function(n){return '<a data-go="'+n[0]+'">'+n[1]+'</a>';}).join('')+'</nav>'
@@ -692,7 +723,7 @@ function vHome(){
   +'<div class="contrib"><div class="eyebrow">Community</div><div class="big">&#128081; '+p.crowns.toLocaleString('en-US')+' <small>/ 2,000</small></div>'
     +'<div style="font-size:12.5px;color:rgba(246,240,230,.75)">Crowns from getting covered and getting care, toward treatments like whitening.</div>'
     +'<div class="bar"><i style="width:'+Math.min(100,p.crowns/20)+'%;background:linear-gradient(90deg,var(--gold),#D8B878)"></i></div>'
-    +(p.diamonds>0?'<div style="font-size:12px;color:rgba(246,240,230,.65);margin-top:10px">&#128142; '+p.diamonds.toLocaleString('en-US')+' network reward diamonds'+(p.diamonds>=10000?' &#183; a reward is ready':'')+'</div><div class="bar" style="margin-top:6px"><i style="width:'+Math.min(100,p.diamonds/100)+'%"></i></div>':'')
+    +(p.diamonds>0?'<div style="font-size:12px;color:rgba(246,240,230,.65);margin-top:10px">&#128142; '+p.diamonds.toLocaleString('en-US')+' Diamond Crowns from growing the network'+(p.diamonds>=10000?' &#183; a reward is ready':'')+'</div><div class="bar" style="margin-top:6px"><i style="width:'+Math.min(100,p.diamonds/100)+'%"></i></div>':'')
     +'<button class="btn btn-mint btn-sm" data-act="go:community" style="margin-top:10px">Open Community</button></div>'
   +'</div></div>'
   +'<div class="foot-note">CoverCapy helps you understand and use PPO dental coverage. We are not an insurance company or a dental office.</div></div>';
@@ -734,7 +765,7 @@ function dcardHTML(d){
   +((d.themes&&d.themes.length)?'<div class="chiprow" style="margin-top:7px"><span style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--slate);align-self:center">From reviews</span>'+d.themes.map(function(t){return '<span class="mini" style="background:var(--mint-soft);color:var(--mint-deep)">'+t[0]+' &#183; '+t[1]+'%</span>';}).join('')+'</div>':'')+'</div></div>'
   +'<div class="conf"><div class="confbox"><span>Coverage confidence</span><b>'+(d.fit==='strong'?'Strong':'Confirm with office')+'</b></div><div class="confbox"><span>Cost confidence</span><b>'+d.cost+'</b></div></div>'
   +fitDetailHTML(d)
-  +(d.hasEmail===false?'<div style="font-size:11.5px;color:var(--gold-deep);background:var(--gold-soft);margin:0 18px 10px;border-radius:10px;padding:8px 12px;line-height:1.45">&#9993; No email on file. Found their email? Add it to request verification and earn diamonds.</div>':'')
+  +(d.hasEmail===false?'<div style="font-size:11.5px;color:var(--gold-deep);background:var(--gold-soft);margin:0 18px 10px;border-radius:10px;padding:8px 12px;line-height:1.45">&#9993; No email on file. Found their email? Add it to request verification and earn Diamond Crowns.</div>':'')
   +'<div class="foot"><button class="btn btn-ink btn-sm" data-profile="'+d.id+'">View office</button>'
   +'<button class="btn btn-ghost btn-sm" data-verify="'+d.name+'">'+(d.hasEmail===false?'Add email to verify':'Check my plan')+'</button>'
   +'<button class="btn btn-ghost btn-sm" data-share="'+d.id+'">Share</button>'
@@ -843,12 +874,34 @@ function vCoverage(){
 /* ===== PATIENT: COMMUNITY ===== */
 function vCommunity(){
   var p=S.p,n=DEMO_DATA.network;
-  return '<div class="page"><div class="phead"><div class="eyebrow">Community</div><h1>Your part in the network</h1><div class="guide">Two separate rewards. Capy Crowns for your care. Capy Diamonds for growing the network.</div></div>'
+  return '<div class="page"><div class="phead"><div class="eyebrow">Community</div><h1>Your part in the network</h1><div class="guide">One currency, two grades. Capy Crowns for your care. Diamond Crowns &#128142; for growing the network, the grade that redeems for gift cards.</div></div>'
   +'<div class="cols2"><div class="stack">'
-  +'<div class="contrib"><div class="eyebrow">Network rewards &#183; Capy Diamonds</div><div class="big">&#128142; '+p.diamonds.toLocaleString('en-US')+' <small>/ 10,000</small></div>'
-   +'<div style="font-size:13px;color:rgba(246,240,230,.78)">For growing the network. '+(p.diamonds>=10000?'A $150 gift card to major retailers like Amazon, Best Buy, Apple, and more is ready, delivered through Tango.':(10000-p.diamonds).toLocaleString('en-US')+' to a $150 gift card. Earn by nominating offices, leaving reviews, and bringing dentists in.')+'</div>'
+  +'<div class="contrib vault"><div class="eyebrow">Network rewards &#183; Diamond Crowns</div><div class="big"><span class="dgem">&#128142;</span> '+p.diamonds.toLocaleString('en-US')+' <small>/ 10,000</small></div>'
+   +'<div style="font-size:13px;color:rgba(246,240,230,.78)">Capy Crowns earned by growing the network, cash-grade. '+(p.diamonds>=10000?'A $150 gift card to major retailers like Amazon, Best Buy, Apple, and more is ready, delivered through Tango.':(10000-p.diamonds).toLocaleString('en-US')+' to a $150 gift card. Earn by nominating offices and helping them join.')+'</div>'
    +'<div class="bar"><i style="width:'+Math.min(100,p.diamonds/100)+'%"></i></div>'
    +'<button class="btn btn-mint btn-sm" data-act="rewards" style="margin-top:8px">Open rewards network</button></div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:4px">The office journey</div><div class="muted" style="font-size:12.5px;margin-bottom:12px">Every office you nominate is a project. The further it goes, the bigger the drop.</div>'
+   +'<div class="pipe">'
+   +'<div class="pipe-step"><div class="pk">&#11088;</div><div class="pt"><b>You nominate an office</b><span>Per office, on submit</span></div><div class="pipe-amt">+10 &#128142;</div></div>'
+   +'<div class="pipe-step"><div class="pk">&#128222;</div><div class="pt"><b>Our team makes contact</b><span>Outreach begins on your nomination</span></div><div class="pipe-amt">+50 &#128142;</div></div>'
+   +'<div class="pipe-step"><div class="pk">&#127968;</div><div class="pt"><b>They claim their free profile</b><span>The office steps in</span></div><div class="pipe-amt">+250 &#128142;</div></div>'
+   +'<div class="pipe-step"><div class="pk">&#9989;</div><div class="pt"><b>Profile verified</b><span>Details confirmed for every patient</span></div><div class="pipe-amt">+500 &#128142;</div></div>'
+   +'</div>'
+   +'<div class="pipe-step jack"><div class="pk"><span class="dgem">&#128142;</span></div><div class="pt"><b>They join as a paying member</b><span>The full $150 gift card, per office that joins</span></div><div class="pipe-amt">+10,000</div></div>'
+   +'<div class="eyebrow" style="margin:18px 0 2px">Boosters &#183; +25 each, first send</div>'
+   +'<div class="muted" style="font-size:11.5px;margin-bottom:8px">Small drops that keep your nomination moving and the listing sharp.</div>'
+   +'<div class="boost-grid">'
+   +'<div class="boost">&#11088; CoverCapy review<span>+25</span></div>'
+   +'<div class="boost">&#127760; Google review<span>+25</span></div>'
+   +'<div class="boost">&#128221; Yelp review<span>+25</span></div>'
+   +'<div class="boost">&#9993; Intro email<span>+25</span></div>'
+   +'<div class="boost">&#128269; Detail verified<span>+25</span></div>'
+   +'<div class="boost">&#128233; Claim via your email<span>+25</span></div>'
+   +'</div>'
+   +'<div style="display:flex;gap:8px;margin-top:14px"><button class="btn btn-gold btn-sm" data-go="noms">Start a nomination</button><button class="btn btn-ghost btn-sm" data-act="rate">Leave a review</button></div>'
+   +'<div class="muted" style="font-size:11.5px;margin-top:12px;line-height:1.5">Diamond Crowns redeem for gift cards. Same currency family as Capy Crowns, just the grade earned by growing the network.</div>'
+  +'</div>'
+  +'</div><div class="stack">'
   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:6px">Capy Crowns &#183; treatments</div>'
    +'<div style="display:flex;align-items:baseline;gap:8px"><span class="serif" style="font-size:32px">&#128081; '+p.crowns.toLocaleString('en-US')+'</span></div>'
    +'<div class="muted" style="font-size:13px;margin:6px 0 12px">For your care. Crowns come from getting covered, getting care, and referring friends and family. They redeem for treatments.</div>'
@@ -862,21 +915,6 @@ function vCommunity(){
    +'<div class="lrow '+(p.journey.refer?'hit':'')+'"><div class="lk">'+(p.journey.refer?'&#10003;':'&#9679;')+'</div><div class="lt"><b>Refer a friend who books</b><span>When your friend visits a participating office</span></div><div class="amt">+700 &#128081;</div></div>'
    +'<div class="muted" style="font-size:11.5px;margin-top:10px;line-height:1.5">Crowns redeem for treatments at participating offices. Reviews never earn crowns.</div>'
    +'</div>'
-  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:4px">How you earn Capy Diamonds</div><div class="muted" style="font-size:12px;margin-bottom:12px">For gift card rewards and for bringing dentists into the network.</div>'
-   +'<div style="background:var(--mint-soft);border-radius:12px;padding:12px 14px;margin-bottom:14px"><div class="eyebrow" style="margin-bottom:6px;color:var(--mint-deep)">The review workflow</div><div style="font-size:12px;color:var(--mint-deep);line-height:1.5;margin-bottom:10px">Visited an office you trust? Leave a review, then nominate them. Your reviews give the office a reason to join, one layer at a time.</div>'
-     +'<div class="lrow" style="padding:7px 0"><div class="lk">&#11088;</div><div class="lt"><b>1. Review on CoverCapy</b><span>The first layer, a score they will want to protect</span></div><div class="amt">+100 &#128142;</div></div>'
-     +'<div class="lrow" style="padding:7px 0"><div class="lk">&#127760;</div><div class="lt"><b>2. Review on Google</b><span>The follow up, where most patients look</span></div><div class="amt">+100 &#128142;</div></div>'
-     +'<div class="lrow" style="padding:7px 0"><div class="lk">&#128221;</div><div class="lt"><b>3. Review on Yelp</b><span>The closer, your final push to bring them in</span></div><div class="amt">+100 &#128142;</div></div>'
-     +'<button class="btn btn-mint btn-sm" data-act="rate" style="margin-top:6px;background:var(--mint);color:var(--ink)">Leave a review and nominate</button></div>'
-   +'<div class="lrow '+(p.noms.length?'hit':'')+'"><div class="lk">'+(p.noms.length?'&#11088;':'&#9679;')+'</div><div class="lt"><b>Nominate an office</b><span>Per office, on submit</span></div><div class="amt">+200 &#128142;</div></div>'
-   +'<div class="lrow"><div class="lk">&#9993;</div><div class="lt"><b>Intro email to the office</b><span>Your first outreach, once</span></div><div class="amt">+100 &#128142;</div></div>'
-   +'<div class="lrow"><div class="lk">&#127968;</div><div class="lt"><b>Nominated office claims their free profile</b><span>Per office, when the claim happens</span></div><div class="amt">+500 &#128142;</div></div>'
-   +'<div class="lrow"><div class="lk">&#128269;</div><div class="lt"><b>Office detail verified</b><span>Email, Yelp page, website we were missing</span></div><div class="amt">+100 &#128142;</div></div>'
-   +'<div class="lrow"><div class="lk">&#128233;</div><div class="lt"><b>Office claims using the email you found</b><span>On top of the claim bounty</span></div><div class="amt">+200 &#128142;</div></div>'
-   +'<div class="lrow"><div class="lk">&#128142;</div><div class="lt"><b>Nominee becomes a paying member</b><span>Per office that joins, a full $150 at major retailers</span></div><div class="amt">+10,000 &#128142;</div></div>'
-   +'<div class="muted" style="font-size:11.5px;margin-top:10px;line-height:1.5">Diamonds redeem for gift cards. They are separate from crowns and are earned by growing the network.</div>'
-   +'</div>'
-  +'</div><div class="stack">'
   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Your nominations</div>'
    +(p.noms.length
      ? p.noms.slice(0,2).map(function(nm){return '<div class="lrow"><div class="lk">'+(nm.stage==='accredited'?'&#127942;':'&#11088;')+'</div><div class="lt"><b>'+esc(nm.name)+'</b><span>'+esc(nm.city)+' &#183; '+nm.stage+'</span></div><div class="amt">'+(nm.stage==='accredited'?'+10,000':'10,000 pending')+' &#128142;</div></div>';}).join('')
@@ -886,7 +924,7 @@ function vCommunity(){
    +'<div class="stat-grid" style="grid-template-columns:repeat(3,1fr)"><div class="stat"><b>'+n.officesJoined+'</b><span>Offices joined through nominations this year</span></div><div class="stat"><b>'+n.nominationsThisYear+'</b><span>Patient nominations</span></div><div class="stat"><b>'+n.patientsHelped.toLocaleString('en-US')+'</b><span>Patients helped</span></div></div>'
    +'<div class="muted" style="font-size:12.5px;margin-top:12px">Every nomination starts with a real patient who was treated well. That is what keeps the network honest.</div></div>'
   +'</div></div>'
-  +'<div class="foot-note">Reviews are always honest and never earn rewards. Crowns redeem for treatments only; Capy Diamonds redeem for gift cards. Accreditation is reviewed on merit and is never sold.</div></div>';
+  +'<div class="foot-note">Reviews are always honest and never earn rewards. Crowns redeem for treatments only; Diamond Crowns redeem for gift cards. Accreditation is reviewed on merit and is never sold.</div></div>';
 }
 
 /* ===== PATIENT: NOMINATIONS ===== */
@@ -898,10 +936,10 @@ function nomStagePill(st){
 function vNoms(){
   var p=S.p;
   var STRATS=[
-    ['intro','&#9993;','Intro email','First outreach to the office &#183; +100 &#128142; first send'],
-    ['cc_review','&#11088;','Review on CoverCapy','The initial layer &#183; +100 &#128142; first send'],
-    ['g_review','&#127760;','Review on Google','The follow up &#183; +100 &#128142; first send'],
-    ['y_review','&#128221;','Review on Yelp','The closer, final attempt &#183; +100 &#128142; first send']
+    ['intro','&#9993;','Intro email','First outreach to the office &#183; +25 &#128142; first send'],
+    ['cc_review','&#11088;','Review on CoverCapy','The initial layer &#183; +25 &#128142; first send'],
+    ['g_review','&#127760;','Review on Google','The follow up &#183; +25 &#128142; first send'],
+    ['y_review','&#128221;','Review on Yelp','The closer, final attempt &#183; +25 &#128142; first send']
   ];
   function stratBlock(nm,i){
     var nd=nm.nudges||{};
@@ -916,24 +954,24 @@ function vNoms(){
   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:12px">Your list</div>'
   +(p.noms.length? p.noms.map(function(nm,i){
       return '<div class="card pad" style="box-shadow:none;margin-bottom:12px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center"><div><b style="font-size:15px">'+esc(nm.name)+'</b><div class="muted" style="font-size:12.5px">'+esc(nm.city)+(nm.website?' &#183; '+esc(nm.website):'')+'</div></div>'+nomStagePill(nm.stage)+'</div>'
-       +'<div class="chiprow" style="margin-top:10px">'+(nm.email?'<span class="mini lang">&#9993; '+esc(nm.email)+'</span>':'<button class="mini pend" style="cursor:pointer;border:none" data-addnomemail="'+i+'">&#9993; Add office email &#183; +100 &#128142;</button>')+'</div>'
+       +'<div class="chiprow" style="margin-top:10px">'+(nm.email?'<span class="mini lang">&#9993; '+esc(nm.email)+'</span>':'<button class="mini pend" style="cursor:pointer;border:none" data-addnomemail="'+i+'">&#9993; Add office email &#183; +25 &#128142;</button>')+'</div>'
        +(nm.stage!=='accredited'?stratBlock(nm,i):'<div class="okpill" style="margin-top:12px">&#127942; This office joined and credited your nomination</div>')+'</div>';
     }).join('')
     : '<div class="muted" style="font-size:13.5px">Nothing here yet. Your first nomination is one search away.</div>')
   +'</div></div><div class="stack">'
   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:6px">Nominate an office</div>'
-   +'<div class="muted" style="font-size:13px;margin-bottom:12px">Search our directory, or add an office that is not on the list yet. +200 &#128142; on submit.</div>'
+   +'<div class="muted" style="font-size:13px;margin-bottom:12px">Search our directory, or add an office that is not on the list yet. +10 &#128142; on submit, and bigger drops land as the office moves: contacted +50, claimed +250, verified +500.</div>'
    +'<button class="btn btn-gold btn-full" data-nominate="|">Start a nomination</button></div>'
   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">How the credit works</div><div style="font-size:13.5px;line-height:1.65" class="muted">Offices can be nominated by many patients, but they credit exactly one when they join. Every email you send carries your name and asks them to mention you, so your nomination is the one on record. The credited patient receives the 10,000 &#128142;.</div></div>'
-  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">The claim math</div><div style="font-size:13.5px;line-height:1.65">Every office that claims its free profile after your nomination is <b>+500 &#128142;</b>. Twenty claimed offices is <b>10,000 &#128142;</b>: a $150 gift card, before any office even becomes a paying member. An accredited join is 10,000 on its own.</div></div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">The claim math</div><div style="font-size:13.5px;line-height:1.65">Every office that claims its free profile after your nomination is <b>+250 &#128142;</b>, and <b>+500 &#128142;</b> more when it gets verified. A handful of offices moving through the pipeline adds up fast, and an accredited join is <b>10,000 &#128142;</b> on its own: the full $150 gift card.</div></div>'
   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">Your toolkit</div><div style="font-size:13.5px;line-height:1.65" class="muted">Emails in your own words. Reviews on CoverCapy, Google, and Yelp that give the office a score to protect. Missing details you fill in so other patients can reach them. Use whatever converts: this network is built by patients on the ground.</div></div>'
   +'<div class="contrib"><div class="eyebrow">Official CoverCapy Ambassador</div>'
    +(p.diamonds>=10000
-     ?'<div style="font-size:13.5px;line-height:1.6;color:rgba(246,240,230,.85);margin:6px 0 12px">You have built a real track record: '+p.diamonds.toLocaleString('en-US')+' lifetime diamonds. Ambassadors work with CoverCapy officially: a real agreement, a territory, tools, and pay for growing the network.</div><button class="btn btn-mint btn-sm" data-act="ambassador">Apply to be an Ambassador</button>'
-     :'<div style="font-size:13.5px;line-height:1.6;color:rgba(246,240,230,.85);margin:6px 0 6px">Reach 10,000 lifetime diamonds and you can apply to work with CoverCapy officially: a real agreement, a territory, tools, and pay for growing the network.</div><div class="bar"><i style="width:'+Math.min(100,p.diamonds/100)+'%"></i></div><div style="font-size:11.5px;color:rgba(246,240,230,.6);margin-top:6px">'+p.diamonds.toLocaleString('en-US')+' / 10,000 lifetime &#128142;</div>')
+     ?'<div style="font-size:13.5px;line-height:1.6;color:rgba(246,240,230,.85);margin:6px 0 12px">You have built a real track record: '+p.diamonds.toLocaleString('en-US')+' lifetime Diamond Crowns. Ambassadors work with CoverCapy officially: a real agreement, a territory, tools, and pay for growing the network.</div><button class="btn btn-mint btn-sm" data-act="ambassador">Apply to be an Ambassador</button>'
+     :'<div style="font-size:13.5px;line-height:1.6;color:rgba(246,240,230,.85);margin:6px 0 6px">Reach 10,000 lifetime Diamond Crowns and you can apply to work with CoverCapy officially: a real agreement, a territory, tools, and pay for growing the network.</div><div class="bar"><i style="width:'+Math.min(100,p.diamonds/100)+'%"></i></div><div style="font-size:11.5px;color:rgba(246,240,230,.6);margin-top:6px">'+p.diamonds.toLocaleString('en-US')+' / 10,000 lifetime &#128142;</div>')
    +'</div>'
   +'</div></div>'
-  +'<div class="foot-note">Reviews are always honest and never earn rewards. The diamonds reward the office joining, not the review itself. Our team reviews every nomination; accreditation is earned on merit and is never sold.</div></div>';
+  +'<div class="foot-note">Reviews are always honest and never earn rewards. Diamond Crowns reward the office joining, not the review itself. Our team reviews every nomination; accreditation is earned on merit and is never sold.</div></div>';
 }
 
 /* ===== DENTIST PORTAL ===== */
@@ -970,7 +1008,7 @@ function vDDash(){
     :S.dTier==='platinum'?'<div class="muted" style="font-size:13px">Top placement active across your 10 mile radius, plus featured city slots.</div>'
     :'<div class="muted" style="font-size:13px">Claimed offices reply to requests. Accredited offices appear across a 10 mile radius with the trust badge.</div>')+'</div>'
   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:6px">Patient nominations</div>'
-   +'<div class="muted" style="font-size:12.5px;line-height:1.55;margin-bottom:10px">Three patients nominated your office. Credit the one that moved you to join: they receive 10,000 Capy Diamonds when your membership starts. One credit per office.</div>'
+   +'<div class="muted" style="font-size:12.5px;line-height:1.55;margin-bottom:10px">Three patients nominated your office. Credit the one that moved you to join: they receive 10,000 Diamond Crowns when your membership starts. One credit per office.</div>'
    +DEMO_DATA.dnoms.map(function(r,i){
       return '<div class="lrow"><div class="lk">&#11088;</div><div class="lt"><b>'+r.n+'</b><span>'+r.d+' &#183; "'+r.note+'"</span></div>'
        +(S.dCredit===i?'<span class="okpill" style="font-size:11px;padding:5px 10px">Credited</span>'
@@ -1292,14 +1330,14 @@ function nominateSheet(name,city){
   function submitNom(nm,ct,em2,site){
     var em=em2||officeEmail(nm)||null;
     S.nomTarget={name:nm,city:ct,email:em,website:site||null};
-    var chip='&#128142; +200 now &#183; +10,000 if accredited = $150 gift card';
+    var chip='&#128142; +10 now &#183; +50 contacted &#183; +250 claimed &#183; +500 verified &#183; +10,000 if they join = $150 gift card';
     var line= em
       ? 'Now let '+esc(nm)+' hear it from you. We can email them at '+esc(em)+' on your behalf.'
-      : 'Now let '+esc(nm)+' hear it from you. We will look up their email, or you can add one to earn extra diamonds if they claim using it.';
+      : 'Now let '+esc(nm)+' hear it from you. We will look up their email, or you can add one to earn extra Diamond Crowns if they claim using it.';
     function afterSave(nid){
       S.p.noms.push({id:nid,name:nm,city:ct,stage:'received',email:em,website:site||null,nudges:{}});
       S.nomIdx=S.p.noms.length-1; S.nomKind='intro';
-      bump(200,'d'); route();
+      bump(10,'d'); route();
       celebrate({em:'&#127775;',title:'Nomination submitted',chip:chip,body:line,cta:'&#9993; Email the office',then:function(){noteSheet('intro');}});
     }
     if(window.__ccUID&&window.__supa){
@@ -1332,8 +1370,8 @@ function nominateSheet(name,city){
   results(name||'');
 }
 function addNomEmailSheet(nmrow){
-  openSheet('<h3 class="serif">Add email for '+esc(nmrow.name)+'</h3><div class="ssub">We have no email for this office yet. Add the one you find so we can reach out, and earn diamonds if it leads to a claim.</div>'
-   +'<div style="background:var(--gold-soft);color:var(--gold-deep);border-radius:14px;padding:13px 15px;font-size:12.5px;line-height:1.55;margin-bottom:14px"><b>How you earn:</b> +100 &#128142; when our team verifies it. If '+esc(nmrow.name)+' later claims using this address, +200 &#128142; more because you found it.</div>'
+  openSheet('<h3 class="serif">Add email for '+esc(nmrow.name)+'</h3><div class="ssub">We have no email for this office yet. Add the one you find so we can reach out, and earn Diamond Crowns if it leads to a claim.</div>'
+   +'<div style="background:var(--gold-soft);color:var(--gold-deep);border-radius:14px;padding:13px 15px;font-size:12.5px;line-height:1.55;margin-bottom:14px"><b>How you earn:</b> +25 &#128142; when our team verifies it. If '+esc(nmrow.name)+' later claims using this address, +25 &#128142; more on top of the +250 claim bounty.</div>'
    +'<div class="field"><label>Office email you found</label><input id="aneEmail" type="email" placeholder="frontdesk@office.com"></div>'
    +'<div class="field"><label>Where did you find it? <span style="font-weight:400;color:var(--slate)">(optional)</span></label><input id="aneSrc" placeholder="Their website, Google listing, front desk"></div>'
    +'<button class="btn btn-gold btn-full" id="aneGo">Submit email</button>'
@@ -1343,8 +1381,8 @@ function addNomEmailSheet(nmrow){
     if(em.length<5||em.indexOf('@')<1){$('aneEmail').style.borderColor='var(--gold)';return;}
     nmrow.email=em; route();
     closeSheet();
-    celebrate({em:'&#128233;',title:'Email submitted',chip:'&#128142; +100 on verification',
-      body:'Thank you. Once verified, we can email '+esc(nmrow.name)+' on your behalf. If they claim using this address, you earn another 200 diamonds for finding it.'});
+    celebrate({em:'&#128233;',title:'Email submitted',chip:'&#128142; +25 on verification',
+      body:'Thank you. Once verified, we can email '+esc(nmrow.name)+' on your behalf. If they claim using this address, you earn another 25 Diamond Crowns for finding it, on top of the claim bounty.'});
   });
 }
 function noteSheet(kind){
@@ -1389,7 +1427,7 @@ function noteSheet(kind){
     if(S.nomIdx!=null&&S.p.noms[S.nomIdx]){
       var row=S.p.noms[S.nomIdx];
       var nd=row.nudges=row.nudges||{};
-      if(!nd[kind]){ nd[kind]=1; bump(100,'d');
+      if(!nd[kind]){ nd[kind]=1; bump(25,'d');
         if(window.__ccUID&&window.__supa&&row.id){ var _km={intro:'interest_intro',cc_review:'covercapy_review',g_review:'google_review',y_review:'yelp_review'}; window.__supa.from('nomination_nudges').insert({nomination_id:row.id,user_id:window.__ccUID,kind:(_km[kind]||'patient_note_sent')}); }
       }
     }
@@ -1443,7 +1481,7 @@ function noteSheet(kind){
 function dentByName(name){var d=null;DEMO_DATA.dentists.forEach(function(x){if(x.name===name)d=x;});return d;}
 function provideEmailSheet(d){
   openSheet('<h3 class="serif">Help us reach '+esc(d.name)+'</h3><div class="ssub">We do not have an email for this office yet, so we cannot send a verification request. Add the one you found and we can reach out, and you help the network.</div>'
-   +'<div style="background:var(--gold-soft);color:var(--gold-deep);border-radius:14px;padding:13px 15px;font-size:12.5px;line-height:1.55;margin-bottom:14px"><b>How you earn:</b> +100 &#128142; when our team verifies the email. If this office later claims its profile, +500 &#128142; for your nomination and +200 &#128142; more because the address you found is the one they used.</div>'
+   +'<div style="background:var(--gold-soft);color:var(--gold-deep);border-radius:14px;padding:13px 15px;font-size:12.5px;line-height:1.55;margin-bottom:14px"><b>How you earn:</b> +25 &#128142; when our team verifies the email. If this office later claims its profile, +250 &#128142; for the claim and +25 &#128142; more because the address you found is the one they used.</div>'
    +'<div class="field"><label>Office email you found</label><input id="peEmail" type="email" placeholder="frontdesk@office.com"></div>'
    +'<div class="field"><label>Where did you find it? <span style="font-weight:400;color:var(--slate)">(optional)</span></label><input id="peSrc" placeholder="Their website, Google listing, front desk"></div>'
    +'<button class="btn btn-gold btn-full" id="peGo">Submit email and request verification</button>'
@@ -1454,8 +1492,8 @@ function provideEmailSheet(d){
     if(d.missing){var ix=d.missing.indexOf('email');if(ix>-1)d.missing.splice(ix,1);}
     d.hasEmail=true; d.providedEmail=em;
     closeSheet();
-    celebrate({em:'&#128233;',title:'Email submitted',chip:'&#128142; +100 on verification',
-      body:'Thank you. Once our team verifies it, we can send '+esc(d.name)+' a verification request, and your 100 diamonds land. If they claim their profile using this address, you earn another 700 in total for the nomination and the email you found.'});
+    celebrate({em:'&#128233;',title:'Email submitted',chip:'&#128142; +25 on verification',
+      body:'Thank you. Once our team verifies it, we can send '+esc(d.name)+' a verification request, and your 25 Diamond Crowns land. If they claim their profile using this address, another +275 lands for the claim and the email you found.'});
   });
 }
 function verifySheet(office){
@@ -1596,9 +1634,9 @@ function ambassadorSheet(){
 function vRewards(){
   var p=S.p, bal=p.diamonds, can=bal>=10000, start=Math.min(bal,10000);
   return '<div class="page"><button class="btn btn-ghost btn-sm" data-go="community" style="margin-bottom:14px">&#8592; Community</button>'
-  +'<div class="phead"><div class="eyebrow">Rewards network</div><h1>The gift card wall</h1><div class="guide">Every card is $150, delivered through Tango by email. Slide your diamonds to 10,000 and pick any card on the wall.</div></div>'
-  +'<div class="rw-commit"><div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px"><div class="eyebrow" style="color:var(--mint)">Commit your diamonds</div><div class="rw-big">&#128142; <span id="rwVal">'+start.toLocaleString('en-US')+'</span> <small>of '+bal.toLocaleString('en-US')+'</small></div></div>'
-  +'<input type="range" id="rwSlider" min="0" max="'+Math.max(bal,10000)+'" step="100" value="'+start+'" aria-label="Diamonds to commit">'
+  +'<div class="phead"><div class="eyebrow">Rewards network</div><h1>The gift card wall</h1><div class="guide">Every card is $150, delivered through Tango by email. Slide your Diamond Crowns to 10,000 and pick any card on the wall.</div></div>'
+  +'<div class="rw-commit contrib vault" style="margin-bottom:22px"><div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px"><div class="eyebrow" style="color:var(--mint)">Commit your Diamond Crowns</div><div class="rw-big"><span class="dgem">&#128142;</span> <span id="rwVal">'+start.toLocaleString('en-US')+'</span> <small>of '+bal.toLocaleString('en-US')+'</small></div></div>'
+  +'<input type="range" id="rwSlider" min="0" max="'+Math.max(bal,10000)+'" step="100" value="'+start+'" aria-label="Diamond Crowns to commit">'
   +'<div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(246,240,230,.6)"><span>0</span><span>10,000 unlocks the wall</span><span>'+Math.max(bal,10000).toLocaleString('en-US')+'</span></div>'
   +'<div style="margin-top:12px" id="rwState">'+(can?'<span class="okpill">The wall is open: pick your card</span>':'<span class="pendpill">'+(10000-bal).toLocaleString('en-US')+' &#128142; to go: claims, verified details, and joins get you there</span>')+'</div></div>'
   +'<div class="slabel"><h3>$150 gift cards</h3><span class="muted" style="font-size:12px">10,000 &#128142; each &#183; delivered through Tango</span></div>'
@@ -1655,7 +1693,7 @@ function profileSheet(id){
    +((d.themes&&d.themes.length)?'<div class="card pad" style="box-shadow:none;margin:12px 0 0"><div class="eyebrow" style="margin-bottom:8px">What patients keep saying</div>'+d.themes.map(function(t){return '<div class="bar-row mint"><span>'+t[0]+'</span><div class="bar"><i style="width:'+t[1]+'%"></i></div><b>'+t[1]+'%</b></div>';}).join('')+'<div class="muted" style="font-size:11px;margin-top:4px">Share of recent reviews across Google, Yelp, ZocDoc, and CoverCapy that mention this.</div></div>':'')
    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px"><div class="confbox"><span>Plan fit</span><b style="color:'+(d.fit==='strong'?'var(--mint-deep)':'var(--gold-deep)')+'">'+(d.fit==='strong'?'Strong':'Confirm')+'</b></div><div class="confbox"><span>Cost confidence</span><b>'+d.cost+'</b></div></div>'
    +'<div style="margin-top:10px"><div class="eyebrow" style="margin:8px 0 6px">Popular treatments</div><div style="display:flex;gap:6px;flex-wrap:wrap">'+d.treatments.map(function(t){return '<span class="mini">'+t+'</span>';}).join('')+'</div></div>'
-   +((d.missing&&d.missing.length)?'<div class="card pad" style="box-shadow:none;margin:12px 0 0;background:var(--gold-soft);border:none"><div class="eyebrow" style="margin-bottom:4px;color:var(--gold-deep)">Strengthen this listing &#183; +100 &#128142; each</div><div class="muted" style="font-size:12px;margin-bottom:10px">Know a detail we are missing? Our team verifies it, then the diamonds are yours. An email helps most: if the office later claims using the address you found, you earn an extra 200 diamonds on top.</div>'
+   +((d.missing&&d.missing.length)?'<div class="card pad" style="box-shadow:none;margin:12px 0 0;background:var(--gold-soft);border:none"><div class="eyebrow" style="margin-bottom:4px;color:var(--gold-deep)">Strengthen this listing &#183; +25 &#128142; each</div><div class="muted" style="font-size:12px;margin-bottom:10px">Know a detail we are missing? Our team verifies it, then the Diamond Crowns are yours. An email helps most: if the office later claims using the address you found, +275 more lands for the claim and the email.</div>'
      +d.missing.map(function(f){var lbl={email:'Office email',yelp_url:'Yelp page link',website:'Website',google_url:'Google listing link',phone:'Phone number'}[f]||f;
         return '<div style="display:flex;gap:8px;margin-bottom:8px"><input id="od-'+d.id+'-'+f+'" placeholder="'+lbl+'" style="flex:1;border:1.5px solid var(--line);border-radius:12px;padding:10px 13px;font-size:13.5px;background:var(--paper)"><button class="btn btn-ink btn-sm" data-odata="'+d.id+'|'+f+'|'+lbl+'">Send</button></div>';}).join('')+'</div>':'')
    +'<div style="display:flex;gap:10px;margin-top:18px"><button class="btn btn-ink btn-full" data-act="book">Book a visit</button><button class="btn btn-ghost btn-sm" data-verify="'+esc(d.name)+'">Check my plan</button></div>');
@@ -1792,7 +1830,7 @@ function ccReply(q){
   if(l.indexOf('fit')>-1||l.indexOf('office')>-1||l.indexOf('near')>-1)
     return 'Capybara Cove Dental in Costa Mesa is a strong fit: 4.8 stars across 132 reviews, Mandarin spoken, gentle with kids'+(pr?', and it takes your '+pr.carrier+' PPO':'')+'. Want me to send them a verification request and hold a time?';
   if(l.indexOf('nominat')>-1)
-    return 'Nominate any office you trust, even if your own dentist already joined. Diamonds build on hard events: 200 on submit, 100 per follow up you send, 100 per office detail you add that we verify, 500 when an office you nominated claims its free profile, and 10,000 when your credited nomination joins as a paying member. If an office has no email on file, add the one you find: when they claim using your address, that is 500 for the claim plus 200 more for the email you sourced. Twenty claimed profiles alone covers a $150 gift card, and 10,000 lifetime diamonds unlocks the Ambassador application. Crowns are separate: coverage, care, and referrals, redeemed for treatments at participating offices.';
+    return 'Nominate any office you trust, even if your own dentist already joined. Diamond Crowns build on hard events: 10 on submit, 25 per follow up you send, 25 per office detail you add that we verify, 50 when our team contacts the office, 250 when an office you nominated claims its free profile, 500 when it gets verified, and 10,000 when your credited nomination joins as a paying member. If an office has no email on file, add the one you find: when they claim using your address, that is 250 for the claim plus 25 more for the email you sourced. 10,000 lifetime Diamond Crowns unlocks the Ambassador application. Everyday Capy Crowns are the other grade: coverage, care, and referrals, redeemed for treatments at participating offices.';
   if(l.indexOf('tier')>-1||l.indexOf('member')>-1||l.indexOf('demand')>-1)
     return 'Membership is $369 per month after a merit review. It unlocks coverage snapshots, blended reviews from four sources, a 10 mile visibility radius, promotions, and the coverage widget for your own website.';
   return 'Good question. Tell me the office or the treatment and I will get specific, or tap a suggestion below.';
@@ -1869,7 +1907,7 @@ document.addEventListener('click',function(e){
     if(dd&&dd.missing){var ix2=dd.missing.indexOf(od[1]);if(ix2>-1)dd.missing.splice(ix2,1);}
     closeSheet();
     celebrate({em:'&#128269;',title:'Detail submitted',chip:'&#128142; +100 pending review',
-      body:'Thank you. Our team verifies the '+od[2].toLowerCase()+', then 100 diamonds land in your wallet. Verified details make this office easier for every patient to reach.'});
+      body:'Thank you. Our team verifies the '+od[2].toLowerCase()+', then 25 Diamond Crowns land in your wallet. Verified details make this office easier for every patient to reach.'});
     return;
   }
   if((t=e.target.closest('[data-delplan]'))){deletePlanSheet(t.dataset.delplan);return;}
@@ -1882,7 +1920,7 @@ document.addEventListener('click',function(e){
   }
   if((t=e.target.closest('[data-credit]'))){
     S.dCredit=+t.dataset.credit; route();
-    celebrate({em:'&#127942;',title:'Nomination credited',body:'Only one patient is credited per office, and you chose '+esc(DEMO_DATA.dnoms[S.dCredit].n)+'. They receive 10,000 Capy Diamonds, a $150 gift card, when your membership starts. The other nominations stay on record without a payout.'});
+    celebrate({em:'&#127942;',title:'Nomination credited',body:'Only one patient is credited per office, and you chose '+esc(DEMO_DATA.dnoms[S.dCredit].n)+'. They receive 10,000 Diamond Crowns, a $150 gift card, when your membership starts. The other nominations stay on record without a payout.'});
     return;
   }
   if((t=e.target.closest('.dreply'))){celebrate({em:'&#9989;',title:'Reply sent',body:'The patient is notified right away: this office confirmed how they work with their plan. Offices that answer fast win the booking.'});return;}
@@ -1919,7 +1957,7 @@ function ccNum(v){ var n=parseFloat(v); return isNaN(n)?0:n; }
 function ccEnterDemo(){
   window.__ccUID=null; S.role='patient';
   S.p={ name:'Guest preview', first:'there', init:'CC', avbg:'var(--mint-soft)', avc:'var(--mint-deep)',
-    crowns:300, diamonds:0, tier:'bronze_builder',
+    crowns:300, diamonds:0, tier:'sprout',
     journey:{plan:0,visit:0,review:0,refer:0}, noms:[], plans:[], blurb:'Demo preview' };
   var g=$('gate'); if(g){ g.classList.add('hidden'); }
   renderChrome(); go('home'); route();
