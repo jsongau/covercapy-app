@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#082A30" />
+<title>CoverCapy Concierge | Sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter+Tight:wght@400;500;600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#082A30; --teal-2:#0C3A41; --teal-3:#10484F;
+  --mint:#5BE0A0; --mint-2:#46c98c; --mint-deep:#1f8f64;
+  --gold:#B8924F; --gold-2:#d4ad63; --gold-soft:#F0E3C6;
+  --cream:#F6F0E6; --cream-2:#EFE7D7; --paper:#FDFBF7;
+  --ink:#0c2024; --ink-soft:#41555a; --muted:#7c8a8d;
+  --line:#E3DAC9; --line-2:#d6ccb7; --err:#c0564a;
+  --serif:'Fraunces',Georgia,serif; --sans:'Inter Tight',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --spring:cubic-bezier(.34,1.45,.4,1); --ease:cubic-bezier(.22,.61,.36,1);
+}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);color:var(--ink);background:var(--cream);-webkit-font-smoothing:antialiased;line-height:1.5}
+:focus-visible{outline:2px solid var(--mint-deep);outline-offset:3px;border-radius:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.split{display:grid;grid-template-columns:1.02fr 1fr;min-height:100dvh}
+@media(max-width:880px){.split{grid-template-columns:1fr}}
+
+/* LEFT teal panel */
+.brandside{position:relative;overflow:hidden;background:
+  radial-gradient(120% 90% at 12% 8%,rgba(91,224,160,.16),transparent 52%),
+  radial-gradient(90% 70% at 100% 100%,rgba(184,146,79,.18),transparent 55%),
+  linear-gradient(155deg,#0a3037,#082a30 55%,#062227);
+  color:#eaf5f0;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(28px,3.4vw,52px)}
+.brandside>canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.7}
+.bs-top,.bs-mid,.bs-bot{position:relative;z-index:2}
+.logo{display:inline-flex;align-items:center;gap:12px;text-decoration:none}
+.logo .mk{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;flex:none;background:linear-gradient(150deg,var(--mint),#2fae79);box-shadow:0 12px 26px -12px rgba(47,174,121,.7),inset 0 0 0 1px rgba(255,255,255,.18)}
+.logo .mk svg{width:24px;height:24px}
+.logo .wd{font-weight:800;font-size:15px;letter-spacing:.04em;color:#fff;line-height:1}
+.logo .wd small{display:block;font-weight:700;font-size:9px;letter-spacing:.22em;color:rgba(234,245,240,.66);margin-top:4px}
+.bs-mid{max-width:30ch;padding:34px 0}
+.bs-mid h1{font-family:var(--serif);font-weight:500;font-size:clamp(32px,4vw,50px);line-height:1.02;letter-spacing:-.025em;color:#fff}
+.bs-mid p{font-size:clamp(14.5px,1.4vw,16.5px);line-height:1.6;color:rgba(234,245,240,.82);margin-top:18px;max-width:42ch}
+.bs-list{list-style:none;margin:26px 0 0;display:flex;flex-direction:column;gap:13px}
+.bs-list li{display:flex;align-items:flex-start;gap:11px;font-size:14.5px;color:rgba(234,245,240,.92);line-height:1.4}
+.bs-list li svg{flex:none;width:20px;height:20px;margin-top:1px;color:var(--mint)}
+.bs-bot{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:600;color:rgba(234,245,240,.6)}
+.bs-bot svg{width:15px;height:15px;color:var(--mint)}
+@media(max-width:880px){
+  .brandside{padding:26px 22px 30px}
+  .bs-mid{padding:22px 0;max-width:none}
+  .bs-list{display:none}
+}
+
+/* RIGHT auth panel */
+.authside{display:flex;align-items:center;justify-content:center;padding:clamp(26px,3vw,54px);background:linear-gradient(180deg,var(--paper),var(--cream))}
+.authwrap{width:100%;max-width:412px}
+.aw-kick{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);display:inline-flex;align-items:center;gap:8px}
+.aw-kick::before{content:"";width:22px;height:1.5px;background:linear-gradient(90deg,var(--gold),transparent)}
+.aw-title{font-family:var(--serif);font-weight:500;font-size:clamp(27px,3vw,34px);letter-spacing:-.02em;color:var(--ink);margin-top:14px;line-height:1.06}
+.aw-sub{font-size:14px;color:var(--ink-soft);margin-top:9px;line-height:1.5}
+.aw-sub b{color:var(--gold);font-weight:700}
+
+/* segmented toggle */
+.seg{position:relative;display:grid;grid-template-columns:1fr 1fr;background:var(--cream-2);border:1px solid var(--line);border-radius:14px;padding:5px;margin-top:22px}
+.seg-pill{position:absolute;top:5px;bottom:5px;left:5px;width:calc(50% - 5px);border-radius:10px;background:var(--paper);box-shadow:0 6px 16px -8px rgba(8,42,48,.32),inset 0 0 0 1px rgba(31,143,100,.14);transition:transform .42s var(--spring)}
+.seg.create .seg-pill{transform:translateX(100%)}
+.seg button{position:relative;z-index:1;background:none;border:none;cursor:pointer;font-family:var(--sans);font-weight:700;font-size:14px;padding:11px 8px;color:var(--muted);transition:color .3s;border-radius:10px}
+.seg button.on{color:var(--teal)}
+
+/* panels */
+.panels{position:relative;margin-top:20px}
+.panel{display:none;animation:fadeUp .45s var(--ease)}
+.panel.show{display:block}
+
+/* SSO */
+.sso{display:flex;flex-direction:column;gap:10px}
+.sso-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:11px;font-family:var(--sans);font-weight:600;font-size:14.5px;color:var(--ink);cursor:pointer;padding:14px;border-radius:13px;background:var(--paper);border:1px solid var(--line-2);box-shadow:0 12px 26px -22px rgba(8,42,48,.5);transition:transform .28s var(--spring),box-shadow .28s,border-color .28s}
+.sso-btn:hover{transform:translateY(-2px);border-color:var(--mint-2);box-shadow:0 20px 38px -22px rgba(8,42,48,.55)}
+.sso-btn[aria-busy="true"]{opacity:.65;pointer-events:none}
+.sso-btn svg{width:20px;height:20px;flex:none}
+
+.divider{display:flex;align-items:center;gap:12px;margin:16px 0;color:var(--muted);font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* fields */
+.field{position:relative;margin-top:12px}
+.field input{width:100%;font-family:var(--sans);font-size:15px;font-weight:500;color:var(--ink);background:var(--paper);border:1.5px solid var(--line-2);border-radius:13px;padding:22px 15px 9px;outline:none;transition:border-color .22s,box-shadow .22s}
+.field.haspw input{padding-right:48px}
+.field label{position:absolute;left:16px;top:15px;font-size:15px;font-weight:500;color:var(--muted);pointer-events:none;transition:.2s var(--ease)}
+.field input:focus{border-color:var(--mint-2);box-shadow:0 0 0 4px rgba(91,224,160,.16)}
+.field input:focus+label,.field input:not(:placeholder-shown)+label{top:8px;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--mint-deep)}
+.field.invalid input{border-color:var(--err);box-shadow:0 0 0 4px rgba(192,86,74,.12)}
+.field.invalid input:focus+label,.field.invalid input:not(:placeholder-shown)+label{color:var(--err)}
+.pw-toggle{position:absolute;right:9px;top:11px;width:36px;height:36px;border:none;background:none;cursor:pointer;color:var(--muted);display:grid;place-items:center;border-radius:9px}
+.pw-toggle:hover{color:var(--mint-deep);background:rgba(91,224,160,.12)}
+.pw-toggle svg{width:20px;height:20px}
+.err-msg{font-size:12px;font-weight:600;color:var(--err);margin-top:8px;display:none}
+.err-msg.show{display:block}
+
+/* reward teaser */
+.teaser{display:flex;align-items:center;gap:11px;margin-top:14px;border-radius:13px;padding:12px 14px;background:linear-gradient(120deg,var(--gold-soft),#fbf4e2);border:1px solid rgba(184,146,79,.32)}
+.teaser .tc{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(150deg,var(--teal-2),var(--teal));box-shadow:inset 0 0 0 1px rgba(240,227,198,.3)}
+.teaser .tc svg{width:19px;height:19px}
+.teaser p{font-size:12.5px;line-height:1.4;color:var(--ink-soft)}
+.teaser p b{color:var(--gold);font-weight:800}
+
+/* primary cta */
+.cta{width:100%;margin-top:16px;font-family:var(--sans);font-weight:700;font-size:15.5px;cursor:pointer;border:none;border-radius:13px;padding:16px;color:#062a23;background:linear-gradient(135deg,var(--mint),#37c389);box-shadow:0 18px 36px -18px rgba(31,143,100,.85),inset 0 1px 0 rgba(255,255,255,.3);transition:transform .3s var(--spring),box-shadow .3s;display:inline-flex;align-items:center;justify-content:center;gap:9px}
+.cta:hover{transform:translateY(-2px);box-shadow:0 26px 48px -20px rgba(31,143,100,.9)}
+.cta[aria-busy="true"]{opacity:.7;pointer-events:none}
+.cta svg{width:18px;height:18px}
+.cta.dark{color:#eaf5f0;background:linear-gradient(135deg,var(--teal-2),var(--teal));box-shadow:0 18px 36px -18px rgba(8,42,48,.9)}
+
+.aw-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;flex-wrap:wrap}
+.linkbtn{background:none;border:none;cursor:pointer;font-family:var(--sans);font-weight:700;font-size:13px;color:var(--mint-deep);padding:4px 2px}
+.linkbtn:hover{text-decoration:underline}
+.aw-legal{font-size:11px;color:var(--muted);line-height:1.5;margin-top:18px}
+.aw-legal a{color:var(--ink-soft)}
+
+/* CELEBRATE */
+.celebrate{text-align:center;padding:8px 0 2px;animation:fadeUp .5s var(--ease)}
+.cel-stage{position:relative;width:138px;height:138px;margin:0 auto}
+.cel-ring{position:absolute;inset:0;border-radius:50%;border:2px solid transparent;border-top-color:var(--mint);border-right-color:var(--gold-2);animation:spin 1.25s linear}
+.cel-ring.stop{animation:none;border-color:rgba(91,224,160,.28)}
+.cel-seal{position:absolute;inset:16px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(150deg,var(--teal-2),#062227);box-shadow:0 22px 44px -18px rgba(8,42,48,.85),inset 0 0 0 1px rgba(240,227,198,.32)}
+.cel-seal svg{width:58px;height:58px}
+.sparkles{position:absolute;inset:0;pointer-events:none;overflow:visible}
+.spark{position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;opacity:0;transform:translate(-50%,-50%);animation:sparkOut 1s var(--ease) forwards}
+@keyframes sparkOut{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}18%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.8)}}
+.cel-num{font-family:var(--serif);font-weight:600;font-size:58px;line-height:1;color:var(--ink);margin-top:22px;font-variant-numeric:tabular-nums;display:inline-flex;align-items:center;gap:10px}
+.cel-num .cn-ic{width:38px;height:38px}
+.cel-num.pop{animation:numPop .5s var(--spring)}
+@keyframes numPop{0%{transform:scale(1)}30%{transform:scale(1.16)}100%{transform:scale(1)}}
+.cel-k{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-top:10px}
+.cel-h{font-family:var(--serif);font-weight:500;font-size:23px;color:var(--ink);margin-top:18px}
+.cel-p{font-size:13.5px;color:var(--ink-soft);margin-top:8px;line-height:1.5;max-width:34ch;margin-left:auto;margin-right:auto}
+.cel-bar{height:11px;border-radius:99px;background:var(--cream-2);overflow:hidden;margin:20px auto 0;max-width:300px;box-shadow:inset 0 0 0 1px var(--line)}
+.cel-bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--mint),var(--gold-2));transition:width 1.3s var(--ease)}
+.cel-meta{font-size:11.5px;font-weight:700;color:var(--muted);margin-top:9px}
+.cel-meta b{color:var(--mint-deep)}
+.toast{position:fixed;left:50%;bottom:26px;transform:transl(-50%,20px);transform:translateX(-50%) translateY(20px);background:var(--teal);color:#eaf5f0;font-weight:600;font-size:13.5px;padding:13px 20px;border-radius:13px;box-shadow:0 20px 44px -16px rgba(8,42,48,.7);opacity:0;transition:opacity .3s,transform .3s;z-index:90;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+window.__CC={url:"https://hfvbeqlefwwjlrbyxpbj.supabase.co",key:"sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf",app:"./app.html"};
+window.__supa=window.supabase.createClient(__CC.url,__CC.key);
+</script>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="cg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0E3C6"/><stop offset=".5" stop-color="#d4ad63"/><stop offset="1" stop-color="#B8924F"/></linearGradient>
+  <symbol id="crown" viewBox="0 0 24 24"><path fill="url(#cg)" d="M3 7.5l4.2 3.1L12 4l4.8 6.6L21 7.5l-1.6 10.2a1.2 1.2 0 0 1-1.18 1.05H5.78A1.2 1.2 0 0 1 4.6 17.7L3 7.5Z"/><circle cx="3" cy="7.5" r="1.5" fill="#F0E3C6"/><circle cx="21" cy="7.5" r="1.5" fill="#F0E3C6"/><circle cx="12" cy="4" r="1.6" fill="#F0E3C6"/></symbol>
+</defs></svg>
+
+<div class="split">
+  <!-- LEFT -->
+  <section class="brandside">
+    <canvas id="motes"></canvas>
+    <div class="bs-top">
+      <a class="logo" href="#">
+        <span class="mk"><svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="13.5" rx="8" ry="6.2" fill="#062a23"/><circle cx="9.4" cy="12.4" r="1.15" fill="#fff"/><circle cx="14.6" cy="12.4" r="1.15" fill="#fff"/><path d="M7 8.5l2.2-2M17 8.5l-2.2-2" stroke="#062a23" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+        <span class="wd">CoverCapy<small>Concierge</small></span>
+      </a>
+    </div>
+    <div class="bs-mid">
+      <h1>Your dental benefits, finally handled.</h1>
+      <p>CoverCapy Concierge sits between your PPO plan and your dentist. Know what is covered, who accepts it, and what it costs before you sit down.</p>
+      <ul class="bs-list">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4 10-10"/></svg>Find dentists ranked by plan fit and reviews from four sources</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4 10-10"/></svg>Track waiting periods, maximums, and claims in one wallet</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l4 4 10-10"/></svg>Earn Capy Crowns and redeem real rewards at accredited offices</li>
+      </ul>
+    </div>
+    <div class="bs-bot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 3v5c0 4-3 7.5-7 9-4-1.5-7-5-7-9V6l7-3z"/></svg>Your plan details stay private to your account.</div>
+  </section>
+
+  <!-- RIGHT -->
+  <section class="authside">
+    <div class="authwrap">
+      <span class="aw-kick" id="awKick">Welcome back</span>
+      <h2 class="aw-title" id="awTitle">Sign in to your concierge</h2>
+      <p class="aw-sub" id="awSub">Pick up your Capy Crowns, saved dentists, and coverage wallet right where you left off.</p>
+
+      <div class="seg" id="seg" role="tablist" aria-label="Sign in or create account">
+        <span class="seg-pill" aria-hidden="true"></span>
+        <button id="segSignin" class="on" role="tab" aria-selected="true">Sign in</button>
+        <button id="segCreate" role="tab" aria-selected="false">Create account</button>
+      </div>
+
+      <div class="panels">
+        <!-- SIGN IN -->
+        <div class="panel show" id="pSignin">
+          <div class="field" style="margin-top:18px"><input id="si-email" type="email" placeholder=" " autocomplete="email" inputmode="email"><label for="si-email">Email address</label></div>
+          <div class="field haspw"><input id="si-pw" type="password" placeholder=" " autocomplete="current-password"><label for="si-pw">Password</label>
+            <button class="pw-toggle" type="button" data-pw="si-pw" aria-label="Show password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+          <p class="err-msg" id="siErr">Enter a valid email and your password.</p>
+          <button class="cta dark" id="siGo"><span>Sign in</span></button>
+          <div class="aw-foot"><button class="linkbtn" id="toForgot">Forgot your password?</button><button class="linkbtn" id="siToCreate">New here? Create account</button></div>
+          <div class="divider">or continue with</div>
+          <div class="sso">
+            <button class="sso-btn" data-oauth="google" data-mode="signin"><svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.5 12.2c0-.7-.06-1.4-.18-2H12v3.8h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2.1-2 3.2-4.8 3.2-7.8z"/><path fill="#34A853" d="M12 23c2.9 0 5.4-1 7.2-2.6l-3.6-2.7c-1 .7-2.3 1.1-3.6 1.1-2.8 0-5.1-1.9-6-4.4H2.3v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M6 14.4a6.6 6.6 0 0 1 0-4.2V7.4H2.3a11 11 0 0 0 0 9.8L6 14.4z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3 .5 4.1 1.6l3.1-3.1A11 11 0 0 0 2.3 7.4L6 10.2c.9-2.6 3.2-4.8 6-4.8z"/></svg>Continue with Google</button>
+            <button class="sso-btn" data-oauth="apple" data-mode="signin"><svg viewBox="0 0 24 24"><path fill="#000" d="M16.3 12.6c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.8-3.5.8s-1.8-.8-3-.8c-1.5 0-2.9.9-3.7 2.3-1.6 2.7-.4 6.8 1.1 9 .7 1.1 1.6 2.3 2.8 2.2 1.1 0 1.5-.7 2.9-.7s1.7.7 2.9.7 2-1.1 2.7-2.1c.9-1.2 1.2-2.4 1.2-2.5-.1 0-2.3-.9-2.3-3.6zM14 4.9c.6-.8 1-1.8.9-2.9-.9 0-2 .6-2.6 1.4-.6.7-1.1 1.7-1 2.7 1 .1 2-.5 2.7-1.2z"/></svg>Continue with Apple</button>
+          </div>
+          <p class="aw-legal">Capy Crowns are membership rewards with no cash value. By continuing you agree to the <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+        </div>
+
+        <!-- CREATE -->
+        <div class="panel" id="pCreate">
+          <div class="sso" style="margin-top:18px">
+            <button class="sso-btn" data-oauth="google" data-mode="create"><svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.5 12.2c0-.7-.06-1.4-.18-2H12v3.8h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2.1-2 3.2-4.8 3.2-7.8z"/><path fill="#34A853" d="M12 23c2.9 0 5.4-1 7.2-2.6l-3.6-2.7c-1 .7-2.3 1.1-3.6 1.1-2.8 0-5.1-1.9-6-4.4H2.3v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M6 14.4a6.6 6.6 0 0 1 0-4.2V7.4H2.3a11 11 0 0 0 0 9.8L6 14.4z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3 .5 4.1 1.6l3.1-3.1A11 11 0 0 0 2.3 7.4L6 10.2c.9-2.6 3.2-4.8 6-4.8z"/></svg>Sign up with Google</button>
+            <button class="sso-btn" data-oauth="apple" data-mode="create"><svg viewBox="0 0 24 24"><path fill="#000" d="M16.3 12.6c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.8-3.5.8s-1.8-.8-3-.8c-1.5 0-2.9.9-3.7 2.3-1.6 2.7-.4 6.8 1.1 9 .7 1.1 1.6 2.3 2.8 2.2 1.1 0 1.5-.7 2.9-.7s1.7.7 2.9.7 2-1.1 2.7-2.1c.9-1.2 1.2-2.4 1.2-2.5-.1 0-2.3-.9-2.3-3.6zM14 4.9c.6-.8 1-1.8.9-2.9-.9 0-2 .6-2.6 1.4-.6.7-1.1 1.7-1 2.7 1 .1 2-.5 2.7-1.2z"/></svg>Sign up with Apple</button>
+          </div>
+          <div class="divider">or use your email</div>
+          <div class="field"><input id="cr-email" type="email" placeholder=" " autocomplete="email" inputmode="email"><label for="cr-email">Email address</label></div>
+          <div class="field haspw"><input id="cr-pw" type="password" placeholder=" " autocomplete="new-password"><label for="cr-pw">Create a password</label>
+            <button class="pw-toggle" type="button" data-pw="cr-pw" aria-label="Show password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+          <p class="err-msg" id="crErr">Use a valid email and a password of at least 8 characters.</p>
+          <div class="teaser">
+            <span class="tc"><svg viewBox="0 0 24 24"><use href="#crown"/></svg></span>
+            <p>Your first <b>300 Capy Crowns</b> land the moment you join, on the house.</p>
+          </div>
+          <button class="cta" id="crGo"><span class="cn"><svg viewBox="0 0 24 24" style="width:18px;height:18px"><use href="#crown"/></svg></span><span>Create account</span></button>
+          <div class="aw-foot"><span style="font-size:12.5px;color:var(--muted)">Free forever. No card required.</span><button class="linkbtn" id="crToSignin">Already a member? Sign in</button></div>
+          <p class="aw-legal">Capy Crowns are membership rewards with no cash value. By creating an account you agree to the <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+        </div>
+
+        <!-- CELEBRATE -->
+        <div class="panel" id="pCelebrate">
+          <div class="celebrate">
+            <div class="cel-stage">
+              <span class="cel-ring" id="celRing"></span>
+              <span class="cel-seal"><svg viewBox="0 0 24 24"><use href="#crown"/></svg></span>
+              <span class="sparkles" id="sparkles" aria-hidden="true"></span>
+            </div>
+            <div class="cel-num" id="celNum"><span class="cn-ic"><svg viewBox="0 0 24 24"><use href="#crown"/></svg></span><span id="celCount">0</span></div>
+            <div class="cel-k">Capy Crowns added</div>
+            <h3 class="cel-h" id="celH">Welcome to CoverCapy.</h3>
+            <p class="cel-p">You are <b>300 Crowns</b> closer to whitening at a participating office. Earn the rest by activating a plan, booking a visit, and inviting friends or family.</p>
+            <div class="cel-bar"><i id="celBar"></i></div>
+            <p class="cel-meta"><b id="celPct">0</b>% toward your 2,000 Crown whitening goal</p>
+            <button class="cta" id="celGo" style="max-width:300px;margin-left:auto;margin-right:auto"><span>Enter my concierge</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  "use strict";
+  var supa=window.__supa;
+  (async function(){ try{ var s=await supa.auth.getSession(); if(s.data.session){ location.replace(window.__CC.app); } }catch(e){} })();
+  var reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var $ = function(id){ return document.getElementById(id); };
+  function emailOK(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  function toast(msg){ var t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(function(){ t.classList.remove('show'); }, 2400); }
+
+  /* ---- segmented toggle ---- */
+  var seg=$('seg'), pSignin=$('pSignin'), pCreate=$('pCreate'), pCel=$('pCelebrate');
+  var COPY={
+    signin:{kick:'Welcome back',title:'Sign in to your concierge',sub:'Pick up your Capy Crowns, saved dentists, and coverage wallet right where you left off.'},
+    create:{kick:'Create your account',title:'Start with 300 Capy Crowns',sub:'Join free and your first <b>300 Crowns</b> are credited the moment your account is made.'}
+  };
+  function setMode(mode){
+    var create = mode==='create';
+    seg.classList.toggle('create', create);
+    $('segSignin').classList.toggle('on', !create); $('segCreate').classList.toggle('on', create);
+    $('segSignin').setAttribute('aria-selected', !create); $('segCreate').setAttribute('aria-selected', create);
+    pSignin.classList.toggle('show', !create); pCreate.classList.toggle('show', create); pCel.classList.remove('show');
+    var c = COPY[mode]; $('awKick').textContent=c.kick; $('awTitle').textContent=c.title; $('awSub').innerHTML=c.sub;
+  }
+  $('segSignin').addEventListener('click', function(){ setMode('signin'); });
+  $('segCreate').addEventListener('click', function(){ setMode('create'); });
+  $('siToCreate').addEventListener('click', function(){ setMode('create'); });
+  $('crToSignin').addEventListener('click', function(){ setMode('signin'); });
+  $('toForgot').addEventListener('click', function(){ var em=($('si-email').value||'').trim(); if(!emailOK(em)){ toast('Enter your email above first.'); return; } supa.auth.resetPasswordForEmail(em,{redirectTo:location.origin+'/index.html'}).then(function(){ toast('Password reset link sent if the email is on file.'); }); });
+
+  /* ---- password show / hide ---- */
+  document.querySelectorAll('[data-pw]').forEach(function(b){
+    b.addEventListener('click', function(){ var f=$(b.getAttribute('data-pw')); var s=f.type==='password'; f.type=s?'text':'password'; b.setAttribute('aria-label', s?'Hide password':'Show password'); });
+  });
+
+  /* ---- sign in ---- */
+  $('siGo').addEventListener('click', function(){
+    var e=$('si-email'), p=$('si-pw'), err=$('siErr'), ok=true;
+    if(!emailOK(e.value)){ e.closest('.field').classList.add('invalid'); ok=false; } else e.closest('.field').classList.remove('invalid');
+    if(p.value.length<1){ p.closest('.field').classList.add('invalid'); ok=false; } else p.closest('.field').classList.remove('invalid');
+    err.classList.toggle('show', !ok);
+    if(!ok) return;
+    var btn=this; btn.setAttribute('aria-busy','true'); btn.querySelector('span').textContent='Signing in...';
+    supa.auth.signInWithPassword({email:e.value.trim(),password:p.value}).then(function(r){
+      if(r.error){ btn.removeAttribute('aria-busy'); btn.querySelector('span').textContent='Sign in'; err.textContent=r.error.message; err.classList.add('show'); return; }
+      toast('Signed in. Loading your concierge...'); setTimeout(function(){ location.replace(window.__CC.app); }, 600);
+    });
+  });
+
+  /* ---- create (email) ---- */
+  $('crGo').addEventListener('click', function(){
+    var e=$('cr-email'), p=$('cr-pw'), err=$('crErr'), ok=true;
+    if(!emailOK(e.value)){ e.closest('.field').classList.add('invalid'); ok=false; } else e.closest('.field').classList.remove('invalid');
+    if(p.value.length<8){ p.closest('.field').classList.add('invalid'); ok=false; } else p.closest('.field').classList.remove('invalid');
+    err.classList.toggle('show', !ok);
+    if(!ok) return;
+    var cbtn=this; cbtn.setAttribute('aria-busy','true');
+    supa.auth.signUp({email:e.value.trim(),password:p.value,options:{emailRedirectTo:location.origin+'/app.html'}}).then(function(r){
+      cbtn.removeAttribute('aria-busy');
+      if(r.error){ err.textContent=r.error.message; err.classList.add('show'); return; }
+      if(r.data && r.data.session){ window.__pendingConfirm=false; runCelebrate('Welcome to CoverCapy.'); }
+      else { window.__pendingConfirm=true; runCelebrate('Check your email to confirm.'); }
+    });
+  });
+
+  /* ---- oauth (google / apple) ---- */
+  document.querySelectorAll('[data-oauth]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var provider=b.getAttribute('data-oauth'), mode=b.getAttribute('data-mode');
+      b.setAttribute('aria-busy','true');
+      supa.auth.signInWithOAuth({provider:provider,options:{redirectTo:location.origin+'/app.html'}}).then(function(r){
+        if(r.error){ b.removeAttribute('aria-busy'); toast(r.error.message); }
+      });
+    });
+  });
+
+  /* ---- 300 crown celebrate ---- */
+  function sparkBurst(){
+    var host=$('sparkles'); if(!host || reduce) return;
+    var colors=['var(--mint)','var(--gold-2)','var(--mint-2)','var(--gold)','#8fe9c0'];
+    var n=22;
+    for(var i=0;i<n;i++){
+      var s=document.createElement('span'); s.className='spark';
+      var ang=(Math.PI*2)*(i/n)+(Math.random()*0.5-0.25), dist=60+Math.random()*70;
+      s.style.setProperty('--dx',(Math.cos(ang)*dist).toFixed(1)+'px');
+      s.style.setProperty('--dy',(Math.sin(ang)*dist).toFixed(1)+'px');
+      s.style.background=colors[i%colors.length];
+      var sz=(4+Math.random()*5).toFixed(1); s.style.width=sz+'px'; s.style.height=sz+'px';
+      s.style.animationDelay=Math.round(Math.random()*60)+'ms';
+      if(i%3===0) s.style.borderRadius='2px';
+      host.appendChild(s);
+      (function(node){ setTimeout(function(){ if(node.parentNode) node.parentNode.removeChild(node); }, 1200); })(s);
+    }
+  }
+  function runCelebrate(heading){
+    setMode('create');
+    pCreate.classList.remove('show'); pSignin.classList.remove('show'); pCel.classList.add('show');
+    $('awKick').textContent='Account created'; $('awTitle').textContent='300 Crowns, credited.'; $('awSub').innerHTML='Your rewards balance is live. This is where gamified dental care begins.';
+    if($('celH')) $('celH').textContent = heading || 'Welcome to CoverCapy.';
+    var count=$('celCount'), ring=$('celRing'), bar=$('celBar'), pct=$('celPct'), num=$('celNum');
+    count.textContent='0'; if(pct) pct.textContent='0'; if(bar) bar.style.width='0';
+    var goalPct = Math.round(300/2000*100);
+    if(reduce){
+      count.textContent='300'; if(ring) ring.classList.add('stop'); if(bar) bar.style.width=goalPct+'%'; if(pct) pct.textContent=String(goalPct);
+      return;
+    }
+    var target=300, dur=1450, t0=null;
+    function tick(ts){
+      if(!t0) t0=ts;
+      var p=Math.min((ts-t0)/dur,1), eased=1-Math.pow(1-p,3);
+      count.textContent=String(Math.round(target*eased));
+      if(pct) pct.textContent=String(Math.round(goalPct*eased));
+      if(p<1){ requestAnimationFrame(tick); }
+      else {
+        count.textContent='300'; if(pct) pct.textContent=String(goalPct);
+        if(ring) ring.classList.add('stop');
+        if(num){ num.classList.remove('pop'); void num.offsetWidth; num.classList.add('pop'); }
+        sparkBurst();
+      }
+    }
+    requestAnimationFrame(tick);
+    setTimeout(function(){ if(bar) bar.style.width=goalPct+'%'; }, 260);
+  }
+  $('celGo').addEventListener('click', function(){
+    if(window.__pendingConfirm){ toast('Confirm via the email we sent, then sign in.'); setMode('signin'); return; }
+    toast('Entering your concierge dashboard...');
+    setTimeout(function(){ location.replace(window.__CC.app); }, 900);
+  });
+
+  /* ---- ambient motes on teal panel ---- */
+  (function(){
+    var c=$('motes'); if(!c) return;
+    var x=c.getContext('2d'), w,h,parts;
+    function size(){ w=c.width=c.offsetWidth; h=c.height=c.offsetHeight; parts=Array.from({length:reduce?0:26},function(){ return {x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.7+.5,vy:-(Math.random()*.28+.06),a:Math.random()*.45+.15}; }); }
+    function draw(){ x.clearRect(0,0,w,h); parts.forEach(function(p){ p.y+=p.vy; if(p.y<-5){ p.y=h+5; p.x=Math.random()*w; } x.beginPath(); x.arc(p.x,p.y,p.r,0,7); x.fillStyle='rgba(91,224,160,'+p.a+')'; x.fill(); }); requestAnimationFrame(draw); }
+    size(); addEventListener('resize', size); if(!reduce) draw();
+  })();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#082A30">
+<title>CoverCapy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#082A30; --ink2:#0E3A41; --paper:#FDFBF7; --cream:#F6F0E6; --sand:#EFE7D8;
+  --mint:#5BE0A0; --mint-soft:#E4F7EE; --mint-deep:#1D7A50;
+  --gold:#B8924F; --gold-soft:#F4ECDD; --gold-deep:#8A6A33;
+  --plum:#5B3E96; --plum-soft:#EDE7F8;
+  --slate:#6B7A7E; --line:#E7E0D2; --line-soft:#F0EADD;
+  --shadow:0 1px 2px rgba(8,42,48,.04),0 8px 24px rgba(8,42,48,.06);
+  --shadow-lg:0 2px 6px rgba(8,42,48,.06),0 24px 60px rgba(8,42,48,.16);
+  --rad:22px; --rad-sm:14px;
+  --fd:'Fraunces',Georgia,serif; --fb:'Inter Tight',-apple-system,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);color:var(--ink);background:var(--cream);line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select{font-family:inherit;font-size:inherit;color:inherit;border:none;background:none;cursor:pointer}
+input{cursor:text}
+h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-height:1.14}
+.serif{font-family:var(--fd)}
+.muted{color:var(--slate)}
+.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--slate)}
+.hidden{display:none!important}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;font-weight:600;font-size:14.5px;padding:13px 21px;transition:transform .12s,opacity .12s;text-decoration:none;white-space:nowrap}
+.btn:active{transform:scale(.975)}
+.btn-ink{background:var(--ink);color:var(--paper)}
+.btn-gold{background:var(--gold);color:#fff}
+.btn-mint{background:var(--mint);color:var(--ink)}
+.btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn-cream{background:var(--cream);color:var(--ink)}
+.btn-full{width:100%}
+.btn-sm{padding:9px 15px;font-size:13px}
+
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--rad);box-shadow:var(--shadow)}
+.pad{padding:22px}
+
+.mini{font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--cream);color:var(--ink);white-space:nowrap}
+.mini.tier{background:var(--gold-soft);color:var(--gold-deep)}
+.mini.elite{background:var(--plum-soft);color:var(--plum)}
+.mini.pend{background:var(--sand);color:var(--slate)}
+.mini.lang{background:var(--mint-soft);color:var(--mint-deep)}
+.okpill{display:inline-flex;align-items:center;gap:7px;background:var(--mint-soft);color:var(--mint-deep);font-weight:700;font-size:12.5px;padding:7px 13px;border-radius:999px}
+.pendpill{display:inline-flex;align-items:center;gap:7px;background:var(--gold-soft);color:var(--gold-deep);font-weight:700;font-size:12.5px;padding:7px 13px;border-radius:999px}
+
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12.5px;font-weight:600;color:var(--slate);margin-bottom:6px}
+.field input,.field select{width:100%;border:1.5px solid var(--line);border-radius:var(--rad-sm);padding:12px 15px;font-size:15px;background:var(--paper)}
+.field input:focus{outline:none;border-color:var(--mint)}
+
+/* ============ GATE ============ */
+#gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px 20px;background:radial-gradient(110% 70% at 50% 0%,var(--cream),var(--paper) 75%)}
+.gate-in{width:100%;max-width:980px}
+.gate-head{text-align:center;margin-bottom:34px}
+.mark{width:62px;height:62px;border-radius:18px;background:var(--ink);display:grid;place-items:center;font-size:31px;margin:0 auto 18px}
+.gate-head h1{font-size:clamp(28px,4vw,40px);margin-bottom:8px}
+.gate-cols{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:820px){.gate-cols{grid-template-columns:1fr}}
+.gate-col{background:var(--paper);border:1px solid var(--line);border-radius:var(--rad);padding:24px;box-shadow:var(--shadow)}
+.gate-col .gt{font-family:var(--fd);font-size:19px;margin-bottom:4px}
+.gate-col .gs{font-size:13px;color:var(--slate);margin-bottom:18px}
+.persona{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:15px;border:1.5px solid var(--line);border-radius:var(--rad-sm);background:var(--paper);margin-bottom:11px;transition:border-color .15s,transform .1s}
+.persona:hover{border-color:var(--mint)}
+.persona:active{transform:scale(.99)}
+.persona .pav{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;flex-shrink:0}
+.persona b{display:block;font-size:14.5px}
+.persona span{font-size:12px;color:var(--slate);line-height:1.35;display:block}
+
+/* ============ CHROME: top nav (desktop) + tabbar (mobile) ============ */
+#topnav{position:sticky;top:0;z-index:70;background:rgba(253,251,247,.9);backdrop-filter:saturate(180%) blur(14px);border-bottom:1px solid var(--line)}
+.tn-in{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:26px;padding:14px 24px}
+.tn-logo{display:flex;align-items:center;gap:10px;font-family:var(--fd);font-size:18px;font-weight:600}
+.tn-logo .lm{width:34px;height:34px;border-radius:10px;background:var(--ink);display:grid;place-items:center;font-size:17px}
+.tn-links{display:flex;gap:4px;flex:1}
+.tn-links a{padding:9px 15px;border-radius:999px;font-size:14px;font-weight:600;color:var(--slate);text-decoration:none;cursor:pointer}
+.tn-links a.on{background:var(--cream);color:var(--ink)}
+.tn-right{display:flex;align-items:center;gap:10px}
+.crown-chip{display:inline-flex;align-items:center;gap:6px;background:var(--gold-soft);color:var(--gold-deep);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700}
+.tabbar{position:fixed;bottom:0;left:0;right:0;background:rgba(253,251,247,.93);backdrop-filter:saturate(180%) blur(16px);border-top:1px solid var(--line);display:none;padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:70}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;color:var(--slate);font-size:10.5px;font-weight:600}
+.tab .ti{font-size:20px;line-height:1}
+.tab.on{color:var(--ink)}
+@media(max-width:899px){
+  .tn-links,.tn-right .btn{display:none}
+  .tabbar{display:flex}
+  body.inapp{padding-bottom:84px}
+}
+
+/* ============ LAYOUT ============ */
+.page{max-width:1240px;margin:0 auto;padding:26px 24px 60px}
+@media(max-width:899px){.page{padding:18px 16px 40px}}
+.phead{margin-bottom:20px}
+.phead .eyebrow{margin-bottom:6px}
+.phead h1{font-size:clamp(24px,3vw,32px);margin-bottom:4px}
+.phead .guide{color:var(--slate);font-size:15px}
+.cols2{display:grid;grid-template-columns:1.5fr 1fr;gap:20px;align-items:start}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:899px){.cols2,.cols3{grid-template-columns:1fr}}
+.stack>*{margin-bottom:16px}
+.slabel{display:flex;align-items:baseline;justify-content:space-between;padding:8px 2px 12px}
+.slabel h3{font-size:19px}
+
+/* hero next action */
+.hero{position:relative;border-radius:var(--rad);overflow:hidden;background:linear-gradient(150deg,#0C3138,#103E44 55%,#0A2C32);color:var(--paper);padding:26px;box-shadow:var(--shadow-lg)}
+.hero .eyebrow{color:var(--mint);margin-bottom:10px}
+.hero h2{font-size:clamp(20px,2.4vw,25px);color:var(--paper);margin-bottom:8px}
+.hero p{font-size:14px;color:rgba(246,240,230,.78);margin-bottom:18px;max-width:520px}
+.hero .gloss{position:absolute;right:-30px;top:-30px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(91,224,160,.2),transparent 70%)}
+
+/* journey spine */
+.spine{display:flex;flex-direction:column}
+.snode{display:flex;gap:13px;position:relative;padding-bottom:16px}
+.snode:last-child{padding-bottom:0}
+.snode .rail{position:absolute;left:12px;top:25px;bottom:-3px;width:2px;background:var(--line)}
+.snode:last-child .rail{display:none}
+.snode.done .rail{background:var(--mint)}
+.sdot{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;font-size:12px;font-weight:700;border:2px solid var(--line);background:var(--paper);color:var(--slate);z-index:1}
+.snode.done .sdot{background:var(--mint);border-color:var(--mint);color:var(--ink)}
+.snode.now .sdot{border-color:var(--ink);color:var(--ink);box-shadow:0 0 0 4px var(--cream)}
+.sbody b{font-size:14px;display:block;line-height:1.3}
+.snode.done .sbody b{color:var(--slate);font-weight:500}
+.sbody span{font-size:12px;color:var(--slate)}
+
+/* pass card */
+.passcard{border-radius:var(--rad);padding:22px;color:var(--paper);position:relative;overflow:hidden;box-shadow:var(--shadow-lg)}
+.passcard.active{background:linear-gradient(140deg,#0E3A41,#15535C 60%,#0C3138)}
+.passcard.pending{background:linear-gradient(140deg,#5A4A2C,#8A6E3C 60%,#6B5530)}
+.passcard.empty{background:linear-gradient(140deg,#2C3A3E,#3D5157 60%,#2A3539)}
+.passcard .gloss{position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.1),transparent 70%)}
+.pc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}
+.pc-carrier{font-family:var(--fd);font-size:19px}
+.pc-badge{font-size:11px;font-weight:700;padding:5px 11px;border-radius:999px;background:rgba(246,240,230,.18)}
+.pc-badge.ok{background:var(--mint);color:var(--ink)}
+.pc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 12px}
+.pc-cell span{font-size:10.5px;color:rgba(246,240,230,.6);display:block;letter-spacing:.05em;text-transform:uppercase;margin-bottom:2px}
+.pc-cell b{font-size:15px}
+.pc-meter .bar{height:6px;border-radius:99px;background:rgba(246,240,230,.18);overflow:hidden;margin-top:6px}
+.pc-meter .bar i{display:block;height:100%;background:var(--mint)}
+
+/* concierge panel */
+#ccPanel{position:fixed;top:0;right:0;bottom:0;width:min(420px,100vw);background:var(--paper);z-index:120;box-shadow:-20px 0 60px rgba(8,42,48,.25);transform:translateX(105%);transition:transform .28s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
+#ccPanel.open{transform:none}
+.ccp-head{background:var(--ink);color:var(--paper);padding:20px 22px;display:flex;align-items:center;gap:12px}
+.ccp-head .av{width:38px;height:38px;border-radius:50%;background:var(--mint);display:grid;place-items:center;font-size:19px;flex-shrink:0}
+.ccp-head b{font-family:var(--fd);font-size:16px;display:block}
+.ccp-head span{font-size:11.5px;color:rgba(246,240,230,.65)}
+.ccp-x{margin-left:auto;color:var(--paper);font-size:22px;padding:4px 8px}
+.ccp-chat{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:11px}
+.bubble{max-width:86%;padding:12px 15px;border-radius:16px;font-size:13.5px;line-height:1.45}
+.bubble.capy{background:var(--cream);border-bottom-left-radius:5px;align-self:flex-start}
+.bubble.me{background:var(--ink);color:var(--paper);border-bottom-right-radius:5px;align-self:flex-end}
+.ccp-quick{padding:0 18px 10px;display:flex;flex-wrap:wrap;gap:7px}
+.ccp-quick button{font-size:11.5px;font-weight:600;background:var(--cream);border-radius:999px;padding:7px 12px}
+.ccp-bar{display:flex;gap:8px;padding:12px 16px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+.ccp-bar input{flex:1;border:1.5px solid var(--line);border-radius:999px;padding:12px 16px;font-size:14px}
+.fab{position:fixed;bottom:96px;right:18px;z-index:75;background:var(--ink);color:var(--paper);border-radius:999px;padding:13px 18px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;box-shadow:var(--shadow-lg)}
+@media(min-width:900px){.fab{bottom:26px;right:26px}}
+.fab .dot{width:7px;height:7px;border-radius:50%;background:var(--mint)}
+
+/* ============ FIND: flagship ============ */
+.find-top{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.find-search{flex:1;min-width:240px;display:flex;align-items:center;gap:10px;background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:12px 18px;box-shadow:var(--shadow)}
+.find-search input{flex:1;font-size:15px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.chip{font-size:12.5px;font-weight:600;padding:9px 15px;border-radius:999px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink)}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.lmarks{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.fbar{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:10px;margin-bottom:12px}
+@media(max-width:900px){.fbar{grid-template-columns:1fr 1fr}}
+.fcell{background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:9px 13px;box-shadow:var(--shadow)}
+.fcell label{display:block;font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);margin-bottom:3px}
+.fcell select,.fcell input{width:100%;font-size:14px;font-weight:600;color:var(--ink);background:transparent;border:none;cursor:pointer}
+.fcell .within-row{display:flex;align-items:center;gap:8px}
+.fcell input[type=range]{accent-color:var(--mint);height:4px;cursor:pointer;padding:0}
+.fhead{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+.fhead .sortsel{font-size:12.5px;font-weight:600;border:1.5px solid var(--line);border-radius:999px;padding:7px 13px;background:var(--paper);color:var(--ink)}
+.lmark{font-size:12px;font-weight:600;color:var(--gold-deep);background:var(--gold-soft);border-radius:999px;padding:7px 13px}
+.find-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:20px;align-items:start}
+@media(max-width:899px){.find-grid{grid-template-columns:1fr}.mapwrap{display:none}.mapwrap.show{display:block}}
+.mapwrap{position:sticky;top:86px}
+.map{position:relative;border-radius:var(--rad);overflow:hidden;height:min(72vh,640px);border:1px solid var(--line);box-shadow:var(--shadow);background:
+  radial-gradient(60% 30% at 85% 90%,#CFE6E0 0%,transparent 60%),
+  linear-gradient(160deg,#EDF3E4,#F2EFE2 55%,#E8EFE6)}
+.map .road{position:absolute;background:#fff;box-shadow:0 0 0 1px #E3DECF}
+.map .road.h{height:7px;left:0;right:0}
+.map .road.v{width:7px;top:0;bottom:0}
+.map .lbl{position:absolute;font-size:11px;font-weight:600;color:#7B8A86;letter-spacing:.03em}
+.pin{position:absolute;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;cursor:pointer;z-index:2}
+.pin .pb{background:var(--ink);color:var(--paper);font-size:11.5px;font-weight:700;border-radius:999px;padding:6px 11px;box-shadow:0 6px 16px rgba(8,42,48,.3);border:2px solid var(--paper);white-space:nowrap}
+.pin .pt{width:2px;height:7px;background:var(--ink)}
+.pin.tier .pb{background:var(--gold);color:#fff}
+.pin.elite .pb{background:var(--plum);color:#fff}
+.pin.on .pb{background:var(--mint);color:var(--ink);transform:scale(1.12)}
+.map-toggle{display:none;margin-bottom:12px}
+@media(max-width:899px){.map-toggle{display:flex;gap:8px}}
+
+/* rich dentist card */
+.dcard{border:1px solid var(--line);border-radius:var(--rad);overflow:hidden;background:var(--paper);box-shadow:var(--shadow);margin-bottom:16px;transition:box-shadow .2s,border-color .2s}
+.dcard.hl{border-color:var(--mint);box-shadow:0 0 0 3px var(--mint-soft),var(--shadow-lg)}
+.dcard .cov{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 18px;background:var(--mint-soft);color:var(--mint-deep);font-size:12.5px;font-weight:600}
+.dcard .cov.maybe{background:var(--gold-soft);color:var(--gold-deep)}
+.dcard .body{padding:18px;display:flex;gap:15px}
+.dcard .av{width:58px;height:58px;border-radius:16px;flex-shrink:0;display:grid;place-items:center;font-size:27px;background:var(--cream)}
+.dcard .info{flex:1;min-width:0}
+.dcard .nm{font-size:17px;font-weight:600;font-family:var(--fd)}
+.dcard .sub{font-size:12.5px;color:var(--slate);margin:2px 0 8px}
+.dcard .persona-line{font-size:13px;line-height:1.5;color:var(--ink);margin-bottom:10px}
+.dcard .chiprow{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.dcard .conf{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 18px 4px}
+.confbox{background:var(--cream);border-radius:12px;padding:10px 13px}
+.confbox span{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--slate);display:block}
+.confbox b{font-size:13.5px;font-family:var(--fd)}
+.dcard .foot{display:flex;gap:9px;padding:14px 18px 18px;flex-wrap:wrap;align-items:center}
+.cmp{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--slate)}
+.cmp input{width:17px;height:17px;accent-color:var(--ink);cursor:pointer}
+.cmpbar{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:74;background:var(--ink);color:var(--paper);border-radius:999px;padding:12px 20px;display:none;align-items:center;gap:14px;box-shadow:var(--shadow-lg);font-size:13.5px;font-weight:600}
+@media(min-width:900px){.cmpbar{bottom:24px}}
+.cmpbar.show{display:flex}
+
+/* stats / demand */
+.stat{background:var(--paper);border:1px solid var(--line);border-radius:var(--rad-sm);padding:16px;text-align:center}
+.stat b{font-family:var(--fd);font-size:26px;display:block}
+.stat span{font-size:11.5px;color:var(--slate)}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:899px){.stat-grid{grid-template-columns:repeat(2,1fr)}}
+.bar-row{display:flex;align-items:center;gap:10px;font-size:13px;margin-bottom:9px}
+.bar-row span:first-child{width:130px;flex-shrink:0;color:var(--ink)}
+.bar-row .bar{flex:1;height:8px;border-radius:99px;background:var(--cream);overflow:hidden}
+.bar-row .bar i{display:block;height:100%;background:var(--gold);border-radius:99px}
+.bar-row.mint .bar i{background:var(--mint)}
+.bar-row b{width:46px;text-align:right;font-size:12.5px}
+
+/* dentist nav tier pill, lock */
+.lockwrap{position:relative}
+.lockover{position:absolute;inset:0;background:rgba(253,251,247,.85);backdrop-filter:blur(2px);border-radius:var(--rad);z-index:5;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;text-align:center;padding:24px}
+.tierpill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 13px;font-size:11.5px;font-weight:800}
+
+/* ladder, contribution */
+.contrib{border-radius:var(--rad);padding:24px;background:linear-gradient(140deg,#15535C,#0E3A41);color:var(--paper);box-shadow:var(--shadow-lg)}
+.contrib .eyebrow{color:var(--mint);margin-bottom:10px}
+.contrib .big{font-family:var(--fd);font-size:38px;line-height:1}
+.contrib .big small{font-size:17px;color:rgba(246,240,230,.6);font-weight:400}
+.contrib .bar{height:8px;border-radius:99px;background:rgba(246,240,230,.16);overflow:hidden;margin:14px 0 6px}
+.contrib .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--mint),#8FF0C2)}
+.lrow{display:flex;align-items:center;gap:13px;padding:12px 2px;border-bottom:1px solid var(--line-soft)}
+.lrow:last-child{border:none}
+.lrow .lk{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:13px;background:var(--cream);flex-shrink:0;font-weight:700}
+.lrow.hit .lk{background:var(--mint);color:var(--ink)}
+.lrow .lt{flex:1}
+.lrow .lt b{font-size:13.5px;display:block}
+.lrow .lt span{font-size:11.5px;color:var(--slate)}
+.lrow .amt{font-size:12.5px;font-weight:700;color:var(--gold-deep)}
+
+/* tables */
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th{text-align:left;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);padding:10px;border-bottom:1px solid var(--line)}
+.tbl td{padding:13px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+.tbl tr:last-child td{border:none}
+
+/* rewards portal */
+.rw-commit{background:linear-gradient(140deg,#0E3A41,#15535C);color:var(--paper);border-radius:var(--rad);padding:24px;box-shadow:var(--shadow-lg);margin-bottom:22px}
+.rw-commit input[type=range]{width:100%;margin:16px 0 8px;accent-color:var(--mint);height:6px;cursor:pointer}
+.rw-commit .rw-big{font-family:var(--fd);font-size:34px;line-height:1}
+.rw-commit .rw-big small{font-size:15px;color:rgba(246,240,230,.6);font-weight:400}
+.gift-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:15px;margin-bottom:26px;transition:opacity .2s}
+.gift-grid.locked .gcard{opacity:.4;pointer-events:none;filter:saturate(.6)}
+.gcard{aspect-ratio:1.586;border-radius:16px;border:none;color:#fff;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;padding:15px;cursor:pointer;box-shadow:var(--shadow);transition:transform .16s,box-shadow .16s;text-align:left;position:relative;overflow:hidden}
+.gcard:hover{transform:translateY(-4px) scale(1.015);box-shadow:var(--shadow-lg)}
+.gcard:after{content:'';position:absolute;top:-30%;right:-15%;width:60%;height:90%;background:radial-gradient(circle,rgba(255,255,255,.16),transparent 70%)}
+.gcard .gb{font-weight:800;font-size:15.5px;letter-spacing:.01em;text-shadow:0 1px 5px rgba(0,0,0,.3);z-index:1}
+.gcard .gfoot{display:flex;justify-content:space-between;align-items:flex-end;width:100%;z-index:1}
+.gcard .gv{font-family:var(--fd);font-size:23px}
+.gcard .gd{font-size:10.5px;font-weight:700;background:rgba(255,255,255,.22);border-radius:999px;padding:4px 9px;backdrop-filter:blur(2px)}
+/* sheets */
+.sheet-back{position:fixed;inset:0;background:rgba(8,42,48,.42);z-index:130;display:none;align-items:flex-end;justify-content:center}
+@media(min-width:900px){.sheet-back{align-items:center}}
+.sheet-back.open{display:flex}
+.sheet{width:100%;max-width:560px;background:var(--paper);border-radius:26px 26px 0 0;padding:12px 24px calc(26px + env(safe-area-inset-bottom));box-shadow:var(--shadow-lg);max-height:92vh;overflow-y:auto;animation:rise .25s cubic-bezier(.2,.8,.2,1)}
+@media(min-width:900px){.sheet{border-radius:26px;padding:28px}}
+@keyframes rise{from{transform:translateY(60px);opacity:.4}to{transform:none;opacity:1}}
+.grab{width:38px;height:4px;border-radius:99px;background:var(--line);margin:0 auto 16px}
+@media(min-width:900px){.grab{display:none}}
+.sheet h3{font-size:21px;margin-bottom:6px}
+.sheet .ssub{color:var(--slate);font-size:14px;margin-bottom:18px}
+.celebrate{text-align:center;padding:4px 0}
+.celebrate .em{font-size:44px;margin-bottom:10px}
+.celebrate h3{font-size:22px}
+.celebrate .chip{display:inline-block;background:var(--gold-soft);color:var(--gold-deep);font-weight:700;font-size:13px;padding:7px 15px;border-radius:999px;margin:8px 0 10px}
+.celebrate p{color:var(--slate);font-size:14px;margin-bottom:18px}
+.note-box{background:var(--cream);border-radius:var(--rad-sm);padding:16px;font-size:13.5px;line-height:1.6;white-space:pre-wrap;max-height:230px;overflow-y:auto}
+.elig-line{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line-soft);font-size:13.5px}
+.elig-line:last-child{border:none}
+.elig-grp{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);margin:14px 0 2px}
+.plan{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px;border:1.5px solid var(--line);border-radius:var(--rad-sm);margin-bottom:10px;background:var(--paper)}
+.plan.rec{border-color:var(--gold);background:var(--gold-soft)}
+.plan .tagline{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gold-deep)}
+.plan .pn{font-size:14.5px;font-weight:600;font-family:var(--fd)}
+.plan .pd{font-size:12px;color:var(--slate)}
+.foot-note{text-align:center;font-size:11.5px;color:var(--slate);padding:26px 30px 6px;line-height:1.5;max-width:680px;margin:0 auto}
+.rowcard{display:flex;align-items:center;gap:13px;padding:15px;background:var(--paper);border:1px solid var(--line);border-radius:var(--rad-sm);box-shadow:var(--shadow);width:100%;text-align:left;margin-bottom:11px}
+.rowcard .ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:18px;flex-shrink:0;background:var(--cream)}
+.rowcard .meta{flex:1;min-width:0}
+.rowcard .meta b{font-size:14px;display:block}
+.rowcard .meta span{font-size:12px;color:var(--slate)}
+.rowcard .arr{color:var(--slate);font-size:17px}
+</style>
+</head>
+<body>
+
+<div id="gate"></div>
+<header id="topnav" class="hidden"></header>
+<main id="view"></main>
+<nav class="tabbar hidden" id="tabbar"></nav>
+<button class="fab hidden" id="fab"><span class="dot"></span>Ask your concierge</button>
+
+<div id="ccPanel" aria-label="Concierge">
+  <div class="ccp-head">
+    <div class="av">&#129441;</div>
+    <div><b>Your concierge</b><span>Plain answers about coverage, cost, and care</span></div>
+    <button class="ccp-x" id="ccX" aria-label="Close">&#215;</button>
+  </div>
+  <div class="ccp-chat" id="ccChat"></div>
+  <div class="ccp-quick" id="ccQuick"></div>
+  <div class="ccp-bar">
+    <input id="ccInput" placeholder="Message your concierge" aria-label="Message your concierge">
+    <button class="btn btn-ink btn-sm" id="ccSend">Send</button>
+  </div>
+</div>
+
+<div class="cmpbar" id="cmpbar"><span id="cmpCount">0 selected</span><button class="btn btn-mint btn-sm" id="cmpOpen">Compare</button><button class="btn btn-sm" style="color:rgba(246,240,230,.7)" id="cmpClear">Clear</button></div>
+
+<div class="sheet-back" id="sheet"><div class="sheet" id="sheetIn"></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+window.__CC={url:"https://hfvbeqlefwwjlrbyxpbj.supabase.co",key:"sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf",login:"./index.html"};
+window.__supa=window.supabase.createClient(__CC.url,__CC.key);
+</script>
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+var esc=function(s){return String(s).replace(/</g,'&lt;');};
+
+/* ==================================================
+   DEMO_DATA: every sample value lives here. In the
+   live build these come from Supabase tables and RPCs
+   (dentists, insurance_wallets, get_patient_journey,
+   get_office_inbox, dentist_promotions, widget_keys).
+   ================================================== */
+var DEMO_DATA={
+  personas:{
+    donna:{name:'Donna Tran',first:'Donna',init:'DT',avbg:'var(--gold-soft)',avc:'var(--gold-deep)',
+      crowns:1100,diamonds:0,
+      journey:{plan:1,visit:1,review:0,refer:0},noms:[],
+      plans:[
+        {id:'d1',carrier:'Humana',name:'Humana PPO',type:'PPO',role:'primary',status:'active',source:'employer',cc:false,
+         member:'0000027201988',effective:'2026-01-01',renewal:'2026-12-31',premium:0,
+         deductible:75,deductibleMet:true,annualMax:5000,remaining:3665,
+         prev:100,basic:80,major:50,waiting:'None',network:'In network at most Orange County PPO offices',
+         dependents:[],requestedAt:'2026-06-07',verifiedAt:'2026-06-08',verifySource:'CoverCapy team'}],
+      blurb:'Covered and seen. Ready to review her dentist and bring them into the network.'},
+    jay:{name:'Jay S.',first:'Jay',init:'JS',avbg:'var(--mint-soft)',avc:'var(--mint-deep)',
+      crowns:1200,diamonds:10400,
+      journey:{plan:1,visit:1,review:1,refer:1},
+      noms:[{name:'Sunrise Smiles Dental',city:'Tustin, CA',stage:'accredited',email:'hello@sunrisesmiles.example',nudges:{intro:1,cc_review:1,g_review:1}},
+            {name:'Old Towne Dental Arts',city:'Orange, CA',stage:'interested',email:'frontdesk@oldtownedental.example',nudges:{intro:1,cc_review:1}}],
+      plans:[
+        {id:'j1',carrier:'Humana',name:'Humana PPO',type:'PPO',role:'primary',status:'active',source:'employer',cc:false,
+         member:'0000027201988',effective:'2026-01-01',renewal:'2026-12-31',premium:0,
+         deductible:75,deductibleMet:true,annualMax:5000,remaining:3665,
+         prev:100,basic:80,major:50,waiting:'None',network:'In network at most Orange County PPO offices',
+         dependents:['Spouse'],requestedAt:'2026-06-04',verifiedAt:'2026-06-05',verifySource:'CoverCapy team'},
+        {id:'j2',carrier:'Guardian',name:'Guardian Premier 2.0',type:'PPO',role:'secondary',status:'active',source:'spouse',cc:false,
+         member:'88012457730',effective:'2026-02-01',renewal:'2027-01-31',premium:70,
+         deductible:50,deductibleMet:false,annualMax:1500,remaining:1500,
+         prev:100,basic:80,major:60,waiting:'12 months on major work',network:'Confirm office is in Guardian network',
+         dependents:[],requestedAt:'2026-05-19',verifiedAt:'2026-05-20',verifySource:'CoverCapy team'}],
+      blurb:'Two verified plans. 10,400 diamonds, a $150 card ready.'},
+    mina:{name:'Mina Kim',first:'Mina',init:'MK',avbg:'var(--cream)',avc:'var(--slate)',
+      crowns:300,diamonds:0,
+      journey:{plan:0,visit:0,review:0,refer:0},noms:[],
+      plans:[],
+      blurb:'Brand new. No coverage yet. Starting from the beginning.'},
+    rosa:{name:'Rosa Diaz',first:'Rosa',init:'RD',avbg:'var(--mint-soft)',avc:'var(--mint-deep)',
+      crowns:300,diamonds:0,
+      journey:{plan:0,visit:0,review:0,refer:0},noms:[],
+      plans:[
+        {id:'r1',carrier:'Cigna',name:'Cigna Dental PPO',type:'PPO',role:'primary',status:'expired',source:'employer',cc:false,
+         member:'CIG4471092',effective:'2025-01-01',renewal:'2025-12-31',premium:0,
+         deductible:50,deductibleMet:true,annualMax:1500,remaining:0,
+         prev:100,basic:80,major:50,waiting:'None',network:'Plan ended Dec 31, 2025',
+         dependents:[],requestedAt:'2025-10-30',verifiedAt:'2025-11-02',verifySource:'CoverCapy team'},
+        {id:'r2',carrier:'DentalSave',name:'DentalSave Discount',type:'Discount',role:'supplemental',status:'active',source:'individual',cc:false,
+         member:'DS-220194',effective:'2026-01-01',renewal:'2026-12-31',premium:12,
+         deductible:0,deductibleMet:true,annualMax:0,remaining:0,
+         prev:0,basic:0,major:0,waiting:'None',network:'Discounts only at participating offices, not insurance',
+         dependents:[],requestedAt:'2026-02-27',verifiedAt:'2026-03-01',verifySource:'CoverCapy team'}],
+      blurb:'Her PPO expired and she leans on a discount plan. Time to switch or renew.'}
+  },
+  steps:[
+    {k:'plan',b:'Activate a PPO plan',s:'+500 &#128081; when your plan is verified'},
+    {k:'visit',b:'Book a PPO dentist',s:'+500 &#128081; when your visit is confirmed'},
+    {k:'refer',b:'Refer a friend who books',s:'+700 &#128081; when your friend visits a participating office'}
+  ],
+  dentists:[
+    {id:'kyt',name:'KYT Dental Services',doc:'Dr. Isaac Sun',city:'Fountain Valley',mi:4.2,rating:4.9,reviews:412,
+     tier:'elite',tag:'Platinum Elite',av:'&#129445;',fit:'strong',cost:'Quotes before treatment',accepts:['Humana','UnitedHealthcare','Aetna','Cigna','Guardian','Mutual of Omaha'],
+     line:'Patients describe meticulous work, honest pricing, and a calm office that runs on time.',
+     themes:[['Honest pricing',52],['Painless work',44],['Runs on time',37]],
+     langs:['English','Korean'],weekends:true,kids:true,offer:true,acceptingNew:true,onlineBooking:true,treatments:['Implants','Crowns','Cleanings','Whitening'],x:30,y:62,landmark:'mile'},
+    {id:'serene',name:'Serene Dental Center',doc:'Dr. A. Patel',city:'Irvine',mi:6.8,rating:4.8,reviews:287,
+     tier:'tier',tag:'Capy Accredited',av:'&#129446;',fit:'strong',cost:'Written estimates',accepts:['Humana','UnitedHealthcare','Aetna','Ameritas'],
+     line:'Gentle with anxious patients, with treatment explained step by step before anything begins.',
+     themes:[['Calms anxiety',48],['Explains everything',41],['No upselling',29]],
+     langs:['English','Spanish'],weekends:false,kids:true,offer:true,acceptingNew:true,onlineBooking:true,treatments:['Root canals','Veneers','Cleanings'],x:62,y:70,landmark:'uci'},
+    {id:'capy',name:'Capybara Cove Dental',doc:'Dr. Mia Song',city:'Costa Mesa',mi:3.6,rating:4.8,reviews:132,
+     tier:'pend',tag:'Pending Accreditation',av:'&#129463;',fit:'strong',cost:'Clear pricing',accepts:['Humana','UnitedHealthcare','Guardian','Cigna'],
+     line:'Honest pricing, gentle with kids, every option explained in plain language. Mandarin spoken.',
+     themes:[['Gentle with kids',46],['Honest pricing',39],['Plain language',33]],
+     langs:['English','Mandarin'],weekends:true,kids:true,offer:false,acceptingNew:true,onlineBooking:true,treatments:['Cleanings','Fillings','Whitening'],x:44,y:55,landmark:'scp'},
+    {id:'pacific',name:'Pacific Smile Studio',doc:'Dr. R. Ortega',city:'Huntington Beach',mi:7.1,rating:4.5,reviews:64,
+     tier:'pend',tag:'Recently Added',av:'&#129439;',fit:'ask',cost:'Ask the office',accepts:['Aetna','Cigna'],
+     line:'A newer office with same week openings and weekend hours twice a month.',
+     themes:[['Easy scheduling',35],['Friendly front desk',28]],
+     missing:['email'],hasEmail:false,
+     langs:['English','Spanish'],weekends:true,kids:false,offer:false,acceptingNew:true,onlineBooking:true,treatments:['Cleanings','Invisalign'],x:16,y:48,landmark:'beach'},
+    {id:'harbor',name:'Harbor Light Dental',doc:'Dr. T. Nguyen',city:'Newport Beach',mi:5.9,rating:4.3,reviews:51,
+     tier:'pend',tag:'Pending Profile Claim',av:'&#128011;',fit:'ask',cost:'Ask the office',accepts:['UnitedHealthcare','Ameritas'],
+     line:'Small practice near the harbor known for unhurried visits.',
+     themes:[['Never rushed',31],['Listens first',24]],
+     missing:['email','yelp_url'],hasEmail:false,
+     langs:['English','Vietnamese'],weekends:false,kids:false,offer:false,acceptingNew:false,onlineBooking:false,treatments:['Cleanings','Dentures'],x:38,y:84,landmark:'beach'},
+    {id:'oldtowne',name:'Old Towne Dental Arts',doc:'Dr. E. Marsh',city:'Orange',mi:9.4,rating:4.6,reviews:98,
+     tier:'pend',tag:'New to CoverCapy',av:'&#129436;',fit:'ask',cost:'Ask the office',accepts:['Humana','Guardian','Aetna'],
+     line:'Family office in Old Towne with three generations of patients.',
+     themes:[['Family feel',40],['Long term patients',32]],
+     missing:['yelp_url'],hasEmail:true,
+     langs:['English'],weekends:false,kids:true,offer:false,acceptingNew:true,onlineBooking:false,treatments:['Cleanings','Crowns'],x:70,y:22,landmark:'old'}
+  ],
+  emails:{kyt:'frontdesk@kytdental.example',serene:'care@serenedental.example',capy:'frontdesk@capybaracove.example',pacific:'hello@pacificsmile.example',harbor:'office@harborlight.example',oldtowne:'frontdesk@oldtownedental.example'},
+  treatmentOptions:['Cleanings','Fillings','Crowns','Root canals','Implants','Veneers','Invisalign','Dentures','Whitening'],
+  ppoOptions:['Aetna','Ameritas','Cigna','Guardian','Humana','Mutual of Omaha','UnitedHealthcare'],
+  landmarks:[
+    {k:'all',n:'All of Orange County'},
+    {k:'scp',n:'Near South Coast Plaza'},
+    {k:'beach',n:'Beach cities'},
+    {k:'uci',n:'Near UC Irvine'},
+    {k:'old',n:'Old Towne Orange'},
+    {k:'mile',n:'Mile Square Park'}
+  ],
+  plans:[
+    {n:'UHC Primary Dental',c:'UnitedHealthcare',p:'about $30 per month',tag:'Fastest activation',d:'Activates fast, no waiting period on preventive care',rec:true},
+    {n:'Aetna Dental Direct',c:'Aetna',p:'about $50 per month',tag:'Light, steady coverage',d:'Reliable preventive care, familiar national network'},
+    {n:'Ameritas PrimeStar',c:'Ameritas',p:'about $60 per month',tag:'Family friendly balance',d:'Balances cost and coverage for ongoing family care'},
+    {n:'Guardian Premier 2.0',c:'Guardian',p:'about $70 per month',tag:'Built for major treatment',d:'Strong on crowns and root canals, activates the 1st of next month'},
+    {n:'Mutual of Omaha Dental',c:'Mutual of Omaha',p:'about $90 per month',tag:'Higher annual maximum',d:'More room for bigger treatment years'},
+    {n:'Humana PPO',c:'Humana',p:'about $100 per month',tag:'Broadest coverage',d:'Wide network, strong across categories'}
+  ],
+  eligibility:{
+    donnaSelf:{title:'Humana PPO benefits',sub:'Member 0000027201988 &#183; verified by our team',
+      groups:[['Key financials',[['Annual maximum','$5,000 &#183; $3,665 left'],['Deductible','$75 &#183; met']]],
+              ['Coverage in network',[['Preventive','100%'],['Basic','80%'],['Major','50%'],['Endodontics','50%']]],
+              ['Limits',[['Cleanings','2 per year'],['Bitewing X rays','2 per year'],['Full mouth X ray','1 per 5 years']]]]}
+  },
+  inbox:[
+    {id:'donna',name:'Donna Tran',member:'0000027201988',plan:'Humana PPO',status:'verified',ctx:'Booking &#183; Jun 12, 9:00 AM',
+     secondary:null,coordination:null,
+     elig:{title:'Donna Tran &#183; Humana PPO',sub:'Member 0000027201988 &#183; verified by the CoverCapy team',
+       groups:[['Key financials',[['Annual maximum','$5,000 &#183; $3,665 left'],['Deductible','$75 &#183; met']]],
+               ['Coverage in network',[['Preventive','100%'],['Basic','80%'],['Major','50%']]],
+               ['Limits',[['Cleanings','2 per year'],['Exams','2 per year']]]]}},
+    {id:'marcus',name:'Marcus Lee',member:'88012457730',plan:'Guardian PPO',status:'pending',ctx:'Verification request &#183; Jun 10',
+     secondary:null,coordination:null,
+     elig:{title:'Marcus Lee &#183; Guardian PPO',sub:'Member 88012457730 &#183; submitted Jun 10',
+       groups:[['Status',[['Verification','In progress with Guardian'],['Action needed','None, our team is on it']]]]}},
+    {id:'elena',name:'Elena Park',member:'5512093348A',plan:'UHC Primary Dental',status:'verified',ctx:'Verification request &#183; Jun 9',
+     secondary:'Cigna Dental PPO',secondaryStatus:'pending',coordination:'Primary verified. Secondary Cigna pending. Coordination estimate unavailable until your office confirms how it applies.',
+     elig:{title:'Elena Park &#183; UHC Primary Dental',sub:'Member 5512093348A &#183; verified Jun 9',
+       groups:[['Key financials',[['Annual maximum','$1,000 &#183; $1,000 left'],['Deductible','$50 &#183; not yet met']]],
+               ['Coverage in network',[['Preventive','100%'],['Basic','50%'],['Major','50%']]]]}}
+  ],
+  demand:{
+    searches:142, appearances:104, missed:38, views:214, requests:3, bookings:2, noms:3,
+    cities:[['Costa Mesa',92],['Newport Beach',74],['Irvine',61],['Huntington Beach',48],['Santa Ana',37]],
+    carriers:[['Humana',32],['Cigna',21],['UHC',18],['Guardian',14],['Aetna',9],['Other',6]],
+    treatments:[['Cleanings and exams',41],['Implant consults',18],['Invisalign consults',15],['Crowns',12],['Whitening',8]],
+    market:{you:{r:4.8,n:132},avg:{r:4.4,n:88},
+      rivals:[['Office A &#183; 1.2 mi','4.6','accredited'],['Office B &#183; 2.0 mi','4.3','not listed'],['Office C &#183; 2.8 mi','4.7','accredited']]}
+  },
+  network:{officesJoined:12,nominationsThisYear:87,patientsHelped:1640},
+  dnoms:[
+    {n:'Donna Tran',d:'Jun 8',note:'Gentle with my kids and honest about pricing'},
+    {n:'Mina Kim',d:'Jun 9',note:'Explained every option before treatment'},
+    {n:'Marcus Lee',d:'Jun 5',note:'Best cleaning I have had in years'}
+  ],
+  promotions:[{t:'New patient whitening special',d:'Free take home whitening kit with first exam and cleaning &#183; ends Jul 15',status:'Active'}],
+  widgetKey:'ccw_live_7f3a91c204de8b56'
+};
+
+/* ===== state ===== */
+/* =====================================================================
+   INS: centralized insurance logic. Pure functions over a patient's
+   plans[] array. In production these map to patient_insurance_plans,
+   insurance_plan_roles, benefit_snapshots, and coverage_coordination_estimates.
+   Every coverage surface reads from here so logic is never scattered.
+   ===================================================================== */
+function fmtToday(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+var INS={
+  plans:function(p){return (p&&p.plans)||[];},
+  active:function(p){return INS.plans(p).filter(function(x){return x.status==='active';});},
+  primary:function(p){return INS.active(p).filter(function(x){return x.role==='primary';})[0]||null;},
+  secondaries:function(p){return INS.active(p).filter(function(x){return x.role==='secondary'||x.role==='supplemental';});},
+  pending:function(p){return INS.plans(p).filter(function(x){return x.status==='pending';});},
+  expired:function(p){return INS.plans(p).filter(function(x){return x.status==='expired';});},
+  considering:function(p){return INS.plans(p).filter(function(x){return x.status==='considering';});},
+  status:function(p){
+    if(INS.primary(p))return 'active';
+    if(INS.pending(p).length)return 'pending';
+    if(INS.expired(p).length)return 'expired';
+    if(INS.plans(p).length)return 'inactive';
+    return 'none';
+  },
+  // Dashboard headline + plain-language meaning, per coverage state
+  summary:function(p){
+    var st=INS.status(p),pr=INS.primary(p),sec=INS.secondaries(p);
+    if(st==='none') return {head:'Get PPO coverage first',sub:'You have no active dental plan yet. Activating one is the first step to being seen and to earning your first crowns.',tone:'start'};
+    if(st==='pending'){var pe=INS.pending(p)[0];return {head:'Your plan is being verified',sub:'We are checking '+pe.name+' with the carrier, usually the same day. It shows as verified here the moment it clears.',tone:'pending'};}
+    if(st==='expired'){var ex=INS.expired(p)[0];return {head:'Your '+ex.carrier+' plan is no longer active',sub:'Add a current plan before booking treatment. You can remove the old one from your wallet.',tone:'expired'};}
+    if(sec.length) return {head:'You have '+(1+sec.length)+' verified plans',sub:'Your main plan is '+pr.name+', and '+sec[0].name+' helps alongside it. Your dentist applies them together when you book, so there is nothing for you to calculate.',tone:'dual'};
+    return {head:'Your '+pr.name+' is verified and active',sub:'Cleanings and exams are covered in full. When you book, your benefit details are shared with the office so they can check your coverage.',tone:'single'};
+  },
+  nextAction:function(p){
+    var st=INS.status(p);
+    if(st==='none') return {label:'Get covered',act:'shop'};
+    if(st==='pending') return {label:'View status',act:'go:coverage'};
+    if(st==='expired') return {label:'Go to coverage',act:'go:coverage'};
+    return {label:'View your coverage',act:'go:coverage'};
+  },
+  // Per-dentist plan fit using the office's accepted carriers
+  fitFor:function(p,d){
+    function carrierFit(plan){
+      if(!plan) return null;
+      if(d.accepts&&d.accepts.indexOf(plan.carrier)>-1) return 'works';
+      if(d.accepts) return 'no';
+      return d.fit==='strong'?'works':'unknown';
+    }
+    return {primary:carrierFit(INS.primary(p)), secondary:INS.secondaries(p).length?carrierFit(INS.secondaries(p)[0]):null};
+  },
+  // Coordination of benefits estimate. Deliberately conservative.
+  coordination:function(p,fee){
+    var pr=INS.primary(p),sec=INS.secondaries(p)[0]||null;
+    if(!pr) return null;
+    var primaryPays=Math.round(fee*(pr.major/100));
+    var afterPrimary=fee-primaryPays;
+    return {fee:fee,primaryName:pr.name,primaryPays:primaryPays,afterPrimary:afterPrimary,
+            secondaryName:sec?sec.name:null,
+            secondaryPPO:sec&&sec.type==='PPO'};
+  },
+  mask:function(id){if(!id)return '';return id.length<=4?id:id.slice(0,2)+'\u2022\u2022\u2022\u2022'+id.slice(-3);}
+};
+
+
+var S={role:null,p:null,dTier:'accredited',find:{filters:{},landmark:'all',q:'Costa Mesa, CA',treatment:'',ppo:'',within:25,minRating:0,compare:[]},nomTarget:null,nomIdx:null,nomKind:'intro',nomPick:null,chosenPlan:null,ownPlan:false,addKind:null,switchFrom:null,dCredit:null};
+
+/* ===== gate ===== */
+function renderGate(){
+  var ps=DEMO_DATA.personas;
+  $('gate').innerHTML='<div class="gate-in"><div class="gate-head"><div class="mark">&#129441;</div>'
+   +'<h1>The concierge for dental care</h1>'
+   +'<div class="muted" style="font-size:15px">One network, two sides. Pick a seat to preview.</div></div>'
+   +'<div class="gate-cols"><div class="gate-col">'
+   +'<div class="gt">I am a patient</div><div class="gs">Get covered, find the right office, and grow the network.</div>'
+   +Object.keys(ps).map(function(k){var p=ps[k];
+     return '<button class="persona" data-role="patient" data-p="'+k+'"><div class="pav" style="background:'+p.avbg+';color:'+p.avc+'">'+p.init+'</div><div><b>'+p.name+'</b><span>'+p.blurb+'</span></div></button>';
+   }).join('')
+   +'</div><div class="gate-col">'
+   +'<div class="gt">I am a dentist</div><div class="gs">Demand, eligibility, reputation, and the tools behind your office.</div>'
+   +'<button class="persona" data-role="dentist"><div class="pav" style="background:var(--ink);color:var(--mint)">&#129441;</div><div><b>Dr. Mia Song</b><span>Capybara Cove Dental &#183; Costa Mesa. Dashboard, demand, patients, profile, membership.</span></div></button>'
+   +'<div class="card pad" style="box-shadow:none;background:var(--cream);border:none;margin-top:8px"><div style="font-size:12.5px;line-height:1.55;color:var(--slate)">Dentists pay for the support behind them: verification handling, blended reviews, patient demand, and the coverage widget. Accreditation is reviewed on merit and is never sold.</div></div>'
+   +'</div></div></div>';
+}
+
+/* ===== chrome ===== */
+var PNAV=[['home','Home','&#9737;'],['find','Find a Dentist','&#9826;'],['coverage','Coverage','&#9671;'],['community','Community','&#9819;']];
+var DNAV=[['ddash','Dashboard','&#9737;'],['demand','Demand','&#9650;'],['patients','Patients','&#9826;'],['dprofile','Profile','&#9671;'],['membership','Membership','&#9819;']];
+function renderChrome(){
+  var nav=S.role==='patient'?PNAV:DNAV;
+  var right = S.role==='patient'
+    ? '<div class="crown-chip">&#128081; <span id="crownTop">0</span></div><div class="crown-chip" style="background:var(--mint-soft);color:var(--mint-deep)">&#128142; <span id="diamondTop">0</span></div><button class="btn btn-ink btn-sm" data-cc="open">Ask concierge</button>'
+    : '<span class="tierpill" id="dTierPill"></span><select id="dTierSel" style="border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12px;font-weight:700;background:var(--paper)"><option value="unclaimed">Demo: Unclaimed</option><option value="free">Demo: Claimed free</option><option value="accredited" selected>Demo: Capy Accredited</option><option value="platinum">Demo: Platinum Elite</option></select>';
+  $('topnav').innerHTML='<div class="tn-in"><div class="tn-logo"><div class="lm">&#129441;</div>CoverCapy'+(S.role==='dentist'?' <span class="muted" style="font-family:var(--fb);font-size:12px;font-weight:600">&#183; Practice portal</span>':'')+'</div>'
+    +'<nav class="tn-links">'+nav.map(function(n){return '<a data-go="'+n[0]+'">'+n[1]+'</a>';}).join('')+'</nav>'
+    +'<div class="tn-right">'+right+'<button class="btn btn-ghost btn-sm" id="switchSeat">Switch</button></div></div>';
+  $('tabbar').innerHTML=nav.map(function(n){return '<button class="tab" data-go="'+n[0]+'"><span class="ti">'+n[2]+'</span>'+n[1].replace('Find a Dentist','Find')+'</button>';}).join('');
+  $('topnav').classList.remove('hidden'); $('tabbar').classList.remove('hidden'); $('fab').classList.remove('hidden');
+  document.body.classList.add('inapp');
+  var sw=$('switchSeat'); if(sw) sw.addEventListener('click',function(){location.hash='';location.reload();});
+  var ts=$('dTierSel'); if(ts) ts.addEventListener('change',function(){S.dTier=this.value;route();});
+}
+function setActive(id){
+  document.querySelectorAll('[data-go]').forEach(function(a){a.classList.toggle('on',a.dataset.go===id);});
+}
+
+/* ===== shared components ===== */
+function firstUndone(j){for(var i=0;i<DEMO_DATA.steps.length;i++){if(!j[DEMO_DATA.steps[i].k])return DEMO_DATA.steps[i].k;}return null;}
+function spineHTML(j){
+  var u=firstUndone(j);
+  return '<div class="spine">'+DEMO_DATA.steps.map(function(st){
+    var done=!!j[st.k],now=st.k===u;
+    return '<div class="snode '+(done?'done':now?'now':'')+'"><div class="rail"></div><div class="sdot">'+(done?'&#10003;':now?'&#9679;':'')+'</div><div class="sbody"><b>'+st.b+'</b><span>'+st.s+'</span></div></div>';
+  }).join('')+'</div>';
+}
+function passHTML(compact){
+  var p=S.p, st=INS.status(p), pr=INS.primary(p), used;
+  if(st==='active' && pr){
+    used=pr.annualMax-pr.remaining;
+    return '<div class="passcard active"><div class="gloss"></div><div class="pc-top"><div class="pc-carrier">'+pr.name+'</div><div class="pc-badge ok">Primary &#183; Verified</div></div>'
+      +'<div class="pc-grid"><div class="pc-cell"><span>Annual maximum</span><b>$'+pr.remaining.toLocaleString('en-US')+' left</b></div><div class="pc-cell"><span>Deductible</span><b>'+(pr.deductibleMet?'Met':'$'+pr.deductible)+'</b></div><div class="pc-cell"><span>Preventive</span><b>'+pr.prev+'%</b></div><div class="pc-cell"><span>Major</span><b>'+pr.major+'%</b></div></div>'
+      +(compact?'':'<div class="pc-meter" style="margin-top:16px"><div style="display:flex;justify-content:space-between;font-size:10.5px;color:rgba(246,240,230,.6)"><span>USED $'+used.toLocaleString('en-US')+'</span><span>OF $'+pr.annualMax.toLocaleString('en-US')+'</span></div><div class="bar"><i style="width:'+Math.round(used/pr.annualMax*100)+'%"></i></div></div>')
+      +(INS.secondaries(p).length?'<div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(246,240,230,.16);font-size:12px;color:rgba(246,240,230,.78)">+ Additional plan: '+INS.secondaries(p)[0].name+'. Your dentist applies it for you.</div>':'')+'</div>';
+  }
+  if(st==='pending'){var pe=INS.pending(p)[0];
+    return '<div class="passcard pending"><div class="gloss"></div><div class="pc-top"><div class="pc-carrier">'+(pe?pe.name:'Your plan')+'</div><div class="pc-badge">Pending</div></div><div style="font-size:13.5px;color:rgba(246,240,230,.85);line-height:1.5">Member ID submitted. Our team is checking your coverage with the carrier, usually same day. Your benefits appear here the moment it clears.</div></div>';
+  }
+  if(st==='expired'){var ex=INS.expired(p)[0];
+    return '<button class="passcard pending" style="display:block;width:100%;text-align:left" data-act="go:coverage"><div class="gloss"></div><div class="pc-top"><div class="pc-carrier">'+ex.name+'</div><div class="pc-badge">Inactive</div></div><div style="font-size:13.5px;color:rgba(246,240,230,.85);line-height:1.5;margin-bottom:4px">This plan is no longer active. Add a current plan before booking treatment.</div><div style="color:var(--mint);font-weight:600;font-size:13.5px">Go to coverage &#8594;</div></button>';
+  }
+  return '<button class="passcard empty" style="display:block;width:100%;text-align:left" data-act="shop"><div class="gloss"></div><div class="pc-top"><div class="pc-carrier">No coverage yet</div><div class="pc-badge">Start</div></div><div style="font-size:13.5px;color:rgba(246,240,230,.85);line-height:1.5;margin-bottom:4px">Pick a PPO plan that fits you, or add a plan you already have. I will walk you through it.</div><div style="color:var(--mint);font-weight:600;font-size:13.5px">Get covered &#8594;</div></button>';
+}
+// Rich plan card for the Coverage page
+function planCardHTML(pl){
+  var roleTag={primary:'Primary',secondary:'Additional',supplemental:'Additional'}[pl.role]||'Plan';
+  var isActive=pl.status==='active', isPending=pl.status==='pending', isInactive=(pl.status==='expired'||pl.status==='inactive');
+  var stTone=isActive?'okpill':(isPending?'pendpill':'pendpill');
+  var stLabel=isActive?'Verified':(isPending?'Verification requested':(pl.status==='expired'?'No longer active':'Inactive'));
+  return '<div class="card pad" style="'+(isActive&&pl.role==='primary'?'border-color:var(--mint)':(isInactive?'border-color:var(--line);opacity:.92':''))+'">'
+   +'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:10px">'
+   +'<div><span class="mini '+(isActive&&pl.role==='primary'?'lang':'')+'" style="margin-bottom:6px;display:inline-block">'+roleTag+(pl.type==='PPO'?'':' &#183; '+pl.type)+'</span><div class="serif" style="font-size:18px">'+pl.name+'</div><div class="muted" style="font-size:12.5px">'+pl.carrier+(pl.member?' &#183; '+INS.mask(pl.member):'')+'</div></div>'
+   +'<span class="'+stTone+'" style="font-size:11px;padding:5px 10px">'+(isActive?'&#10003; ':'')+stLabel+'</span></div>'
+   +'<div style="font-size:12.5px;line-height:1.85;color:var(--ink)">'
+     +(pl.requestedAt?'<div>&#128233; Verification requested '+pl.requestedAt+'</div>':'')
+     +(isActive&&pl.verifiedAt?'<div>&#9989; Verified '+pl.verifiedAt+(pl.verifySource?' by '+pl.verifySource:'')+'</div>':'')
+     +(isPending?'<div class="muted">Awaiting confirmation from the carrier, usually same day.</div>':'')
+     +(pl.status==='expired'?'<div class="muted">This plan is no longer active. You can remove it.</div>':'')
+   +'</div>'
+   +(isActive?'<div class="muted" style="font-size:11.5px;margin-top:10px;line-height:1.5">Your full benefit details are on file and shared with your dentist when you book, so they can check coverage for you.</div>':'')
+   +'<div style="display:flex;gap:8px;margin-top:12px">'
+     +(isPending?'<button class="btn btn-ink btn-sm" data-verifyplan="'+pl.id+'">Check status</button>':'')
+     +'<button class="btn '+(isInactive?'btn-gold':'btn-ghost')+' btn-sm" data-delplan="'+pl.id+'">'+(isInactive?'Remove this plan':'Remove')+'</button>'
+   +'</div>'
+   +'</div>';
+}
+var NEXT_anchor=0;
+var NEXT={
+  plan:{e:'Next step',t:'Activate a PPO plan',b:'Shop a plan that fits how you use care, or add one you already have through work or a spouse. Our team verifies every member ID by hand. +500 crowns when your first plan is verified.',c:'Get covered',act:'shop'},
+  visit:{e:'Next step',t:'Book a PPO dentist',b:'Browse offices that fit your plan. We share your benefits before you arrive. +500 crowns when your visit is confirmed.',c:'Find a dentist',act:'go:find'},
+  refer:{e:'One step left',t:'Refer a friend who books',b:'Send someone you care about to a participating accredited office. When they visit as a new patient with verified PPO coverage, your +700 crowns land, and your whitening unlocks at that office.',c:'Refer a friend',act:'refer'}
+};
+var DONE_HERO={e:'You are all set',t:'Your nomination paid off',b:'Sunrise Smiles Dental joined the network because you vouched for them, and your reward is waiting in Community. Old Towne Dental Arts is close behind.',c:'Open Community',act:'go:community'};
+
+/* ===== PATIENT: HOME ===== */
+function vHome(){
+  var p=S.p,ist=INS.status(p),u=firstUndone(p.journey),h;
+  // Insurance state takes the hero when coverage is the blocker
+  if(ist==='pending') h={e:'Coverage',t:'Your member ID is being verified',b:'We are checking your plan with the carrier, usually the same day. Your benefits and crowns land the moment it clears.',c:'View status',act:'go:coverage'};
+  else if(ist==='expired') h={e:'Coverage',t:'Your plan is no longer active',b:'Add a current plan before booking treatment, or shop one that fits. You can remove the old plan from your wallet.',c:'Go to coverage',act:'go:coverage'};
+  else h=u?NEXT[u]:DONE_HERO;
+  var hr=new Date().getHours(),g=hr<12?'Good morning':hr<18?'Good afternoon':'Good evening';
+  return '<div class="page"><div class="phead"><div class="eyebrow">CoverCapy</div><h1>'+g+', '+p.first+'</h1><div class="guide">'+(u?'Here is what I would do next.':'You are all set. Thank you for growing the network.')+'</div></div>'
+  +'<div class="cols2"><div class="stack">'
+  +'<div class="hero"><div class="gloss"></div><div class="eyebrow">'+h.e+'</div><h2>'+h.t+'</h2><p>'+h.b+'</p><button class="btn btn-mint" data-act="'+h.act+'">'+h.c+'</button></div>'
+  +(function(){var s=INS.summary(p);return '<div class="card pad"><div class="eyebrow" style="margin-bottom:6px">Coverage status</div><div class="serif" style="font-size:16px;margin-bottom:4px">'+s.head+'</div><div class="muted" style="font-size:13px;line-height:1.55">'+s.sub+'</div></div>';})()
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:4px">Your journey</div><div class="serif" style="font-size:16px;margin-bottom:14px">Where you are with CoverCapy</div>'+spineHTML(p.journey)+'</div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:12px">Concierge suggestions</div>'
+    +'<button class="rowcard" data-ask="What will a cleaning cost me?"><div class="ic">&#128172;</div><div class="meta"><b>What will a cleaning cost me?</b><span>Plain answer from your plan</span></div><div class="arr">&#8250;</div></button>'
+    +'<button class="rowcard" data-ask="Which office near me fits my plan?"><div class="ic">&#9826;</div><div class="meta"><b>Which office fits my plan?</b><span>Matched to your coverage</span></div><div class="arr">&#8250;</div></button>'
+    +'<button class="rowcard" style="margin-bottom:0" data-ask="When does my waiting period end?"><div class="ic">&#9201;</div><div class="meta"><b>Any waiting periods?</b><span>Know before you book</span></div><div class="arr">&#8250;</div></button></div>'
+  +'</div><div class="stack">'
+  +passHTML()
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Upcoming care</div>'
+    +(p.journey.visit?'<div class="rowcard" style="margin:0;box-shadow:none"><div class="ic">&#128197;</div><div class="meta"><b>Capybara Cove Dental</b><span>Thu Jun 12 &#183; 9:00 AM &#183; benefits already shared</span></div></div>':'<div class="muted" style="font-size:13.5px">No visits booked yet. When you book through CoverCapy, your benefits travel with you.</div>')+'</div>'
+  +'<div class="contrib"><div class="eyebrow">Community</div><div class="big">&#128081; '+p.crowns.toLocaleString('en-US')+' <small>/ 2,000</small></div>'
+    +'<div style="font-size:12.5px;color:rgba(246,240,230,.75)">Crowns from getting covered and getting care, toward treatments like whitening.</div>'
+    +'<div class="bar"><i style="width:'+Math.min(100,p.crowns/20)+'%;background:linear-gradient(90deg,var(--gold),#D8B878)"></i></div>'
+    +(p.diamonds>0?'<div style="font-size:12px;color:rgba(246,240,230,.65);margin-top:10px">&#128142; '+p.diamonds.toLocaleString('en-US')+' network reward diamonds'+(p.diamonds>=10000?' &#183; a reward is ready':'')+'</div><div class="bar" style="margin-top:6px"><i style="width:'+Math.min(100,p.diamonds/100)+'%"></i></div>':'')
+    +'<button class="btn btn-mint btn-sm" data-act="go:community" style="margin-top:10px">Open Community</button></div>'
+  +'</div></div>'
+  +'<div class="foot-note">CoverCapy helps you understand and use PPO dental coverage. We are not an insurance company or a dental office.</div></div>';
+}
+
+/* ===== PATIENT: FIND (flagship) ===== */
+function fitBadge(d){
+  var pr=INS.primary(S.p);
+  if(!pr) return ['maybe','&#9671; Get covered to see plan fit'];
+  var f=INS.fitFor(S.p,d);
+  if(f.primary==='works') return ['','&#9989; Likely works with your primary '+pr.carrier+' PPO'];
+  if(f.primary==='no') return ['maybe','&#9888; May be out of network for your '+pr.carrier+' PPO'];
+  return ['maybe','&#9201; Ask if they work with your '+pr.carrier+' PPO'];
+}
+function fitDetailHTML(d){
+  var pr=INS.primary(S.p); if(!pr) return '';
+  var f=INS.fitFor(S.p,d), sec=INS.secondaries(S.p)[0];
+  var conf=f.primary==='works'?'Strong primary':f.primary==='no'?'Primary may be out of network':'Primary unknown';
+  if(sec) conf+=', secondary needs confirmation';
+  var line='';
+  if(sec){
+    line=f.secondary==='works'
+      ? 'Secondary '+sec.carrier+' may also apply after coordination.'
+      : 'Secondary '+sec.carrier+' needs office confirmation.';
+  }
+  return '<div style="font-size:11.5px;color:var(--slate);padding:0 18px 10px;line-height:1.5">Coverage confidence: '+conf+'.'+(line?' '+line:'')+'</div>';
+}
+function dcardHTML(d){
+  var fb=fitBadge(d), checked=S.find.compare.indexOf(d.id)>-1;
+  var tierChip='<span class="mini '+(d.tier==='elite'?'elite':d.tier==='tier'?'tier':'pend')+'">'+d.tag+'</span>';
+  return '<div class="dcard" id="dc-'+d.id+'"><div class="cov '+fb[0]+'"><span>'+fb[1]+'</span><span>'+(d.tier==='elite'?'<b style="color:var(--plum)">Featured</b> &#183; ':'')+d.mi+' mi</span></div>'
+  +'<div class="body"><div class="av">'+d.av+'</div><div class="info"><div class="nm">'+d.name+'</div>'
+  +'<div class="sub">'+d.doc+' &#183; '+d.city+' &#183; &#9733; '+d.rating+' ('+d.reviews+')</div>'
+  +'<div class="persona-line">'+d.line+'</div>'
+  +'<div class="chiprow">'+tierChip
+    +d.langs.map(function(l){return '<span class="mini lang">'+l+'</span>';}).join('')
+    +(d.weekends?'<span class="mini">Open weekends</span>':'')
+    +(d.kids?'<span class="mini">Kids welcome</span>':'')+'</div>'
+  +((d.themes&&d.themes.length)?'<div class="chiprow" style="margin-top:7px"><span style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--slate);align-self:center">From reviews</span>'+d.themes.map(function(t){return '<span class="mini" style="background:var(--mint-soft);color:var(--mint-deep)">'+t[0]+' &#183; '+t[1]+'%</span>';}).join('')+'</div>':'')+'</div></div>'
+  +'<div class="conf"><div class="confbox"><span>Coverage confidence</span><b>'+(d.fit==='strong'?'Strong':'Confirm with office')+'</b></div><div class="confbox"><span>Cost confidence</span><b>'+d.cost+'</b></div></div>'
+  +fitDetailHTML(d)
+  +(d.hasEmail===false?'<div style="font-size:11.5px;color:var(--gold-deep);background:var(--gold-soft);margin:0 18px 10px;border-radius:10px;padding:8px 12px;line-height:1.45">&#9993; No email on file. Found their email? Add it to request verification and earn diamonds.</div>':'')
+  +'<div class="foot"><button class="btn btn-ink btn-sm" data-profile="'+d.id+'">View office</button>'
+  +'<button class="btn btn-ghost btn-sm" data-verify="'+d.name+'">'+(d.hasEmail===false?'Add email to verify':'Check my plan')+'</button>'
+  +'<button class="btn btn-ghost btn-sm" data-share="'+d.id+'">Share</button>'
+  +(d.tier==='pend'?'<button class="btn btn-ghost btn-sm" data-nominate="'+d.name+'|'+d.city+', CA">Nominate</button>':'')
+  +'<label class="cmp"><input type="checkbox" data-cmp="'+d.id+'" '+(checked?'checked':'')+'>Compare</label></div></div>';
+}
+function filteredDentists(){
+  var f=S.find.filters,lm=S.find.landmark,F=S.find;
+  return DEMO_DATA.dentists.filter(function(d){
+    if(lm!=='all'&&d.landmark!==lm) return false;
+    if(F.treatment&&d.treatments.indexOf(F.treatment)<0) return false;
+    if(F.ppo&&(!d.accepts||d.accepts.indexOf(F.ppo)<0)) return false;
+    if(F.within&&d.mi>F.within) return false;
+    if(F.minRating&&d.rating<F.minRating) return false;
+    if(f.weekends&&!d.weekends) return false;
+    if(f.offer&&!d.offer) return false;
+    if(f.acceptingNew&&!d.acceptingNew) return false;
+    if(f.onlineBooking&&!d.onlineBooking) return false;
+    if(f.english&&d.langs.indexOf('English')<0) return false;
+    if(f.spanish&&d.langs.indexOf('Spanish')<0) return false;
+    return true;
+  }).sort(function(a,b){return ((b.tier==='elite')?1:0)-((a.tier==='elite')?1:0)||a.mi-b.mi;});
+}
+function mapHTML(list){
+  var roads='<div class="road h" style="top:30%"></div><div class="road h" style="top:58%"></div><div class="road v" style="left:26%"></div><div class="road v" style="left:55%"></div><div class="road v" style="left:80%"></div>'
+   +'<div class="lbl" style="top:26%;left:6%">Garden Grove</div><div class="lbl" style="top:54%;left:60%">Irvine</div><div class="lbl" style="top:18%;left:66%">Orange</div><div class="lbl" style="top:80%;left:10%">Huntington Beach</div><div class="lbl" style="bottom:6%;right:8%">Newport Coast</div>';
+  return '<div class="map" id="map">'+roads+list.map(function(d){
+    return '<button class="pin '+(d.tier!=='pend'?d.tier:'')+'" style="left:'+d.x+'%;top:'+d.y+'%" data-pin="'+d.id+'" aria-label="'+d.name+'"><span class="pb">&#9733; '+d.rating+'</span><span class="pt"></span></button>';
+  }).join('')+'</div>';
+}
+function vFind(){
+  var list=filteredDentists(),f=S.find.filters,F=S.find;
+  function chip(k,label){return '<button class="chip '+(f[k]?'on':'')+'" data-filter="'+k+'">'+label+'</button>';}
+  function topt(){return '<option value="">Any reason</option>'+DEMO_DATA.treatmentOptions.map(function(t){return '<option value="'+t+'"'+(F.treatment===t?' selected':'')+'>'+t+'</option>';}).join('');}
+  function popt(){var mine=INS.primary(S.p);var opts='<option value="">Any PPO</option>'+DEMO_DATA.ppoOptions.map(function(c){return '<option value="'+c+'"'+(F.ppo===c?' selected':'')+'>'+c+(mine&&mine.carrier===c?' (yours)':'')+'</option>';}).join('');return opts;}
+  function ropt(){var opts=[[0,'Any rating'],[4,'4.0+'],[4.5,'4.5+'],[4.8,'4.8+']];return opts.map(function(o){return '<option value="'+o[0]+'"'+(F.minRating===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join('');}
+  return '<div class="page"><div class="phead"><div class="eyebrow">Find a Dentist</div><h1>PPO dentists near you</h1><div class="guide">Set the location, treatment, your PPO, or distance, then search to update your results.</div></div>'
+  +'<div class="fbar">'
+   +'<div class="fcell"><label>Location</label><input value="'+esc(F.q)+'" id="findQ" placeholder="ZIP, city, or area" aria-label="Location"></div>'
+   +'<div class="fcell"><label>Treatment</label><select id="findTreat">'+topt()+'</select></div>'
+   +'<div class="fcell"><label>Your PPO</label><select id="findPPO">'+popt()+'</select></div>'
+   +'<div class="fcell"><label>Within <b id="findWithinLbl">'+F.within+' mi</b></label><div class="within-row"><input type="range" id="findWithin" min="5" max="50" step="5" value="'+F.within+'"></div></div>'
+  +'</div>'
+  +'<div class="fhead">'
+   +'<div class="chips" style="margin-bottom:0">'+chip('weekends','Open weekends')+chip('offer','Has an offer or reward')+chip('acceptingNew','Accepting new patients')+chip('onlineBooking','Online booking')+chip('english','English')+chip('spanish','Spanish')+'</div>'
+   +'<div style="display:flex;gap:8px;align-items:center"><select class="sortsel" id="findRating">'+ropt()+'</select><div class="map-toggle"><button class="btn btn-ghost btn-sm" id="mtList">List</button><button class="btn btn-ink btn-sm" id="mtMap">Map</button></div></div>'
+  +'</div>'
+  +'<div class="find-grid"><div id="findList">'
+  +'<div class="muted" style="font-size:13px;margin-bottom:12px">'+list.length+' offices &#183; sorted by recommended</div>'
+  +(list.length?list.map(dcardHTML).join(''):'<div class="card pad" style="text-align:center"><div style="font-size:30px;margin-bottom:8px">&#129441;</div><b>No offices match those filters.</b><div class="muted" style="font-size:13px;margin-top:4px">Loosen a filter, or ask your concierge and we will look beyond the directory.</div></div>')
+  +'</div><div class="mapwrap" id="mapwrap">'+mapHTML(list)+'</div></div>'
+  +'<div class="foot-note">Results are organized using distance, office information, patient reviews, accreditation status, and availability signals. Paid members carry their tier badge; other offices show their listing status. Featured placement is a Platinum Elite benefit and is always labeled.</div></div>';
+}
+
+/* ===== PATIENT: COVERAGE ===== */
+function vCoverage_helpers_anchor(){}
+function activationExampleHTML(){
+  return '<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">What a plan looks like once active</div>'
+   +'<div class="muted" style="font-size:13px;line-height:1.6;margin-bottom:12px">Coverage and timing depend on the plan. Here is an example for a plan like Guardian Premier 2.0, so you know what to expect before you pick one.</div>'
+   +'<div class="lrow"><div class="lk">&#129463;</div><div class="lt"><b>Cleanings and exams</b><span>Covered from day one</span></div><div class="amt" style="color:var(--mint-deep)">100%</div></div>'
+   +'<div class="lrow"><div class="lk">&#129701;</div><div class="lt"><b>Basic work, like fillings</b><span>Covered from day one</span></div><div class="amt" style="color:var(--mint-deep)">85%</div></div>'
+   +'<div class="lrow"><div class="lk">&#128081;</div><div class="lt"><b>Major work, like crowns</b><span>After a 12 month waiting period</span></div><div class="amt">&#9201;</div></div>'
+   +'<div class="lrow"><div class="lk">&#10024;</div><div class="lt"><b>Whitening</b><span>After a 6 month waiting period</span></div><div class="amt">&#9201;</div></div>'
+   +'<div style="background:var(--sand);border-radius:12px;padding:11px 14px;font-size:12px;color:var(--slate);margin-top:12px;line-height:1.5">Other plans differ. Some activate fast with no waiting on preventive care, like UHC Primary Dental. Pick the one that fits when you need care.</div></div>';
+}
+function multiPlanNoteHTML(){
+  return '<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">You have more than one plan</div>'
+   +'<div style="font-size:13.5px;line-height:1.65">One plan is your main coverage and the other helps alongside it. You do not need to do the math: when you book, your dentist sees both and works out how they apply. Before any major treatment, just ask the office to confirm your coverage.</div></div>';
+}
+function planSlots(p){ return INS.plans(p).filter(function(x){return x.status==='active'||x.status==='pending';}).length; }
+function vCoverage(){
+  var p=S.p,st=INS.status(p),pr=INS.primary(p),secs=INS.secondaries(p),pend=INS.pending(p),exp=INS.expired(p),s=INS.summary(p);
+  // order: primary, additional active, pending, then inactive (offered to delete)
+  var allCards=[];
+  if(pr) allCards.push(pr);
+  secs.forEach(function(x){allCards.push(x);});
+  pend.forEach(function(x){allCards.push(x);});
+  exp.forEach(function(x){allCards.push(x);});
+  var slots=planSlots(p), full=slots>=3;
+  var actions='<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Manage your coverage</div>'
+   +'<div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:'+(full?'10px':'0')+'">'
+   +'<button class="btn '+(full?'btn-ghost':'btn-ink')+' btn-sm" data-act="addins">Add insurance</button>'
+   +'<button class="btn btn-ghost btn-sm" data-go="find">Find a dentist</button>'
+   +'</div>'
+   +(full?'<div class="muted" style="font-size:12px;line-height:1.5">You have '+slots+' plans, the most we show at once. To add another, remove one first.</div>':'')
+   +'</div>';
+
+  var body;
+  if(st==='none'){
+    body='<div class="cols2"><div class="stack"><div class="card pad" style="text-align:center;padding:34px 26px"><div style="font-size:40px;margin-bottom:8px">&#129441;</div><div class="serif" style="font-size:21px;margin-bottom:8px">Let us get you covered</div><p class="muted" style="font-size:14px;margin-bottom:20px;max-width:380px;margin-left:auto;margin-right:auto">Pick a PPO plan that fits how you use care, or add a plan you already have. Either way I check that it works with offices near you.</p><button class="btn btn-gold" data-act="shop" style="margin-bottom:10px">Shop PPO plans</button><div><button class="btn btn-ghost btn-sm" data-act="addins">I already have insurance</button></div></div></div>'
+     +'<div class="stack">'+activationExampleHTML()+'</div></div>';
+  } else {
+    body='<div class="card pad" style="margin-bottom:16px"><div class="eyebrow" style="margin-bottom:6px">Coverage summary</div><div class="serif" style="font-size:18px;margin-bottom:4px">'+s.head+'</div><div class="muted" style="font-size:13.5px;line-height:1.55">'+s.sub+'</div></div>'
+     +'<div class="cols2"><div class="stack">'
+     +allCards.map(planCardHTML).join('')
+     +actions
+     +'</div><div class="stack">'
+     +(secs.length?multiPlanNoteHTML():'')
+     +(exp.length?'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">Tidy up</div><div style="font-size:13.5px;line-height:1.6">You have a plan that is no longer active. Removing it keeps your wallet clear and makes room to add a current plan.</div></div>':'')
+     +(!secs.length&&!exp.length?'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">Before treatment</div><div style="font-size:13.5px;line-height:1.6">When you book, we share your coverage with the office so they can check your benefits. For bigger work, ask them to confirm your estimate first.</div></div>':'')
+     +'</div></div>';
+  }
+  return '<div class="page"><div class="phead"><div class="eyebrow">Coverage</div><h1>Your insurance wallet</h1><div class="guide">'+(st==='none'?'Let us get you covered first.':'Your plans and their verification status.')+'</div></div>'+body
+  +'<div class="foot-note">CoverCapy helps you understand and use your coverage. We are not an insurance company or a dental office. Your dentist confirms final coverage before treatment.</div></div>';
+}
+/* ===== PATIENT: COMMUNITY ===== */
+function vCommunity(){
+  var p=S.p,n=DEMO_DATA.network;
+  return '<div class="page"><div class="phead"><div class="eyebrow">Community</div><h1>Your part in the network</h1><div class="guide">Two separate rewards. Capy Crowns for your care. Capy Diamonds for growing the network.</div></div>'
+  +'<div class="cols2"><div class="stack">'
+  +'<div class="contrib"><div class="eyebrow">Network rewards &#183; Capy Diamonds</div><div class="big">&#128142; '+p.diamonds.toLocaleString('en-US')+' <small>/ 10,000</small></div>'
+   +'<div style="font-size:13px;color:rgba(246,240,230,.78)">For growing the network. '+(p.diamonds>=10000?'A $150 gift card to major retailers like Amazon, Best Buy, Apple, and more is ready, delivered through Tango.':(10000-p.diamonds).toLocaleString('en-US')+' to a $150 gift card. Earn by nominating offices, leaving reviews, and bringing dentists in.')+'</div>'
+   +'<div class="bar"><i style="width:'+Math.min(100,p.diamonds/100)+'%"></i></div>'
+   +'<button class="btn btn-mint btn-sm" data-act="rewards" style="margin-top:8px">Open rewards network</button></div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:6px">Capy Crowns &#183; treatments</div>'
+   +'<div style="display:flex;align-items:baseline;gap:8px"><span class="serif" style="font-size:32px">&#128081; '+p.crowns.toLocaleString('en-US')+'</span></div>'
+   +'<div class="muted" style="font-size:13px;margin:6px 0 12px">For your care. Crowns come from getting covered, getting care, and referring friends and family. They redeem for treatments.</div>'
+   +'<div class="lrow"><div class="lk">&#10024;</div><div class="lt"><b>Whitening session</b><span>Unlocks at a participating office when a friend you referred visits it</span></div><div class="amt">2,000 &#128081;</div></div>'
+   +'<div class="lrow"><div class="lk">&#128516;</div><div class="lt"><b>Invisalign promo credit</b><span>Toward a consult and start</span></div><div class="amt">2,500 &#128081;</div></div>'
+   +'<button class="btn btn-gold btn-sm" data-act="rewards" style="margin-top:10px">Open rewards network</button></div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:4px">How you earn Capy Crowns</div><div class="muted" style="font-size:12px;margin-bottom:10px">For your own care and for referring friends and family.</div>'
+   +'<div class="lrow '+(p.crowns>=300?'hit':'')+'"><div class="lk">&#10003;</div><div class="lt"><b>Joined CoverCapy</b><span>Welcome crowns</span></div><div class="amt">+300 &#128081;</div></div>'
+   +'<div class="lrow '+(p.journey.plan?'hit':'')+'"><div class="lk">'+(p.journey.plan?'&#10003;':'&#9679;')+'</div><div class="lt"><b>Activate a PPO plan</b><span>When your first plan is verified</span></div><div class="amt">+500 &#128081;</div></div>'
+   +'<div class="lrow '+(p.journey.visit?'hit':'')+'"><div class="lk">'+(p.journey.visit?'&#10003;':'&#9679;')+'</div><div class="lt"><b>Book a PPO dentist</b><span>When your visit is confirmed</span></div><div class="amt">+500 &#128081;</div></div>'
+   +'<div class="lrow '+(p.journey.refer?'hit':'')+'"><div class="lk">'+(p.journey.refer?'&#10003;':'&#9679;')+'</div><div class="lt"><b>Refer a friend who books</b><span>When your friend visits a participating office</span></div><div class="amt">+700 &#128081;</div></div>'
+   +'<div class="muted" style="font-size:11.5px;margin-top:10px;line-height:1.5">Crowns redeem for treatments at participating offices. Reviews never earn crowns.</div>'
+   +'</div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:4px">How you earn Capy Diamonds</div><div class="muted" style="font-size:12px;margin-bottom:12px">For gift card rewards and for bringing dentists into the network.</div>'
+   +'<div style="background:var(--mint-soft);border-radius:12px;padding:12px 14px;margin-bottom:14px"><div class="eyebrow" style="margin-bottom:6px;color:var(--mint-deep)">The review workflow</div><div style="font-size:12px;color:var(--mint-deep);line-height:1.5;margin-bottom:10px">Visited an office you trust? Leave a review, then nominate them. Your reviews give the office a reason to join, one layer at a time.</div>'
+     +'<div class="lrow" style="padding:7px 0"><div class="lk">&#11088;</div><div class="lt"><b>1. Review on CoverCapy</b><span>The first layer, a score they will want to protect</span></div><div class="amt">+100 &#128142;</div></div>'
+     +'<div class="lrow" style="padding:7px 0"><div class="lk">&#127760;</div><div class="lt"><b>2. Review on Google</b><span>The follow up, where most patients look</span></div><div class="amt">+100 &#128142;</div></div>'
+     +'<div class="lrow" style="padding:7px 0"><div class="lk">&#128221;</div><div class="lt"><b>3. Review on Yelp</b><span>The closer, your final push to bring them in</span></div><div class="amt">+100 &#128142;</div></div>'
+     +'<button class="btn btn-mint btn-sm" data-act="rate" style="margin-top:6px;background:var(--mint);color:var(--ink)">Leave a review and nominate</button></div>'
+   +'<div class="lrow '+(p.noms.length?'hit':'')+'"><div class="lk">'+(p.noms.length?'&#11088;':'&#9679;')+'</div><div class="lt"><b>Nominate an office</b><span>Per office, on submit</span></div><div class="amt">+200 &#128142;</div></div>'
+   +'<div class="lrow"><div class="lk">&#9993;</div><div class="lt"><b>Intro email to the office</b><span>Your first outreach, once</span></div><div class="amt">+100 &#128142;</div></div>'
+   +'<div class="lrow"><div class="lk">&#127968;</div><div class="lt"><b>Nominated office claims their free profile</b><span>Per office, when the claim happens</span></div><div class="amt">+500 &#128142;</div></div>'
+   +'<div class="lrow"><div class="lk">&#128269;</div><div class="lt"><b>Office detail verified</b><span>Email, Yelp page, website we were missing</span></div><div class="amt">+100 &#128142;</div></div>'
+   +'<div class="lrow"><div class="lk">&#128233;</div><div class="lt"><b>Office claims using the email you found</b><span>On top of the claim bounty</span></div><div class="amt">+200 &#128142;</div></div>'
+   +'<div class="lrow"><div class="lk">&#128142;</div><div class="lt"><b>Nominee becomes a paying member</b><span>Per office that joins, a full $150 at major retailers</span></div><div class="amt">+10,000 &#128142;</div></div>'
+   +'<div class="muted" style="font-size:11.5px;margin-top:10px;line-height:1.5">Diamonds redeem for gift cards. They are separate from crowns and are earned by growing the network.</div>'
+   +'</div>'
+  +'</div><div class="stack">'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Your nominations</div>'
+   +(p.noms.length
+     ? p.noms.slice(0,2).map(function(nm){return '<div class="lrow"><div class="lk">'+(nm.stage==='accredited'?'&#127942;':'&#11088;')+'</div><div class="lt"><b>'+esc(nm.name)+'</b><span>'+esc(nm.city)+' &#183; '+nm.stage+'</span></div><div class="amt">'+(nm.stage==='accredited'?'+10,000':'10,000 pending')+' &#128142;</div></div>';}).join('')
+       +'<button class="btn btn-gold btn-sm" data-go="noms" style="margin-top:10px">Open your nominations</button>'
+     : '<div class="muted" style="font-size:13.5px;margin-bottom:12px">No nominations yet. Each office you bring in is its own +10,000 &#128142;, a $150 gift card to major retailers like Amazon, Best Buy, Apple, and more, even if your own dentist is already a member.</div><button class="btn btn-gold btn-sm" data-go="noms">Nominate an office</button>')+'</div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Network growth</div>'
+   +'<div class="stat-grid" style="grid-template-columns:repeat(3,1fr)"><div class="stat"><b>'+n.officesJoined+'</b><span>Offices joined through nominations this year</span></div><div class="stat"><b>'+n.nominationsThisYear+'</b><span>Patient nominations</span></div><div class="stat"><b>'+n.patientsHelped.toLocaleString('en-US')+'</b><span>Patients helped</span></div></div>'
+   +'<div class="muted" style="font-size:12.5px;margin-top:12px">Every nomination starts with a real patient who was treated well. That is what keeps the network honest.</div></div>'
+  +'</div></div>'
+  +'<div class="foot-note">Reviews are always honest and never earn rewards. Crowns redeem for treatments only; Capy Diamonds redeem for gift cards. Accreditation is reviewed on merit and is never sold.</div></div>';
+}
+
+/* ===== PATIENT: NOMINATIONS ===== */
+function nomStagePill(st){
+  if(st==='accredited') return '<span class="okpill" style="font-size:11px;padding:5px 10px">Accredited &#183; +10,000 &#128142; paid</span>';
+  if(st==='interested') return '<span class="pendpill" style="font-size:11px;padding:5px 10px">Interested &#183; 10,000 &#128142; pending</span>';
+  return '<span class="pendpill" style="font-size:11px;padding:5px 10px">Received &#183; 10,000 &#128142; pending</span>';
+}
+function vNoms(){
+  var p=S.p;
+  var STRATS=[
+    ['intro','&#9993;','Intro email','First outreach to the office &#183; +100 &#128142; first send'],
+    ['cc_review','&#11088;','Review on CoverCapy','The initial layer &#183; +100 &#128142; first send'],
+    ['g_review','&#127760;','Review on Google','The follow up &#183; +100 &#128142; first send'],
+    ['y_review','&#128221;','Review on Yelp','The closer, final attempt &#183; +100 &#128142; first send']
+  ];
+  function stratBlock(nm,i){
+    var nd=nm.nudges||{};
+    return '<div class="eyebrow" style="margin:14px 0 4px">Boost this nomination</div>'
+     +STRATS.map(function(st){
+        var done=!!nd[st[0]];
+        return '<div class="lrow '+(done?'hit':'')+'"><div class="lk">'+(done?'&#10003;':st[1])+'</div><div class="lt"><b>'+st[2]+'</b><span>'+st[3]+'</span></div><button class="btn '+(done?'btn-ghost':'btn-gold')+' btn-sm" data-nudge="'+i+'|'+st[0]+'">'+(done?'Send again':'Send')+'</button></div>';
+      }).join('');
+  }
+  return '<div class="page"><button class="btn btn-ghost btn-sm" data-go="community" style="margin-bottom:14px">&#8592; Community</button><div class="phead"><div class="eyebrow">Nominations</div><h1>Offices you are bringing in</h1><div class="guide">Every accredited office started with a patient who vouched for them. Keep yours moving with the ladder below; the office credits one nomination when it joins, so make yours the one they remember.</div></div>'
+  +'<div class="cols2"><div class="stack">'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:12px">Your list</div>'
+  +(p.noms.length? p.noms.map(function(nm,i){
+      return '<div class="card pad" style="box-shadow:none;margin-bottom:12px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center"><div><b style="font-size:15px">'+esc(nm.name)+'</b><div class="muted" style="font-size:12.5px">'+esc(nm.city)+(nm.website?' &#183; '+esc(nm.website):'')+'</div></div>'+nomStagePill(nm.stage)+'</div>'
+       +'<div class="chiprow" style="margin-top:10px">'+(nm.email?'<span class="mini lang">&#9993; '+esc(nm.email)+'</span>':'<button class="mini pend" style="cursor:pointer;border:none" data-addnomemail="'+i+'">&#9993; Add office email &#183; +100 &#128142;</button>')+'</div>'
+       +(nm.stage!=='accredited'?stratBlock(nm,i):'<div class="okpill" style="margin-top:12px">&#127942; This office joined and credited your nomination</div>')+'</div>';
+    }).join('')
+    : '<div class="muted" style="font-size:13.5px">Nothing here yet. Your first nomination is one search away.</div>')
+  +'</div></div><div class="stack">'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:6px">Nominate an office</div>'
+   +'<div class="muted" style="font-size:13px;margin-bottom:12px">Search our directory, or add an office that is not on the list yet. +200 &#128142; on submit.</div>'
+   +'<button class="btn btn-gold btn-full" data-nominate="|">Start a nomination</button></div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">How the credit works</div><div style="font-size:13.5px;line-height:1.65" class="muted">Offices can be nominated by many patients, but they credit exactly one when they join. Every email you send carries your name and asks them to mention you, so your nomination is the one on record. The credited patient receives the 10,000 &#128142;.</div></div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">The claim math</div><div style="font-size:13.5px;line-height:1.65">Every office that claims its free profile after your nomination is <b>+500 &#128142;</b>. Twenty claimed offices is <b>10,000 &#128142;</b>: a $150 gift card, before any office even becomes a paying member. An accredited join is 10,000 on its own.</div></div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">Your toolkit</div><div style="font-size:13.5px;line-height:1.65" class="muted">Emails in your own words. Reviews on CoverCapy, Google, and Yelp that give the office a score to protect. Missing details you fill in so other patients can reach them. Use whatever converts: this network is built by patients on the ground.</div></div>'
+  +'<div class="contrib"><div class="eyebrow">Official CoverCapy Ambassador</div>'
+   +(p.diamonds>=10000
+     ?'<div style="font-size:13.5px;line-height:1.6;color:rgba(246,240,230,.85);margin:6px 0 12px">You have built a real track record: '+p.diamonds.toLocaleString('en-US')+' lifetime diamonds. Ambassadors work with CoverCapy officially: a real agreement, a territory, tools, and pay for growing the network.</div><button class="btn btn-mint btn-sm" data-act="ambassador">Apply to be an Ambassador</button>'
+     :'<div style="font-size:13.5px;line-height:1.6;color:rgba(246,240,230,.85);margin:6px 0 6px">Reach 10,000 lifetime diamonds and you can apply to work with CoverCapy officially: a real agreement, a territory, tools, and pay for growing the network.</div><div class="bar"><i style="width:'+Math.min(100,p.diamonds/100)+'%"></i></div><div style="font-size:11.5px;color:rgba(246,240,230,.6);margin-top:6px">'+p.diamonds.toLocaleString('en-US')+' / 10,000 lifetime &#128142;</div>')
+   +'</div>'
+  +'</div></div>'
+  +'<div class="foot-note">Reviews are always honest and never earn rewards. The diamonds reward the office joining, not the review itself. Our team reviews every nomination; accreditation is earned on merit and is never sold.</div></div>';
+}
+
+/* ===== DENTIST PORTAL ===== */
+function tierLabel(){return {unclaimed:'Unclaimed listing',free:'Claimed free profile',accredited:'Capy Accredited',platinum:'Platinum Elite'}[S.dTier];}
+function tierPillStyle(){return {unclaimed:'background:var(--sand);color:var(--slate)',free:'background:var(--sand);color:var(--slate)',accredited:'background:var(--gold-soft);color:var(--gold-deep)',platinum:'background:var(--plum-soft);color:var(--plum)'}[S.dTier];}
+function paid(){return S.dTier==='accredited'||S.dTier==='platinum';}
+function lock(inner,msg){
+  if(paid()) return inner;
+  return '<div class="lockwrap">'+inner+'<div class="lockover"><div style="font-size:24px">&#128274;</div><b>'+msg+'</b><div class="muted" style="font-size:12.5px;max-width:320px">Capy Accredited and Platinum Elite offices unlock this. Accreditation is reviewed on merit; membership is $369 per month.</div><button class="btn btn-gold btn-sm" data-go="membership">See membership</button></div></div>';
+}
+function vDDash(){
+  var d=DEMO_DATA.demand;
+  var banner = S.dTier==='unclaimed'
+    ? '<div class="card pad" style="border-color:var(--gold);margin-bottom:16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><div style="font-size:24px">&#11088;</div><div style="flex:1;min-width:220px"><b>Donna T. left you a 5 star review on CoverCapy</b><div class="muted" style="font-size:13px">and nominated your office for Capy Accreditation. Claiming your profile is free.</div></div><button class="btn btn-mint btn-sm">Claim free</button></div>'
+    : S.dTier==='free'
+    ? '<div class="card pad" style="border-color:var(--gold);margin-bottom:16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><div style="font-size:24px">&#128274;</div><div style="flex:1;min-width:220px"><b>38 searches near you did not show your office</b><div class="muted" style="font-size:13px">Accredited placement covers a 10 mile radius. See what membership unlocks.</div></div><button class="btn btn-gold btn-sm" data-go="membership">See membership</button></div>'
+    : S.dTier==='accredited'
+    ? '<div class="card pad" style="margin-bottom:16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;background:var(--plum-soft);border-color:var(--plum)"><div style="font-size:24px">&#9670;</div><div style="flex:1;min-width:220px"><b style="color:var(--plum)">Go Platinum: featured in searches up to 18 miles out</b><div class="muted" style="font-size:13px">Your accredited radius is 10 miles. Platinum nearly doubles it and places you first, labeled Featured.</div></div><button class="btn btn-ink btn-sm" data-go="membership">See the upgrade</button></div>'
+    : '';
+  return '<div class="page"><div class="phead"><div class="eyebrow">Capybara Cove Dental &#183; Costa Mesa</div><h1>Your practice at a glance</h1><div class="guide">Demand first. Everything else follows.</div></div>'
+  +banner
+  +'<div class="stat-grid" style="margin-bottom:16px"><div class="stat"><b>'+d.searches+'</b><span>PPO patient searches near you this week</span></div><div class="stat"><b>'+(paid()?d.appearances:Math.round(d.appearances*0.45))+'</b><span>Searches you appeared in</span></div><div class="stat"><b>'+d.requests+'</b><span>Verification requests</span></div><div class="stat"><b>'+d.noms+'</b><span>Patient nominations</span></div></div>'
+  +'<div class="cols2"><div class="stack">'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Needs your attention</div>'
+   +'<button class="rowcard" data-go="patients"><div class="ic">&#128203;</div><div class="meta"><b>Donna Tran is waiting on a reply</b><span>Humana PPO verified &#183; booking Jun 12</span></div><div class="arr">&#8250;</div></button>'
+   +'<button class="rowcard" data-go="dprofile"><div class="ic">&#128247;</div><div class="meta"><b>Add 3 office photos</b><span>Profiles with photos book more visits</span></div><div class="arr">&#8250;</div></button>'
+   +'<button class="rowcard" style="margin-bottom:0" data-go="demand"><div class="ic">&#9650;</div><div class="meta"><b>Review demand this week</b><span>Searches, carriers, and treatments nearby</span></div><div class="arr">&#8250;</div></button></div>'
+  +'<div class="card pad">'+(paid()
+     ?'<div class="eyebrow" style="margin-bottom:8px">Membership return</div><div style="font-size:14px;line-height:1.65">This month CoverCapy sent your office <b>2 bookings</b> and <b>3 verified coverage snapshots</b>, and your coverage widget converted <b>4 uninsured visitors</b> into covered patients. Membership is $369; the demand behind it is what you are paying for.</div>'
+     :'<div class="eyebrow" style="margin-bottom:8px">What members see here</div><div class="muted" style="font-size:14px;line-height:1.65">Accredited offices see bookings attributed, coverage snapshots delivered, widget conversions, and their return on the $369 membership, in plain numbers.</div>')+'</div>'
+  +'</div><div class="stack">'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:4px">Status</div><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span class="tierpill" style="'+tierPillStyle()+'">'+tierLabel()+'</span></div>'
+   +(S.dTier==='accredited'?'<div class="muted" style="font-size:13px;margin-bottom:10px">Visible to patients searching in 8 cities within 10 miles.</div><div style="display:flex;flex-wrap:wrap;gap:6px">'+['Costa Mesa','Newport Beach','Irvine','Fountain Valley','Huntington Beach','Santa Ana','Tustin','Westminster'].map(function(c){return '<span class="mini lang">'+c+'</span>';}).join('')+'</div>'
+    :S.dTier==='platinum'?'<div class="muted" style="font-size:13px">Top placement active across your 10 mile radius, plus featured city slots.</div>'
+    :'<div class="muted" style="font-size:13px">Claimed offices reply to requests. Accredited offices appear across a 10 mile radius with the trust badge.</div>')+'</div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:6px">Patient nominations</div>'
+   +'<div class="muted" style="font-size:12.5px;line-height:1.55;margin-bottom:10px">Three patients nominated your office. Credit the one that moved you to join: they receive 10,000 Capy Diamonds when your membership starts. One credit per office.</div>'
+   +DEMO_DATA.dnoms.map(function(r,i){
+      return '<div class="lrow"><div class="lk">&#11088;</div><div class="lt"><b>'+r.n+'</b><span>'+r.d+' &#183; "'+r.note+'"</span></div>'
+       +(S.dCredit===i?'<span class="okpill" style="font-size:11px;padding:5px 10px">Credited</span>'
+         :S.dCredit!=null?'<span class="mini pend">Not credited</span>'
+         :'<button class="btn btn-ghost btn-sm" data-credit="'+i+'">Credit</button>')+'</div>';
+    }).join('')+'</div>'
+  +'</div></div></div>';
+}
+function vDemand(){
+  var d=DEMO_DATA.demand;
+  function bars(arr,mint){return arr.map(function(r){var m=arr[0][1];return '<div class="bar-row '+(mint?'mint':'')+'"><span>'+r[0]+'</span><div class="bar"><i style="width:'+Math.round(r[1]/m*100)+'%"></i></div><b>'+r[1]+(mint?'%':'')+'</b></div>';}).join('');}
+  return '<div class="page"><div class="phead"><div class="eyebrow">Demand</div><h1>Patients looking for you</h1><div class="guide">Searches, coverage, and treatments near Costa Mesa this week.</div></div>'
+  +'<div class="cols2"><div class="stack">'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:12px">Search demand by city</div>'+bars(d.cities)+'<div class="muted" style="font-size:12px;margin-top:8px">'+(paid()?'You appear in all 5 cities.':'Free profiles appear in Costa Mesa only. 38 searches elsewhere did not show your office.')+'</div></div>'
+  +lock('<div class="card pad"><div class="eyebrow" style="margin-bottom:12px">Coverage demand &#183; carrier mix</div>'+bars(d.carriers,true)+'<div class="muted" style="font-size:12px;margin-top:8px">Humana and Cigna lead near you. Verified snapshots arrive with each booking.</div></div>','Coverage demand is a member view')
+  +'</div><div class="stack">'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:12px">Requested treatments</div>'+bars(d.treatments,true)+'</div>'
+  +lock('<div class="card pad"><div class="eyebrow" style="margin-bottom:12px">Market position</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div class="confbox"><span>Your rating</span><b>'+d.market.you.r+' &#9733; &#183; '+d.market.you.n+' reviews</b></div><div class="confbox"><span>Nearby average</span><b>'+d.market.avg.r+' &#9733; &#183; '+d.market.avg.n+' reviews</b></div></div>'
+    +'<table class="tbl"><thead><tr><th>Nearby office</th><th>Rating</th><th>Status</th></tr></thead><tbody>'
+    +d.market.rivals.map(function(r){return '<tr><td>'+r[0]+'</td><td>'+r[1]+' &#9733;</td><td>'+r[2]+'</td></tr>';}).join('')
+    +'</tbody></table>','Market position is a member view')
+  +'</div></div></div>';
+}
+function vPatients(){
+  return '<div class="page"><div class="phead"><div class="eyebrow">Patients</div><h1>Inbox and eligibility</h1><div class="guide">Patients who booked or asked about your office, with verified benefits.</div></div>'
+  +lock('<div class="card pad"><div class="field" style="max-width:360px"><input id="eligQ" placeholder="Search by patient name or member ID" aria-label="Search patients"></div>'
+  +'<div style="overflow-x:auto"><table class="tbl" id="eligTbl"><thead><tr><th>Patient</th><th>Plan</th><th>Status</th><th>Context</th><th></th></tr></thead><tbody>'
+  +DEMO_DATA.inbox.map(function(r){
+    var planCell='<div><b style="font-weight:600">'+r.plan+'</b> <span class="mini lang" style="font-size:9px;padding:2px 6px">Primary</span></div>'+(r.secondary?'<div style="margin-top:3px"><span style="font-size:12px">'+r.secondary+'</span> <span class="mini pend" style="font-size:9px;padding:2px 6px">Secondary</span></div>':'');
+    var statusCell=(r.status==='verified'?'<span class="okpill" style="font-size:11px;padding:5px 10px">Primary verified</span>':'<span class="pendpill" style="font-size:11px;padding:5px 10px">In progress</span>')+(r.secondary?'<div style="margin-top:4px"><span class="pendpill" style="font-size:10px;padding:3px 8px">Secondary pending</span></div>':'');
+    return '<tr data-q="'+(r.name+' '+r.member).toLowerCase()+'"><td><b>'+r.name+'</b><div class="muted" style="font-size:11.5px">ID '+r.member+'</div></td><td>'+planCell+'</td><td>'+statusCell+'</td><td style="font-size:12.5px">'+r.ctx+'</td><td><button class="btn btn-ghost btn-sm" data-elig="'+r.id+'">'+(r.status==='verified'?'View':'Status')+'</button></td></tr>';
+  }).join('')+'</tbody></table></div>'
+  +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="btn btn-mint btn-sm dreply">We accept this insurance</button><button class="btn btn-ghost btn-sm dreply">Out of network but welcome</button><button class="btn btn-ghost btn-sm dreply">Need more info</button></div></div>',
+  'Coverage snapshots are a member feature')+'</div>';
+}
+function vDProfile(){
+  return '<div class="page"><div class="phead"><div class="eyebrow">Profile</div><h1>How patients see you</h1><div class="guide">Reputation, strength, and the offers on your page.</div></div>'
+  +'<div class="cols2"><div class="stack">'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">Reviews</div>'
+   +'<div style="display:flex;align-items:baseline;gap:10px"><span class="serif" style="font-size:42px">4.8</span><span style="color:var(--gold);font-size:24px">&#9733;</span><span class="muted" style="font-size:13px">'+(paid()?'132 reviews across 4 sources':'96 Google reviews')+'</span></div>'
+   +(paid()?'<div style="font-size:13px;line-height:2;margin-top:8px">Google &#183; 86 &#9733; 4.8<br>Yelp &#183; 21 &#9733; 4.6<br>ZocDoc &#183; 13 &#9733; 4.9<br>CoverCapy &#183; 12 &#9733; 5.0</div>':'<div class="muted" style="font-size:12.5px;margin-top:8px">Blended scores from Google, Yelp, ZocDoc, and CoverCapy unlock with accreditation.</div>')
+   +'<div class="lrow" style="margin-top:8px"><div class="lk">&#11088;</div><div class="lt"><b>"Great experience!"</b><span>Donna T. &#183; verified CoverCapy patient &#183; 5 &#9733;</span></div>'+(paid()?'<button class="btn btn-ghost btn-sm">Reply</button>':'')+'</div></div>'
+  +lock('<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Promotions</div>'
+    +DEMO_DATA.promotions.map(function(p){return '<div class="lrow"><div class="lk">&#128227;</div><div class="lt"><b>'+p.t+'</b><span>'+p.d+'</span></div><span class="okpill" style="font-size:11px;padding:5px 10px">'+p.status+'</span></div>';}).join('')
+    +'<div class="field" style="margin-top:12px"><label>New promotion title</label><input id="promoT" placeholder="Spring cleaning special"></div><button class="btn btn-gold btn-sm" id="promoGo">Launch promotion</button><div class="muted" style="font-size:11.5px;margin-top:8px">Promotions never change ranking or review scores.</div></div>','Promotions are for paying members')
+  +'</div><div class="stack">'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Profile strength</div>'
+   +'<div class="bar-row mint"><span>Photos</span><div class="bar"><i style="width:30%"></i></div><b>1/4</b></div>'
+   +'<div class="bar-row mint"><span>Hours</span><div class="bar"><i style="width:100%"></i></div><b>&#10003;</b></div>'
+   +'<div class="bar-row mint"><span>Languages</span><div class="bar"><i style="width:100%"></i></div><b>&#10003;</b></div>'
+   +'<div class="bar-row mint"><span>Treatments</span><div class="bar"><i style="width:70%"></i></div><b>7/10</b></div>'
+   +'<div class="muted" style="font-size:12.5px;margin-top:6px">Stronger profiles win more of the searches you appear in.</div></div>'
+  +'</div></div></div>';
+}
+function vMembership(){
+  function col(eyebrow,title,items,cta,hot,style){
+    return '<div class="card pad" style="'+(hot?'border-color:var(--gold);':'')+'">'
+    +'<div class="eyebrow" style="margin-bottom:4px;'+(style||'')+'">'+eyebrow+'</div><div class="serif" style="font-size:17px;margin-bottom:10px">'+title+'</div>'
+    +'<div style="font-size:13px;line-height:2.05">'+items.map(function(i){return '&#10003; '+i;}).join('<br>')+'</div>'
+    +'<div style="margin-top:14px">'+cta+'</div></div>';
+  }
+  var cur='<span class="okpill" style="font-size:11px;padding:6px 11px">Current plan</span>';
+  var planCard='';
+  if(S.dTier==='accredited'){
+    planCard='<div class="card pad" style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center">'
+     +'<div><div class="eyebrow" style="margin-bottom:4px">Your plan</div><div class="serif" style="font-size:20px">Capy Accredited &#183; $369 per month</div>'
+     +'<div class="muted" style="font-size:13px;margin-top:4px">Renews Jul 10, 2026 &#183; cancel anytime, easy by design</div></div>'
+     +'<div style="display:flex;gap:9px;flex-wrap:wrap"><button class="btn btn-gold btn-sm" data-act="annual">Switch to annual: save $738</button><button class="btn btn-ghost btn-sm" data-act="managesub">Manage membership</button></div></div>'
+     +'<div style="background:var(--gold-soft);border-radius:12px;padding:12px 15px;margin-top:14px;font-size:13px;color:var(--gold-deep)"><b>Annual prepay: $3,690 per year.</b> Two months free against $4,428 paid monthly. Your price locks for the year.</div></div>'
+     +'<div class="card pad" style="margin-bottom:16px;background:linear-gradient(140deg,#3D2A6B,#5B3E96);border:none;color:var(--paper)">'
+     +'<div class="eyebrow" style="color:#CBB8F2;margin-bottom:6px">Upgrade &#183; Platinum Elite</div>'
+     +'<div class="serif" style="font-size:21px;margin-bottom:8px">Be the featured office, 18 miles out</div>'
+     +'<div style="font-size:13.5px;line-height:1.6;color:rgba(246,240,230,.85);margin-bottom:14px">Platinum Elite places your office as the featured result in patient searches across cities up to 18 miles from the searched location, labeled Featured, above standard results. Accredited visibility reaches 10 miles; Platinum nearly doubles your reach and puts you first.</div>'
+     +'<button class="btn btn-mint btn-sm" data-act="tier3">Talk to us about Platinum</button></div>';
+  } else if(S.dTier==='platinum'){
+    planCard='<div class="card pad" style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center">'
+     +'<div><div class="eyebrow" style="margin-bottom:4px">Your plan</div><div class="serif" style="font-size:20px">Platinum Elite &#183; Annual &#183; $6,990 per year</div>'
+     +'<div class="muted" style="font-size:13px;margin-top:4px">Saving $1,398 with annual prepay &#183; renews Jun 10, 2027 &#183; featured in searches up to 18 miles out</div></div>'
+     +'<button class="btn btn-ghost btn-sm" data-act="managesub">Manage membership</button></div></div>';
+  }
+  return '<div class="page"><div class="phead"><div class="eyebrow">Membership</div><h1>The support behind your office</h1><div class="guide">Know your plan, your price, and your savings at a glance.</div></div>'
+  +planCard
+  +'<div class="cols3">'
+  +col('Tier 1 &#183; free','Claimed profile',['Your profile, hours, photos','Reply to verification requests','Google review score','Patient notes and nominations'],(S.dTier==='free'?cur:(S.dTier==='unclaimed'?'<button class="btn btn-ghost btn-sm">Claim free</button>':'<span class="muted" style="font-size:12px">Included</span>')))
+  +col('Tier 2 &#183; $369 per month','Capy Accredited',['Trust badge and accredited placement','Coverage snapshots before visits','Blended reviews from 4 sources','10 mile city visibility radius','Run promotions','Coverage widget for your website'],(S.dTier==='accredited'?cur:'<button class="btn btn-gold btn-sm" data-act="tier2">Start accreditation review</button>'),true,'color:var(--gold-deep)')
+  +col('Tier 3','Platinum Elite',['Everything in Capy Accredited','Featured office in searches up to 18 miles out','Featured slots on city pages','Concierge introduction priority'],(S.dTier==='platinum'?cur:'<button class="btn btn-ink btn-sm" data-act="tier3">Talk to us about Platinum</button>'),false,'color:var(--plum)')
+  +'</div>'
+  +'<div class="slabel" style="margin-top:10px"><h3>Coverage widget</h3></div>'
+  +lock('<div class="card pad"><div class="cols2"><div><b style="font-size:14.5px">Turn uninsured callers into covered, booked patients</b>'
+   +'<p class="muted" style="font-size:13px;margin:8px 0 12px">When someone lands on your website with Medi-Cal or no PPO coverage, the widget walks them through real plans, activation timing, and booking your office once covered.</p>'
+   +'<div style="background:var(--ink);color:var(--mint);font-family:ui-monospace,Menlo,monospace;font-size:11.5px;line-height:1.6;border-radius:14px;padding:14px;overflow-x:auto;white-space:pre" id="embedCode">&lt;script src="https://app.covercapy.com/widget.js"\n  data-key="'+DEMO_DATA.widgetKey+'"\n  data-office="capybara-cove-dental"&gt;&lt;/script&gt;</div>'
+   +'<div style="display:flex;gap:9px;margin-top:10px"><button class="btn btn-ink btn-sm" id="embedCopy">Copy embed code</button></div></div>'
+   +'<div><b style="font-size:14.5px">This month</b><div class="stat-grid" style="grid-template-columns:repeat(3,1fr);margin-top:10px"><div class="stat"><b>67</b><span>Widget views</span></div><div class="stat"><b>4</b><span>Plans activated</span></div><div class="stat"><b>3</b><span>Bookings attributed</span></div></div></div></div></div>','The coverage widget is a tier 2 exclusive')
+  +'<div class="foot-note">Accreditation is reviewed on merit and is never sold. Membership pays for the support behind your office: verification handling, blended review infrastructure, patient demand, and the coverage widget.</div></div>';
+}
+
+/* ===== router ===== */
+var VIEWS={home:vHome,find:vFind,coverage:vCoverage,community:vCommunity,noms:vNoms,rewards:vRewards,ddash:vDDash,demand:vDemand,patients:vPatients,dprofile:vDProfile,membership:vMembership};
+function route(){
+  var h=(location.hash||'').replace('#/','').split('/');
+  if(!S.role){renderGate();return;}
+  var id=h[1]||(S.role==='patient'?'home':'ddash');
+  if(!VIEWS[id]) id=S.role==='patient'?'home':'ddash';
+  $('view').innerHTML=VIEWS[id]();
+  setActive((id==='noms'||id==='rewards')?'community':id);
+  afterRender(id);
+  var pill=$('dTierPill'); if(pill){pill.textContent=tierLabel(); pill.style.cssText+=';'+tierPillStyle();}
+  var ct=$('crownTop'); if(ct&&S.p) ct.textContent=S.p.crowns.toLocaleString('en-US');
+  var dt=$('diamondTop'); if(dt&&S.p) dt.textContent=S.p.diamonds.toLocaleString('en-US');
+  window.scrollTo(0,0);
+}
+function go(id){location.hash='#/'+S.role+'/'+id;}
+window.addEventListener('hashchange',route);
+
+/* ===== after render wiring ===== */
+function afterRender(id){
+  if(id==='find'){
+    var fq=$('findQ'); if(fq) fq.addEventListener('change',function(){S.find.q=this.value;});
+    var ft=$('findTreat'); if(ft) ft.addEventListener('change',function(){S.find.treatment=this.value;route();});
+    var fp=$('findPPO'); if(fp) fp.addEventListener('change',function(){S.find.ppo=this.value;route();});
+    var fr=$('findRating'); if(fr) fr.addEventListener('change',function(){S.find.minRating=parseFloat(this.value);route();});
+    var fw=$('findWithin'); if(fw) fw.addEventListener('change',function(){S.find.within=+this.value;route();});
+    if(fw){var lbl=$('findWithinLbl'); fw.addEventListener('input',function(){if(lbl)lbl.textContent=this.value+' mi';});}
+    var ml=$('mtList'),mm=$('mtMap'),mw=$('mapwrap'),fl=$('findList');
+    if(ml&&mm){ml.addEventListener('click',function(){mw.classList.remove('show');fl.classList.remove('hidden');ml.className='btn btn-ink btn-sm';mm.className='btn btn-ghost btn-sm';});
+      mm.addEventListener('click',function(){mw.classList.add('show');fl.classList.add('hidden');mm.className='btn btn-ink btn-sm';ml.className='btn btn-ghost btn-sm';});}
+    updateCmpBar();
+  }
+  if(id==='rewards'){
+    var sl=$('rwSlider');
+    if(sl) sl.addEventListener('input',function(){
+      var v=+this.value, bal=S.p.diamonds;
+      var rv=$('rwVal'); if(rv) rv.textContent=v.toLocaleString('en-US');
+      var gg=$('giftGrid'); if(gg) gg.classList.toggle('locked', v<10000||bal<10000);
+      var st=$('rwState'); if(st){
+        st.innerHTML = (bal<10000)
+          ? '<span class="pendpill">'+(10000-bal).toLocaleString('en-US')+' &#128142; to go: claims, verified details, and joins get you there</span>'
+          : (v>=10000 ? '<span class="okpill">The wall is open: pick your card</span>'
+                      : '<span class="pendpill">Slide to 10,000 to open the wall</span>');
+      }
+    });
+  }
+  if(id==='patients'){
+    var q=$('eligQ'); if(q) q.addEventListener('input',function(){
+      var v=this.value.toLowerCase().trim();
+      document.querySelectorAll('#eligTbl tbody tr').forEach(function(tr){tr.style.display=(!v||tr.dataset.q.indexOf(v)>-1)?'':'none';});
+    });
+  }
+  if(id==='dprofile'){
+    var pg=$('promoGo'); if(pg) pg.addEventListener('click',function(){
+      var t=($('promoT')&&$('promoT').value)||'New promotion';
+      celebrate({em:'&#128227;',title:'Promotion submitted',body:'"'+esc(t)+'" goes live on your profile and the patient offers shelf after a quick review. Promotions never change ranking or review scores.'});
+    });
+  }
+  if(id==='membership'){
+    var ec=$('embedCopy'); if(ec) ec.addEventListener('click',function(){
+      var code=$('embedCode'); if(code&&navigator.clipboard) navigator.clipboard.writeText(code.textContent);
+      this.textContent='Copied';
+    });
+  }
+}
+
+/* ===== sheets ===== */
+function openSheet(html){$('sheetIn').innerHTML='<div class="grab"></div>'+html;$('sheet').classList.add('open');}
+function closeSheet(){$('sheet').classList.remove('open');}
+$('sheet').addEventListener('click',function(e){if(e.target===this)closeSheet();});
+function celebrate(o){
+  openSheet('<div class="celebrate"><div class="em">'+(o.em||'&#127881;')+'</div><h3 class="serif">'+o.title+'</h3>'
+   +(o.chip?'<div class="chip">'+o.chip+'</div>':'')+'<p>'+o.body+'</p>'
+   +'<button class="btn '+(o.cta?'btn-ink':'btn-cream')+' btn-full" id="celBtn">'+(o.cta||'Done')+'</button></div>');
+  $('celBtn').addEventListener('click',function(){closeSheet();if(o.then)o.then();});
+}
+function bump(n,kind){if(kind==='d'){S.p.diamonds+=n;var dt=$('diamondTop');if(dt)dt.textContent=S.p.diamonds.toLocaleString('en-US');}else{S.p.crowns+=n;var ct=$('crownTop');if(ct)ct.textContent=S.p.crowns.toLocaleString('en-US');}}
+
+function eligSheet(e){
+  openSheet('<h3 class="serif">'+e.title+'</h3><div class="ssub">'+e.sub+'</div>'
+   +e.groups.map(function(g){return '<div class="elig-grp">'+g[0]+'</div>'+g[1].map(function(l){return '<div class="elig-line"><span>'+l[0]+'</span><b>'+l[1]+'</b></div>';}).join('');}).join('')
+   +'<button class="btn btn-cream btn-full" style="margin-top:16px" data-close="1">Close</button>');
+}
+function shopSheet(){
+  openSheet('<h3 class="serif">Plans that fit how you use care</h3><div class="ssub">Six real plans, each here for a reason. Different plans fit different needs.</div>'
+   +DEMO_DATA.plans.map(function(p,i){return '<div class="plan '+(p.rec?'rec':'')+'"><div><div class="tagline">'+p.tag+'</div><div class="pn">'+p.n+'</div><div class="pd">'+p.p+' &#183; '+p.d+'</div></div><button class="btn '+(p.rec?'btn-gold':'btn-ghost')+' btn-sm" data-plan="'+i+'">Choose</button></div>';}).join('')
+   +'<div class="muted" style="font-size:12px;text-align:center;margin-top:6px">Enroll in about ten minutes. Your member ID arrives by email, usually the same day.</div>');
+}
+function memberIdSheet(){
+  var carrier=S.chosenPlan?S.chosenPlan.c:'UnitedHealthcare';
+  var amt=S.p.journey.plan?0:500;
+  openSheet('<h3 class="serif">Add your member ID</h3><div class="ssub">'+(amt?('+'+amt+' crowns when our team verifies it'+(S.ownPlan?': a plan through work or a spouse counts too.':' with your new CoverCapy plan.')):'We verify it with the carrier, usually the same day. Crowns are earned on your first plan only.')+'</div>'
+   +'<div class="field"><label>Carrier</label><input id="miC" value="'+carrier+'"></div>'
+   +'<div class="field"><label>Member ID</label><input placeholder="0000 0000 0000"></div>'
+   +'<div class="field"><label>Date of birth</label><input placeholder="MM / DD / YYYY"></div>'
+   +'<button class="btn btn-ink btn-full" id="miGo">Submit for verification</button>'
+   +'<div class="muted" style="font-size:12px;text-align:center;margin-top:12px">Our team checks your coverage with the carrier by hand, usually same day.</div>');
+  $('miGo').addEventListener('click',function(){
+    var c=$('miC').value;
+    var cp=S.chosenPlan;
+    var pl={id:'shop'+Date.now(),carrier:cp?cp.c:c,name:cp?cp.n:c,type:'PPO',role:INS.primary(S.p)?'secondary':'primary',status:'pending',source:S.ownPlan?'employer':'individual',cc:!S.ownPlan,
+      member:'',effective:null,renewal:null,premium:cp?parseInt((cp.p.match(/\d+/)||[0])[0],10):0,
+      deductible:50,deductibleMet:false,annualMax:1500,remaining:1500,prev:100,basic:80,major:50,
+      waiting:cp&&cp.n.indexOf('Guardian')>-1?'Activates 1st of next month':'None',network:'Confirming',dependents:[],requestedAt:fmtToday(),verifiedAt:null,verifySource:null};
+    S.p.plans.push(pl); route();
+    celebrate({em:'&#129695;',title:'Member ID received',chip:amt?'&#128081; +'+amt+' on verification':'In review, usually same day',
+      body:'Our team is checking your coverage with '+esc(c)+'. Usually same day. Your benefits appear the moment it clears.',cta:'Got it',
+      then:function(){setTimeout(function(){
+        pl.status='active'; pl.verifiedAt=fmtToday(); pl.verifySource='CoverCapy team';
+        pl.remaining=pl.annualMax; if(pl.role==='primary') S.p.journey.plan=1;
+        if(amt) bump(amt,'c'); route();
+        celebrate({em:'&#128737;&#65039;',title:'Coverage verified',chip:amt?'&#128081; +'+amt+' Capy Crowns':'Added to your wallet',
+          body:'Verified by our team. Your benefits are ready, and offices you book can see them before you arrive.'+(amt?'':' Crowns are earned on your first plan only.'),cta:'Find a dentist',then:function(){go('find');}});
+      },2100);}});
+  });
+}
+function bookSheet(){
+  openSheet('<h3 class="serif">Book Capybara Cove Dental</h3><div class="ssub">+500 &#128081; when your visit is confirmed. Half lands when you book, half when you go.</div>'
+   +'<div class="card pad" style="box-shadow:none;margin-bottom:14px"><div style="font-size:13.5px;line-height:1.55">We share your coverage with the office so they see your benefits before you arrive. Pick a time.</div></div>'
+   +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">'+['Thu 9:00','Thu 2:30','Fri 11:00','Mon 4:00'].map(function(t){return '<button class="btn btn-ghost btn-sm slot">'+t+'</button>';}).join('')+'</div>');
+  document.querySelectorAll('.slot').forEach(function(b){b.addEventListener('click',function(){
+    S.p.journey.visit=1;route();closeSheet();
+    celebrate({em:'&#128197;',title:'Booking request sent',chip:'&#128081; +250 pending &#183; +250 at your visit',
+      body:'We shared your coverage snapshot with Capybara Cove Dental. Your +500 lands across booking and your confirmed visit, and you can earn it again after each completed visit.'});
+  });});
+}
+function rateSheet(){
+  openSheet('<h3 class="serif">How was Capybara Cove Dental?</h3><div class="ssub">Honest ratings keep scores trustworthy. Reviews never earn crowns.</div>'
+   +'<div style="display:flex;gap:10px;justify-content:center;margin:8px 0 18px" id="stars">'+[1,2,3,4,5].map(function(n){return '<button data-n="'+n+'" style="font-size:36px;color:#DCD2BE">&#9733;</button>';}).join('')+'</div><div id="rAfter"></div>');
+  var stars=document.querySelectorAll('#stars button');
+  stars.forEach(function(s){s.addEventListener('click',function(){
+    var n=+s.dataset.n;
+    stars.forEach(function(x){x.style.color=(+x.dataset.n<=n)?'var(--gold)':'#DCD2BE';});
+    S.p.journey.review=1;
+    if(n===5){
+      $('rAfter').innerHTML='<div class="okpill" style="margin-bottom:12px">&#11088; 5 stars saved</div><p class="muted" style="font-size:13.5px;margin-bottom:14px">A 5 star review is the perfect moment to vouch for this office and bring them into the network. It takes a minute, and rewards follow when an office you vouched for joins.</p><button class="btn btn-gold btn-full" id="rNom">Nominate this office</button>';
+      $('rNom').addEventListener('click',function(){closeSheet();nominateSheet('Capybara Cove Dental','Costa Mesa, CA');});
+    } else {
+      $('rAfter').innerHTML='<p class="muted" style="font-size:13.5px;margin-bottom:12px">Thank you. Your honest review helps the next patient.</p><button class="btn btn-cream btn-full" data-close="1">Done</button>';
+    }
+  });});
+}
+function officeEmail(name){
+  var em=null;
+  DEMO_DATA.dentists.forEach(function(d){ if(d.name===name) em=DEMO_DATA.emails[d.id]||null; });
+  return em;
+}
+function nominateSheet(name,city){
+  S.nomPick=null;
+  openSheet('<h3 class="serif">Nominate an office</h3><div class="ssub">Vouch for an office you trust. Our team reviews every nomination on merit, and rewards follow when an office you vouched for joins.</div>'
+   +'<div class="field" style="margin-bottom:10px"><label>Search our directory</label><input id="nomQ" placeholder="Office or dentist name" value="'+esc(name||'')+'"></div>'
+   +'<div id="nomResults"></div>'
+   +'<button class="btn btn-ghost btn-full btn-sm" id="nomManualBtn" style="margin-top:4px">Not on the list? Add it yourself</button>'
+   +'<div id="nomManual" class="hidden" style="margin-top:14px">'
+   +'<div class="field"><label>Office name</label><input id="nmN" placeholder="Dr. Maria Lopez, Smile Bright"></div>'
+   +'<div class="field"><label>City</label><input id="nmC" placeholder="Costa Mesa, CA"></div>'
+   +'<div class="field"><label>Why do you trust them?</label><input placeholder="Honest, gentle, explained everything"></div>'
+   +'</div>'
+   +'<div id="nomEmailWrap" class="hidden" style="margin-top:8px"><div class="field" style="margin-bottom:8px"><label>Office email <span style="font-weight:400;color:var(--slate)">(if you know it)</span></label><input id="nmE" type="email" placeholder="frontdesk@office.com"></div>'
+   +'<div id="nomEmailHint" class="hidden" style="background:var(--gold-soft);color:var(--gold-deep);border-radius:12px;padding:10px 13px;font-size:12px;line-height:1.5;margin-bottom:10px">This office has no email on file. Add the one you find and earn +100 &#128142; when we verify it, plus +200 &#128142; more if they claim using it.</div>'
+   +'<div class="field"><label>Office website <span style="font-weight:400;color:var(--slate)">(optional)</span></label><input id="nmW" placeholder="office.com"></div></div>'
+   +'<button class="btn btn-gold btn-full hidden" id="nmGo" style="margin-top:6px">Submit nomination</button>'
+   +'<div class="muted" style="font-size:12px;text-align:center;margin-top:12px">In the live app this search runs against the CoverCapy directory. Our team reviews every nomination; accreditation is earned on merit and is never sold.</div>');
+  function showForm(forName){
+    $('nomEmailWrap').classList.remove('hidden');
+    $('nmGo').classList.remove('hidden');
+    var known=forName?officeEmail(forName):null;
+    if($('nmE')) $('nmE').value=known||'';
+    $('nomEmailHint').classList.toggle('hidden', !!known);
+  }
+  function results(q){
+    q=(q||'').toLowerCase().trim();
+    var hits=DEMO_DATA.dentists.filter(function(d){
+      return d.tier==='pend' && (!q || (d.name+' '+d.doc+' '+d.city).toLowerCase().indexOf(q)>-1);
+    }).slice(0,4);
+    $('nomResults').innerHTML = hits.length
+      ? hits.map(function(d){var hasEm=officeEmail(d.name);return '<button class="rowcard nomPick" data-nm="'+esc(d.name)+'" data-ct="'+esc(d.city)+', CA"><div class="ic">'+d.av+'</div><div class="meta"><b>'+esc(d.name)+'</b><span>'+esc(d.doc)+' &#183; '+esc(d.city)+' &#183; '+d.tag+'</span></div>'+(hasEm?'':'<span class="mini pend" style="font-size:9px">No email</span>')+'<div class="arr">&#8250;</div></button>';}).join('')
+      : '<div class="muted" style="font-size:12.5px;padding:6px 2px 10px">No directory match'+(q?' for "'+esc(q)+'"':'')+'. Add it yourself below.</div>';
+    document.querySelectorAll('.nomPick').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        S.nomPick={name:btn.dataset.nm,city:btn.dataset.ct};
+        document.querySelectorAll('.nomPick').forEach(function(x){x.style.borderColor='var(--line)';});
+        btn.style.borderColor='var(--mint)';
+        showForm(btn.dataset.nm);
+      });
+    });
+  }
+  function submitNom(nm,ct,em2,site){
+    var em=em2||officeEmail(nm)||null;
+    S.nomTarget={name:nm,city:ct,email:em,website:site||null};
+    S.p.noms.push({name:nm,city:ct,stage:'received',email:em,website:site||null,nudges:{}});
+    S.nomIdx=S.p.noms.length-1; S.nomKind='intro';
+    bump(200,'d'); route();
+    var chip='&#128142; +200 now &#183; +10,000 if accredited = $150 gift card';
+    var line= em
+      ? 'Now let '+esc(nm)+' hear it from you. We can email them at '+esc(em)+' on your behalf.'
+      : 'Now let '+esc(nm)+' hear it from you. We will look up their email, or you can add one to earn extra diamonds if they claim using it.';
+    celebrate({em:'&#127775;',title:'Nomination submitted',chip:chip,body:line,
+      cta:'&#9993; Email the office',then:function(){noteSheet('intro');}});
+  }
+  $('nomQ').addEventListener('input',function(){results(this.value); if(S.nomPick){S.nomPick=null; $('nomEmailWrap').classList.add('hidden'); $('nmGo').classList.add('hidden');}});
+  $('nomManualBtn').addEventListener('click',function(){
+    $('nomManual').classList.remove('hidden');
+    S.nomPick=null;
+    showForm(null);
+    if($('nmE')) $('nmE').value='';
+    $('nomEmailHint').classList.remove('hidden');
+  });
+  $('nmGo').addEventListener('click',function(){
+    var em2=($('nmE')&&$('nmE').value.trim())||null, site=($('nmW')&&$('nmW').value.trim())||null;
+    if(S.nomPick){ submitNom(S.nomPick.name,S.nomPick.city,em2,site); return; }
+    var nm=($('nmN')&&$('nmN').value.trim())||'this office', ct=($('nmC')&&$('nmC').value.trim())||'';
+    submitNom(nm,ct,em2,site);
+  });
+  results(name||'');
+}
+function addNomEmailSheet(nmrow){
+  openSheet('<h3 class="serif">Add email for '+esc(nmrow.name)+'</h3><div class="ssub">We have no email for this office yet. Add the one you find so we can reach out, and earn diamonds if it leads to a claim.</div>'
+   +'<div style="background:var(--gold-soft);color:var(--gold-deep);border-radius:14px;padding:13px 15px;font-size:12.5px;line-height:1.55;margin-bottom:14px"><b>How you earn:</b> +100 &#128142; when our team verifies it. If '+esc(nmrow.name)+' later claims using this address, +200 &#128142; more because you found it.</div>'
+   +'<div class="field"><label>Office email you found</label><input id="aneEmail" type="email" placeholder="frontdesk@office.com"></div>'
+   +'<div class="field"><label>Where did you find it? <span style="font-weight:400;color:var(--slate)">(optional)</span></label><input id="aneSrc" placeholder="Their website, Google listing, front desk"></div>'
+   +'<button class="btn btn-gold btn-full" id="aneGo">Submit email</button>'
+   +'<div class="muted" style="font-size:11.5px;text-align:center;margin-top:12px">Our team verifies the email before anything is sent. No reward for incomplete or wrong details.</div>');
+  $('aneGo').addEventListener('click',function(){
+    var em=($('aneEmail').value||'').trim();
+    if(em.length<5||em.indexOf('@')<1){$('aneEmail').style.borderColor='var(--gold)';return;}
+    nmrow.email=em; route();
+    closeSheet();
+    celebrate({em:'&#128233;',title:'Email submitted',chip:'&#128142; +100 on verification',
+      body:'Thank you. Once verified, we can email '+esc(nmrow.name)+' on your behalf. If they claim using this address, you earn another 200 diamonds for finding it.'});
+  });
+}
+function noteSheet(kind){
+  kind=kind||S.nomKind||'intro';
+  var t=S.nomTarget||{}, office=esc(t.name||'this office');
+  var carrier=esc((S.p&&S.p.carrier)||'my PPO');
+  var first=esc(S.p?S.p.first:'A CoverCapy patient');
+  var full=esc(S.p?S.p.name:'A CoverCapy patient');
+  var credit='<br><br>One more thing: when you join, please let CoverCapy know that <b>'+full+'</b> sent you, so my nomination is the one credited.';
+  var T;
+  if(kind==='cc_review'){
+    T={review:{label:'Review follow up',html:'Hi <b>'+office+'</b> team,<br><br>I just left your office a <b>5 star review on CoverCapy</b>. You earned it, and I want other patients to find you the way I did.<br><br>I also nominated you for Capy Accreditation. Joining the network puts that review to work and makes booking easier for patients like me with verified <b>'+carrier+'</b> coverage.'+credit+'<br><br><b>'+first+'</b>'},
+       own:{label:'Write my own',html:'Hi <b>'+office+'</b> team,<br><br><b>Tell them about the review you just left on CoverCapy and why they should join.</b>'+credit+'<br><br><b>'+first+'</b>'}};
+  } else if(kind==='g_review'){
+    T={review:{label:'Review follow up',html:'Hi <b>'+office+'</b> team,<br><br>I just left you a <b>review on Google</b> about my experience. Patients check those, and yours should reflect how good you are.<br><br>I have also nominated your office for Capy Accreditation on CoverCapy, where my <b>'+carrier+'</b> coverage is verified. Joining makes it easier for patients like me to find and book you.'+credit+'<br><br><b>'+first+'</b>'},
+       own:{label:'Write my own',html:'Hi <b>'+office+'</b> team,<br><br><b>Tell them about your Google review and why you nominated them.</b>'+credit+'<br><br><b>'+first+'</b>'}};
+  } else if(kind==='y_review'){
+    T={review:{label:'Review follow up',html:'Hi <b>'+office+'</b> team,<br><br>I just left you a <b>review on Yelp</b> so more people hear what my visit was like.<br><br>I have also nominated your office for Capy Accreditation on CoverCapy, where my <b>'+carrier+'</b> coverage is verified. I would love to see you in the network.'+credit+'<br><br><b>'+first+'</b>'},
+       own:{label:'Write my own',html:'Hi <b>'+office+'</b> team,<br><br><b>Tell them about your Yelp review and why you nominated them.</b>'+credit+'<br><br><b>'+first+'</b>'}};
+  } else {
+    T={research:{label:'Did my research',html:'Hi <b>'+office+'</b> team,<br><br>I found your office on CoverCapy and did my research, and I would like to come in as a patient with my verified <b>'+carrier+'</b> coverage.<br><br>I also nominated your office for Capy Accreditation. Joining the network makes booking and benefits easier for patients like me, and claiming your profile is free.'+credit+'<br><br>Hope to see you soon.<br><br><b>'+first+'</b>'},
+       direct:{label:'Short and direct',html:'Hi <b>'+office+'</b>,<br><br>I am a patient with verified <b>'+carrier+'</b> coverage and I want to book with your office. I nominated you for Capy Accreditation on CoverCapy. Claiming your profile is free and makes booking easier for both of us.'+credit+'<br><br><b>'+first+'</b>'},
+       loyal:{label:'Loyal patient',html:'Hi <b>'+office+'</b> team,<br><br>You have taken great care of me, so I nominated your office for Capy Accreditation on CoverCapy. My <b>'+carrier+'</b> coverage is verified there, which makes my visits easier, and joining helps more patients like me find you.'+credit+'<br><br>Thank you for everything,<br><b>'+first+'</b>'},
+       own:{label:'Write my own',html:'Hi <b>'+office+'</b> team,<br><br><b>Write your own message here. Say what you appreciated and why you nominated them.</b>'+credit+'<br><br><b>'+first+'</b>'}};
+  }
+  var mode='cc', tkey=Object.keys(T)[0];
+  openSheet('<h3 class="serif">Email '+office+'</h3>'
+   +'<div class="ssub" id="noteHint"></div>'
+   +'<div class="chips" id="noteTpls" style="margin-bottom:10px"></div>'
+   +'<div class="note-box" id="noteBody" spellcheck="false"></div>'
+   +'<div class="chips" id="noteModes" style="margin:14px 0 10px">'
+     +'<button class="chip on" data-mode="cc">&#129441; CoverCapy sends it</button>'
+     +'<button class="chip" data-mode="me">I will send it myself</button></div>'
+   +'<div id="noteActs"></div>'
+   +'<div class="muted" style="font-size:11.5px;text-align:center;margin-top:12px" id="noteFoot"></div>');
+  function plain(){
+    var div=$('noteBody');
+    var txt=div.innerText!==undefined?div.innerText:div.textContent;
+    return (txt||'').replace(/\u00a0/g,' ');
+  }
+  function markDone(){
+    if(S.nomIdx!=null&&S.p.noms[S.nomIdx]){
+      var nd=S.p.noms[S.nomIdx].nudges=S.p.noms[S.nomIdx].nudges||{};
+      if(!nd[kind]){nd[kind]=1;bump(100,'d');}
+    }
+  }
+  function paintLock(){
+    var nb=$('noteBody');
+    if(mode==='cc'){
+      nb.setAttribute('contenteditable','false');
+      nb.style.borderLeft='3px solid var(--gold)';
+      $('noteHint').innerHTML=(t.email?'To <b>'+esc(t.email)+'</b>. ':'We look up the office email for you. ')+'CoverCapy sends this template exactly as written: pick one, no edits.';
+    } else {
+      nb.setAttribute('contenteditable','true');
+      nb.style.borderLeft='';
+      $('noteHint').innerHTML=(t.email?'To <b>'+esc(t.email)+'</b>. ':'')+'This draft is yours: the bold parts are the best places to make it personal.';
+    }
+  }
+  function paintTpls(){
+    $('noteTpls').innerHTML=Object.keys(T).map(function(k){
+      return '<button class="chip '+(k===tkey?'on':'')+'" data-tpl="'+k+'">'+T[k].label+'</button>';
+    }).join('');
+    document.querySelectorAll('[data-tpl]').forEach(function(c){c.addEventListener('click',function(){
+      tkey=c.dataset.tpl; $('noteBody').innerHTML=T[tkey].html; paintTpls();
+    });});
+  }
+  function paintActs(){
+    if(mode==='cc'){
+      $('noteActs').innerHTML='<button class="btn btn-gold btn-full" id="noteSend">&#129441; Have CoverCapy send it</button>';
+      $('noteFoot').innerHTML='The office receives the template with their nomination notice, and the send is logged on your nomination.';
+      $('noteSend').addEventListener('click',function(){markDone();closeSheet();route();
+        celebrate({em:'&#128238;',title:'Sent on your behalf',body:'We emailed '+office+(t.email?' at '+esc(t.email):'')+' with your note and their nomination notice. When they join and mention your name, the 10,000 &#128142; credit is yours.'});});
+    } else {
+      $('noteActs').innerHTML='<div style="display:flex;gap:10px"><button class="btn btn-ink btn-full" id="noteCopy">Copy draft</button><button class="btn btn-ghost btn-full" id="noteMail">Open mail app</button></div>';
+      $('noteFoot').innerHTML='Your edits travel with you. Sending it yourself lands even harder: offices listen to their own patients.';
+      $('noteCopy').addEventListener('click',function(){if(navigator.clipboard)navigator.clipboard.writeText(plain());this.textContent='Copied';markDone();route();});
+      $('noteMail').addEventListener('click',function(){
+        markDone();
+        var href='mailto:'+(t.email||'')+'?subject='+encodeURIComponent('A patient nomination for '+(t.name||'your office')+' on CoverCapy')+'&body='+encodeURIComponent(plain());
+        window.location.href=href;
+      });
+    }
+  }
+  $('noteBody').innerHTML=T[tkey].html;
+  paintTpls(); paintLock(); paintActs();
+  document.querySelectorAll('[data-mode]').forEach(function(c){c.addEventListener('click',function(){
+    mode=c.dataset.mode;
+    document.querySelectorAll('[data-mode]').forEach(function(x){x.classList.toggle('on',x===c);});
+    $('noteBody').innerHTML=T[tkey].html;
+    paintLock(); paintActs();
+  });});
+}
+function dentByName(name){var d=null;DEMO_DATA.dentists.forEach(function(x){if(x.name===name)d=x;});return d;}
+function provideEmailSheet(d){
+  openSheet('<h3 class="serif">Help us reach '+esc(d.name)+'</h3><div class="ssub">We do not have an email for this office yet, so we cannot send a verification request. Add the one you found and we can reach out, and you help the network.</div>'
+   +'<div style="background:var(--gold-soft);color:var(--gold-deep);border-radius:14px;padding:13px 15px;font-size:12.5px;line-height:1.55;margin-bottom:14px"><b>How you earn:</b> +100 &#128142; when our team verifies the email. If this office later claims its profile, +500 &#128142; for your nomination and +200 &#128142; more because the address you found is the one they used.</div>'
+   +'<div class="field"><label>Office email you found</label><input id="peEmail" type="email" placeholder="frontdesk@office.com"></div>'
+   +'<div class="field"><label>Where did you find it? <span style="font-weight:400;color:var(--slate)">(optional)</span></label><input id="peSrc" placeholder="Their website, Google listing, front desk"></div>'
+   +'<button class="btn btn-gold btn-full" id="peGo">Submit email and request verification</button>'
+   +'<div class="muted" style="font-size:11.5px;text-align:center;margin-top:12px">Our team confirms the office and the email before anything is sent. No reward for incomplete or wrong details.</div>');
+  $('peGo').addEventListener('click',function(){
+    var em=($('peEmail').value||'').trim();
+    if(em.length<5||em.indexOf('@')<1){$('peEmail').style.borderColor='var(--gold)';return;}
+    if(d.missing){var ix=d.missing.indexOf('email');if(ix>-1)d.missing.splice(ix,1);}
+    d.hasEmail=true; d.providedEmail=em;
+    closeSheet();
+    celebrate({em:'&#128233;',title:'Email submitted',chip:'&#128142; +100 on verification',
+      body:'Thank you. Once our team verifies it, we can send '+esc(d.name)+' a verification request, and your 100 diamonds land. If they claim their profile using this address, you earn another 700 in total for the nomination and the email you found.'});
+  });
+}
+function verifySheet(office){
+  var d=dentByName(office);
+  if(d && d.hasEmail===false){ provideEmailSheet(d); return; }
+  var pr=INS.primary(S.p), sec=INS.secondaries(S.p)[0], covered=!!pr;
+  openSheet('<h3 class="serif">Check '+esc(office)+'</h3><div class="ssub">We ask the office to confirm they work with your plan and send their answer here.</div>'
+   +(covered?'<div class="okpill" style="margin-bottom:10px">'+pr.carrier+' primary &#183; verified</div>'+(sec?'<div class="pendpill" style="margin-bottom:14px">'+sec.carrier+' secondary &#183; office confirms</div>':''):'<div class="pendpill" style="margin-bottom:14px">Add coverage first and we attach your benefits</div>')
+   +'<button class="btn btn-ink btn-full" id="vGo">'+(covered?'Send verification request':'Get covered first')+'</button>');
+  $('vGo').addEventListener('click',function(){
+    closeSheet();
+    if(!covered){go('coverage');return;}
+    celebrate({em:'&#128172;',title:'Request sent',body:'We asked '+esc(office)+' to confirm they work with your '+pr.carrier+' PPO'+(sec?' and your '+sec.carrier+' secondary, including how they coordinate':'')+'. You will hear back here and by email.'});
+  });
+}
+function annualSheet(){
+  celebrate({em:'&#128197;',title:'Annual plan selected',body:'Capy Accredited, $3,690 for the year: two months free against monthly billing, your price locked through Jun 10, 2027. In the live app this updates your subscription and prorates today.'});
+}
+function manageSheet(){
+  openSheet('<h3 class="serif">Manage membership</h3><div class="ssub">Capy Accredited &#183; $369 per month &#183; renews Jul 10, 2026</div>'
+   +'<button class="rowcard" data-act="annual"><div class="ic">&#128197;</div><div class="meta"><b>Switch to annual</b><span>$3,690 per year, two months free, price locked</span></div><div class="arr">&#8250;</div></button>'
+   +'<button class="rowcard" id="mPause"><div class="ic">&#9208;</div><div class="meta"><b>Pause for up to 2 months</b><span>Billing stops, your profile stays claimed</span></div><div class="arr">&#8250;</div></button>'
+   +'<button class="rowcard" id="mCancel"><div class="ic">&#128682;</div><div class="meta"><b>Cancel membership</b><span>One click, runs to the end of your period</span></div><div class="arr">&#8250;</div></button>'
+   +'<div class="muted" style="font-size:11.5px;text-align:center;margin-top:10px">Cancel anytime. We keep it as easy as joining.</div>');
+  $('mPause').addEventListener('click',function(){closeSheet();
+    celebrate({em:'&#9208;',title:'Membership paused',body:'Billing stops today and resumes Aug 10, 2026. Your profile stays claimed and your reviews keep collecting. Resume earlier anytime.'});});
+  $('mCancel').addEventListener('click',function(){closeSheet();cancelSheet();});
+}
+function cancelSheet(){
+  openSheet('<h3 class="serif">Cancel membership</h3><div class="ssub">No hoops. Tell us why if you like, then one click below.</div>'
+   +'<div class="chips" id="cReasons" style="margin-bottom:14px">'
+    +['Too expensive','Not enough patients yet','Closing or selling','Other'].map(function(r){return '<button class="chip" data-creason="'+r+'">'+r+'</button>';}).join('')+'</div>'
+   +'<div class="card pad" style="box-shadow:none;margin-bottom:14px"><div style="font-size:13px;line-height:1.6" class="muted">Before you go: pausing keeps your profile, reviews, and accreditation while billing stops. Annual prepay drops the price by $738 a year.</div>'
+   +'<div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:10px"><button class="btn btn-ghost btn-sm" id="cPause">Pause instead</button><button class="btn btn-ghost btn-sm" data-act="annual">Switch to annual</button></div></div>'
+   +'<button class="btn btn-ink btn-full" id="cGo">Confirm cancellation</button>');
+  document.querySelectorAll('[data-creason]').forEach(function(c){c.addEventListener('click',function(){
+    document.querySelectorAll('[data-creason]').forEach(function(x){x.classList.toggle('on',x===c);});});});
+  $('cPause').addEventListener('click',function(){closeSheet();
+    celebrate({em:'&#9208;',title:'Membership paused',body:'Billing stops today and resumes Aug 10, 2026. Your profile stays claimed. Resume earlier anytime.'});});
+  $('cGo').addEventListener('click',function(){closeSheet();
+    celebrate({em:'&#10003;',title:'Membership canceled',body:'Your plan will not renew. Everything stays active through Jul 10, 2026, then your profile returns to a free claimed listing. Your reviews and accreditation history stay on file, and rejoining takes one click.'});});
+}
+function refLink(office){
+  var base='covercapy.com/r/'+(S.p?S.p.first.toLowerCase():'you');
+  return office?base+'?office='+office.id:base;
+}
+function participatingOffices(){
+  return DEMO_DATA.dentists.filter(function(d){return d.tier!=='pend';});
+}
+function referSheet(){
+  var link=refLink(null);
+  openSheet('<h3 class="serif">Refer a friend or family</h3><div class="ssub">+700 &#128081; pending for you. It pays when your friend visits a participating accredited office as a new patient with verified PPO coverage.</div>'
+   +'<div class="card pad" style="box-shadow:none;background:var(--mint-soft);margin-bottom:16px"><div style="font-size:13px;line-height:1.6;color:var(--mint-deep)"><b>Refer to an office, unlock a reward there.</b> When a friend you referred visits a participating office, you earn 700 crowns, and your 2,000 crown whitening session unlocks at that same office. Send them to where you want your whitening.</div></div>'
+   +'<div class="eyebrow" style="margin-bottom:10px">Choose how to refer</div>'
+   +'<button class="rowcard" id="refToOffice"><div class="ic">&#129701;</div><div class="meta"><b>Refer to a specific office</b><span>Pick a participating office and send them there</span></div><div class="arr">&#8250;</div></button>'
+   +'<button class="rowcard" id="refText"><div class="ic">&#128241;</div><div class="meta"><b>Text a friend</b><span>Open a ready to send invite</span></div><div class="arr">&#8250;</div></button>'
+   +'<button class="rowcard" id="refEmail"><div class="ic">&#9993;</div><div class="meta"><b>Email a friend</b><span>Send your invite by email</span></div><div class="arr">&#8250;</div></button>'
+   +'<button class="rowcard" id="refMore"><div class="ic">&#128279;</div><div class="meta"><b>Share or copy your link</b><span>Send it any way you like</span></div><div class="arr">&#8250;</div></button>'
+   +'<div class="note-box" style="text-align:center;font-size:14px;font-weight:600;margin-top:14px">'+esc(link)+'</div>'
+   +'<button class="btn btn-ink btn-full" style="margin-top:10px" id="refCopy">Copy your link</button>'
+   +'<div class="muted" style="font-size:12px;text-align:center;margin-top:12px">Crowns reward real visits, not signups. Treatment rewards are funded by the office that gained your friend, so they redeem at the office your referral supported.</div>');
+  function markReferred(){S.p.journey.refer=1;}
+  $('refToOffice').addEventListener('click',function(){closeSheet();referOfficePickSheet();});
+  $('refText').addEventListener('click',function(){markReferred();shareVia('sms',null);});
+  $('refEmail').addEventListener('click',function(){markReferred();shareVia('email',null);});
+  $('refMore').addEventListener('click',function(){markReferred();shareVia('native',null);});
+  $('refCopy').addEventListener('click',function(){
+    if(navigator.clipboard)navigator.clipboard.writeText('https://'+link);
+    this.textContent='Copied';markReferred();
+    setTimeout(function(){closeSheet();route();},600);
+  });
+}
+function referOfficePickSheet(){
+  var offices=participatingOffices();
+  openSheet('<h3 class="serif">Refer to an office</h3><div class="ssub">Send your friend to a participating office. When they visit, you earn 700 crowns and unlock your whitening session there.</div>'
+   +offices.map(function(d){return '<button class="rowcard" data-refoffice="'+d.id+'"><div class="ic">'+d.av+'</div><div class="meta"><b>'+esc(d.name)+'</b><span>'+esc(d.city)+' &#183; &#9733; '+d.rating+' &#183; '+d.tag+'</span></div><div class="arr">&#8250;</div></button>';}).join('')
+   +'<div class="muted" style="font-size:11.5px;text-align:center;margin-top:8px">Only participating offices fund rewards, so your whitening unlocks at the office your friend visits.</div>');
+  document.querySelectorAll('[data-refoffice]').forEach(function(b){b.addEventListener('click',function(){
+    var d=null;DEMO_DATA.dentists.forEach(function(x){if(x.id===b.dataset.refoffice)d=x;});
+    closeSheet();shareOfficeSheet(d);
+  });});
+}
+function shareVia(channel,office){
+  var who=office?office.name:'a great dentist';
+  var link='https://'+refLink(office);
+  var msg=(office?('I found '+office.name+' on CoverCapy and thought of you. '):'')+'Join me on CoverCapy and find a PPO dentist: '+link;
+  if(channel==='sms'){location.href='sms:?&body='+encodeURIComponent(msg);}
+  else if(channel==='email'){location.href='mailto:?subject='+encodeURIComponent('A dentist worth checking out')+'&body='+encodeURIComponent(msg);}
+  else if(channel==='native'&&navigator.share){navigator.share({title:'CoverCapy',text:msg,url:link}).catch(function(){});}
+  else if(navigator.clipboard){navigator.clipboard.writeText(link);}
+}
+function shareOfficeSheet(d){
+  if(!d){referSheet();return;}
+  var participating=d.tier!=='pend';
+  var link='https://'+refLink(d);
+  openSheet('<h3 class="serif">Share '+esc(d.name)+'</h3><div class="ssub">'+(participating?'Refer a friend here. When they visit as a new patient with verified PPO coverage, you earn 700 crowns and unlock your 2,000 crown whitening at this office.':'Share this office with a friend. It is not a participating office yet, so referral rewards do not apply, but you can still send it along.')+'</div>'
+   +(participating?'<div class="card pad" style="box-shadow:none;background:var(--mint-soft);margin-bottom:14px"><div style="font-size:12.5px;line-height:1.55;color:var(--mint-deep)"><b>'+esc(d.name)+'</b> &#183; '+esc(d.city)+'<br>&#9733; '+d.rating+' ('+d.reviews+') &#183; '+d.tag+'</div></div>':'')
+   +'<div style="display:flex;gap:9px;flex-wrap:wrap">'
+   +'<button class="btn btn-ink btn-sm" data-sharech="sms|'+d.id+'">Text it</button>'
+   +'<button class="btn btn-ghost btn-sm" data-sharech="email|'+d.id+'">Email it</button>'
+   +'<button class="btn btn-ghost btn-sm" data-sharech="native|'+d.id+'">More</button>'
+   +'<button class="btn btn-ghost btn-sm" id="shareCopy">Copy link</button>'
+   +'</div>'
+   +'<div class="note-box" style="text-align:center;font-size:13px;margin-top:14px">'+esc(refLink(d))+'</div>'
+   +(participating?'<div class="muted" style="font-size:11.5px;text-align:center;margin-top:12px">Your whitening unlocks at the office your friend actually visits. Crowns reward real visits, not signups.</div>':''));
+  if(participating) S.p.journey.refer=1;
+  $('shareCopy').addEventListener('click',function(){if(navigator.clipboard)navigator.clipboard.writeText(link);this.textContent='Copied';});
+}
+var GIFTS=[
+  ['tango_amazon_150','Amazon','#37475A,#131A22'],
+  ['tango_apple_150','Apple','#3A3A3C,#0F0F10'],
+  ['tango_bestbuy_150','Best Buy','#0046BE,#001E5A'],
+  ['tango_target_150','Target','#CC0000,#7E0000'],
+  ['tango_walmart_150','Walmart','#0071CE,#003E78'],
+  ['tango_visa_150','Visa Prepaid','#1A1F71,#3B4CCA'],
+  ['tango_starbucks_150','Starbucks','#006241,#003824'],
+  ['tango_doordash_150','DoorDash','#FF3008,#A81F05'],
+  ['tango_uber_150','Uber','#2B2B2B,#000000'],
+  ['tango_airbnb_150','Airbnb','#FF5A5F,#B33B3F'],
+  ['tango_nike_150','Nike','#202020,#454545'],
+  ['tango_sephora_150','Sephora','#1A1A1A,#4A0E2E'],
+  ['tango_homedepot_150','Home Depot','#F96302,#A84200'],
+  ['tango_lowes_150','Lowe&#39;s','#004990,#002A52'],
+  ['tango_chipotle_150','Chipotle','#A81612,#5E0B09'],
+  ['tango_netflix_150','Netflix','#B1060F,#5C0408']
+];
+var TREATS=[['whitening_session','Whitening session','KYT Dental Services',2000],['invisalign_promo','Invisalign promo credit','Serene Dental Center',2500]];
+function ambassadorSheet(){
+  openSheet('<h3 class="serif">Apply: Official CoverCapy Ambassador</h3><div class="ssub">A real role with a real agreement: territory, tools, and pay for growing the network. Not pay per recruit.</div>'
+   +'<div class="field"><label>Your name</label><input value="'+esc(S.p.name)+'"></div>'
+   +'<div class="field"><label>Your city or territory</label><input placeholder="Costa Mesa and Newport Beach"></div>'
+   +'<div class="field"><label>How have you grown the network so far?</label><input placeholder="Two offices nominated, one joined, twelve details verified"></div>'
+   +'<button class="btn btn-mint btn-full" id="ambGo" style="background:var(--mint);color:var(--ink)">Submit application</button>'
+   +'<div class="muted" style="font-size:11.5px;text-align:center;margin-top:12px">We review applications against your real track record: claims, joins, and verified details attributed to you.</div>');
+  $('ambGo').addEventListener('click',function(){closeSheet();
+    celebrate({em:'&#129441;',title:'Application received',body:'We review your track record and reach out within a week. Ambassador roles come with a written agreement, a defined territory, and pay: official work, done right.'});});
+}
+function vRewards(){
+  var p=S.p, bal=p.diamonds, can=bal>=10000, start=Math.min(bal,10000);
+  return '<div class="page"><button class="btn btn-ghost btn-sm" data-go="community" style="margin-bottom:14px">&#8592; Community</button>'
+  +'<div class="phead"><div class="eyebrow">Rewards network</div><h1>The gift card wall</h1><div class="guide">Every card is $150, delivered through Tango by email. Slide your diamonds to 10,000 and pick any card on the wall.</div></div>'
+  +'<div class="rw-commit"><div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px"><div class="eyebrow" style="color:var(--mint)">Commit your diamonds</div><div class="rw-big">&#128142; <span id="rwVal">'+start.toLocaleString('en-US')+'</span> <small>of '+bal.toLocaleString('en-US')+'</small></div></div>'
+  +'<input type="range" id="rwSlider" min="0" max="'+Math.max(bal,10000)+'" step="100" value="'+start+'" aria-label="Diamonds to commit">'
+  +'<div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(246,240,230,.6)"><span>0</span><span>10,000 unlocks the wall</span><span>'+Math.max(bal,10000).toLocaleString('en-US')+'</span></div>'
+  +'<div style="margin-top:12px" id="rwState">'+(can?'<span class="okpill">The wall is open: pick your card</span>':'<span class="pendpill">'+(10000-bal).toLocaleString('en-US')+' &#128142; to go: claims, verified details, and joins get you there</span>')+'</div></div>'
+  +'<div class="slabel"><h3>$150 gift cards</h3><span class="muted" style="font-size:12px">10,000 &#128142; each &#183; delivered through Tango</span></div>'
+  +'<div class="gift-grid'+(can?'':' locked')+'" id="giftGrid">'+GIFTS.map(function(g){
+     return '<button class="gcard" data-gift="'+g[0]+'|'+g[1].replace(/&#39;/g,"&#39;")+'" style="background:linear-gradient(135deg,'+g[2]+')"><span class="gb">'+g[1]+'</span><div class="gfoot"><span class="gv">$150</span><span class="gd">10,000 &#128142;</span></div></button>';
+   }).join('')+'</div>'
+  +'<div class="slabel"><h3>Treatments at participating offices</h3><span class="muted" style="font-size:12px">&#128081; crowns</span></div>'
+  +'<div class="muted" style="font-size:11.5px;margin:0 0 10px;line-height:1.5">The whitening session unlocks at a participating office once a friend you referred visits it. Refer from any office&#39;s Share button in Find a Dentist.</div>'
+  +TREATS.map(function(t){var ok=p.crowns>=t[3];
+     return '<button class="rowcard" style="'+(ok?'':'opacity:.45')+'" '+(ok?'data-treat="'+t[0]+'|'+t[1]+'|'+t[2]+'|'+t[3]+'"':'disabled')+'><div class="ic">&#10024;</div><div class="meta"><b>'+t[1]+'</b><span>At '+t[2]+' &#183; '+t[3].toLocaleString('en-US')+' &#128081;</span></div><div class="arr">&#8250;</div></button>';
+   }).join('')
+  +'<div class="foot-note">Our team reviews every redemption before it is sent. Gift cards are delivered through Tango by email. Treatment rewards redeem at the participating office that funds them.</div></div>';
+}
+function giftConfirm(key,brand){
+  openSheet('<h3 class="serif">Redeem the '+esc(brand)+' $150 card</h3><div class="ssub">10,000 &#128142; from your '+S.p.diamonds.toLocaleString('en-US')+'</div>'
+   +'<label style="display:flex;gap:11px;align-items:flex-start;background:var(--cream);border-radius:14px;padding:15px;font-size:13.5px;line-height:1.5;cursor:pointer"><input type="checkbox" id="rdAgree" style="width:18px;height:18px;accent-color:var(--ink);margin-top:1px">Redeem <b style="margin:0 4px">10,000 &#128142;</b> for the $150 '+esc(brand)+' gift card</label>'
+   +'<button class="btn btn-gold btn-full" id="rdGo" style="margin-top:14px" disabled>Redeem</button>'
+   +'<div class="muted" style="font-size:11.5px;text-align:center;margin-top:12px">Your request goes to our team for review, then the card is delivered through Tango by email.</div>');
+  $('rdAgree').addEventListener('change',function(){$('rdGo').disabled=!this.checked;if(this.checked){$('rdGo').style.opacity='1';}});
+  $('rdGo').addEventListener('click',function(){
+    bump(-10000,'d');closeSheet();route();
+    celebrate({em:'&#127873;',title:'Redemption submitted',body:'10,000 &#128142; are reserved while our team reviews the request. Your $150 '+esc(brand)+' gift card arrives through Tango by email, usually within 2 business days.'});
+  });
+}
+function treatConfirm(key,name,office,cost){
+  openSheet('<h3 class="serif">Redeem: '+esc(name)+'</h3><div class="ssub">'+cost.toLocaleString('en-US')+' &#128081; at '+esc(office)+'</div>'
+   +'<label style="display:flex;gap:11px;align-items:flex-start;background:var(--cream);border-radius:14px;padding:15px;font-size:13.5px;line-height:1.5;cursor:pointer"><input type="checkbox" id="rdAgree" style="width:18px;height:18px;accent-color:var(--ink);margin-top:1px">Redeem <b style="margin:0 4px">'+cost.toLocaleString('en-US')+' &#128081;</b> for the '+esc(name)+' at '+esc(office)+'</label>'
+   +'<button class="btn btn-gold btn-full" id="rdGo" style="margin-top:14px" disabled>Redeem</button>'
+   +'<div class="muted" style="font-size:11.5px;text-align:center;margin-top:12px">Our team confirms with the office, then you book the treatment directly with them.</div>');
+  $('rdAgree').addEventListener('change',function(){$('rdGo').disabled=!this.checked;});
+  $('rdGo').addEventListener('click',function(){
+    bump(-cost,'c');closeSheet();route();
+    celebrate({em:'&#10024;',title:'Redemption submitted',body:'Our team confirms with '+esc(office)+', then they reach out to schedule your '+esc(name).toLowerCase()+'.'});
+  });
+}
+function profileSheet(id){
+  var d=null; DEMO_DATA.dentists.forEach(function(x){if(x.id===id)d=x;});
+  if(!d) return;
+  openSheet('<div style="text-align:center"><div style="width:72px;height:72px;border-radius:20px;background:var(--cream);display:grid;place-items:center;font-size:34px;margin:0 auto 12px">'+d.av+'</div>'
+   +'<h3 class="serif" style="font-size:22px">'+d.name+'</h3><div class="muted" style="font-size:13px">'+d.doc+' &#183; '+d.city+'</div>'
+   +'<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:10px"><span class="mini '+(d.tier==='elite'?'elite':d.tier==='tier'?'tier':'pend')+'">'+d.tag+'</span>'+d.langs.map(function(l){return '<span class="mini lang">'+l+'</span>';}).join('')+'<span class="mini">&#9733; '+d.rating+' &#183; '+d.reviews+'</span></div></div>'
+   +'<div class="card pad" style="box-shadow:none;margin:16px 0 0"><div class="eyebrow" style="margin-bottom:6px">Why patients choose this office</div><div style="font-size:14px;line-height:1.6">'+d.line+'</div></div>'
+   +((d.themes&&d.themes.length)?'<div class="card pad" style="box-shadow:none;margin:12px 0 0"><div class="eyebrow" style="margin-bottom:8px">What patients keep saying</div>'+d.themes.map(function(t){return '<div class="bar-row mint"><span>'+t[0]+'</span><div class="bar"><i style="width:'+t[1]+'%"></i></div><b>'+t[1]+'%</b></div>';}).join('')+'<div class="muted" style="font-size:11px;margin-top:4px">Share of recent reviews across Google, Yelp, ZocDoc, and CoverCapy that mention this.</div></div>':'')
+   +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px"><div class="confbox"><span>Plan fit</span><b style="color:'+(d.fit==='strong'?'var(--mint-deep)':'var(--gold-deep)')+'">'+(d.fit==='strong'?'Strong':'Confirm')+'</b></div><div class="confbox"><span>Cost confidence</span><b>'+d.cost+'</b></div></div>'
+   +'<div style="margin-top:10px"><div class="eyebrow" style="margin:8px 0 6px">Popular treatments</div><div style="display:flex;gap:6px;flex-wrap:wrap">'+d.treatments.map(function(t){return '<span class="mini">'+t+'</span>';}).join('')+'</div></div>'
+   +((d.missing&&d.missing.length)?'<div class="card pad" style="box-shadow:none;margin:12px 0 0;background:var(--gold-soft);border:none"><div class="eyebrow" style="margin-bottom:4px;color:var(--gold-deep)">Strengthen this listing &#183; +100 &#128142; each</div><div class="muted" style="font-size:12px;margin-bottom:10px">Know a detail we are missing? Our team verifies it, then the diamonds are yours. An email helps most: if the office later claims using the address you found, you earn an extra 200 diamonds on top.</div>'
+     +d.missing.map(function(f){var lbl={email:'Office email',yelp_url:'Yelp page link',website:'Website',google_url:'Google listing link',phone:'Phone number'}[f]||f;
+        return '<div style="display:flex;gap:8px;margin-bottom:8px"><input id="od-'+d.id+'-'+f+'" placeholder="'+lbl+'" style="flex:1;border:1.5px solid var(--line);border-radius:12px;padding:10px 13px;font-size:13.5px;background:var(--paper)"><button class="btn btn-ink btn-sm" data-odata="'+d.id+'|'+f+'|'+lbl+'">Send</button></div>';}).join('')+'</div>':'')
+   +'<div style="display:flex;gap:10px;margin-top:18px"><button class="btn btn-ink btn-full" data-act="book">Book a visit</button><button class="btn btn-ghost btn-sm" data-verify="'+esc(d.name)+'">Check my plan</button></div>');
+}
+function compareSheet(){
+  var sel=DEMO_DATA.dentists.filter(function(d){return S.find.compare.indexOf(d.id)>-1;});
+  if(!sel.length) return;
+  var rows=[['Plan fit',function(d){return d.fit==='strong'?'Strong':'Confirm';}],
+            ['Rating',function(d){return '&#9733; '+d.rating+' ('+d.reviews+')';}],
+            ['Distance',function(d){return d.mi+' mi';}],
+            ['Status',function(d){return d.tag;}],
+            ['Weekends',function(d){return d.weekends?'Yes':'No';}],
+            ['Languages',function(d){return d.langs.join(', ')||'English';}],
+            ['Cost confidence',function(d){return d.cost;}]];
+  openSheet('<h3 class="serif">Compare offices</h3><div class="ssub">'+sel.length+' selected</div>'
+   +'<div style="overflow-x:auto"><table class="tbl"><thead><tr><th></th>'+sel.map(function(d){return '<th>'+d.name+'</th>';}).join('')+'</tr></thead><tbody>'
+   +rows.map(function(r){return '<tr><td style="font-weight:600">'+r[0]+'</td>'+sel.map(function(d){return '<td>'+r[1](d)+'</td>';}).join('')+'</tr>';}).join('')
+   +'</tbody></table></div>');
+}
+function updateCmpBar(){
+  var n=S.find.compare.length;
+  $('cmpCount').textContent=n+' selected';
+  $('cmpbar').classList.toggle('show',n>=2);
+}
+
+/* ===== concierge ===== */
+
+/* ===== insurance flows ===== */
+function planSlotsFull(p){return INS.plans(p).filter(function(x){return x.status==='active'||x.status==='pending';}).length>=3;}
+function addInsSheet(){
+  if(planSlotsFull(S.p)){
+    openSheet('<h3 class="serif">Add insurance</h3><div class="ssub">You already have 3 plans, the most we show at once.</div>'
+     +'<div class="card pad" style="box-shadow:none;background:var(--sand)"><div style="font-size:13.5px;line-height:1.6">To add another plan, remove one you no longer use first. Inactive plans are the easiest to clear.</div></div>'
+     +'<button class="btn btn-ink btn-full" data-close="1" style="margin-top:14px">Got it</button>');
+    return;
+  }
+  var hasPrimary=!!INS.primary(S.p);
+  // crowns are earned only for the very first plan a patient verifies
+  var firstEver=!S.p.journey.plan;
+  openSheet('<h3 class="serif">Add insurance</h3><div class="ssub">For a dental plan you already have. We verify it with the carrier, usually the same day.'+(firstEver?' +500 crowns once your first plan clears.':'')+'</div>'
+   +'<div class="field"><label>Carrier</label><input id="aiCarrier" placeholder="Humana, Guardian, Cigna"></div>'
+   +'<div class="field"><label>Group number</label><input id="aiGroup" placeholder="Group number on your card"></div>'
+   +'<div class="field"><label>Member ID</label><input id="aiMember" placeholder="0000 0000 0000"></div>'
+   +(hasPrimary?'<div class="muted" style="font-size:12px;line-height:1.5;margin-bottom:8px">You already have a main plan, so this one is added as additional coverage. Your dentist works out how they apply together.</div>':'')
+   +'<button class="btn btn-ink btn-full" id="aiGo">Submit for verification</button>');
+  $('aiGo').addEventListener('click',function(){
+    var carrier=($('aiCarrier').value||'').trim(), group=($('aiGroup').value||'').trim(), member=($('aiMember').value||'').trim();
+    if(carrier.length<2||member.length<3){
+      [['aiCarrier',carrier.length<2],['aiMember',member.length<3]].forEach(function(f){var el=$(f[0]);if(el&&f[1])el.style.borderColor='var(--gold)';});
+      return;
+    }
+    var today=fmtToday();
+    var role=INS.primary(S.p)?'secondary':'primary';
+    var award=firstEver?500:0;
+    var pl={id:'add'+Date.now(),carrier:carrier,name:carrier+' plan',type:'PPO',role:role,status:'pending',source:'individual',cc:false,
+      member:member,group:group||null,effective:null,renewal:null,premium:0,deductible:50,deductibleMet:false,
+      annualMax:1500,remaining:1500,prev:100,basic:80,major:50,waiting:'Confirming',network:'Confirming with carrier',
+      dependents:[],requestedAt:today,verifiedAt:null,verifySource:null};
+    S.p.plans.push(pl); route();
+    celebrate({em:'&#129695;',title:'Submitted for verification',chip:award?'&#128081; +150 on verification':'In review, usually same day',
+      body:'Our team is checking your '+esc(carrier)+' plan with the carrier, usually same day. It shows as Verification requested until it clears.',cta:'Got it',
+      then:function(){setTimeout(function(){
+        pl.status='active'; pl.verifiedAt=fmtToday(); pl.verifySource='CoverCapy team';
+        if(pl.role==='primary') S.p.journey.plan=1;
+        if(award) bump(award,'c');
+        route();
+        celebrate({em:'&#9989;',title:esc(carrier)+' plan verified',chip:award?'&#128081; +150 Capy Crowns':'Added to your wallet',body:'Added as '+(pl.role==='primary'?'your main plan':'additional coverage')+'. Your benefit details are on file and shared with your dentist when you book.'+(award?'':' Crowns are earned on your first plan only.')});
+      },2000);}});
+  });
+}
+function deletePlanSheet(id){
+  var pl=null; INS.plans(S.p).forEach(function(x){if(x.id===id)pl=x;});
+  if(!pl) return;
+  var inactive=(pl.status==='expired'||pl.status==='inactive');
+  openSheet('<h3 class="serif">Remove '+esc(pl.name)+'?</h3><div class="ssub">'+(inactive?'This plan is no longer active, so removing it just keeps your wallet clear.':'This removes the plan from your wallet. You can add it again later, but it will need to be verified again.')+'</div>'
+   +'<div class="card pad" style="box-shadow:none;background:var(--sand);margin-bottom:14px"><div style="font-size:13px;line-height:1.55"><b>'+esc(pl.name)+'</b><br><span class="muted">'+esc(pl.carrier)+(pl.member?' &#183; '+INS.mask(pl.member):'')+'</span></div></div>'
+   +'<button class="btn btn-gold btn-full" id="delGo">Remove plan</button>'
+   +'<button class="btn btn-ghost btn-full btn-sm" data-close="1" style="margin-top:8px">Keep it</button>');
+  $('delGo').addEventListener('click',function(){
+    S.p.plans=S.p.plans.filter(function(x){return x.id!==id;});
+    if(!INS.primary(S.p)){
+      // if the main plan was removed, promote an active additional plan
+      var act=INS.active(S.p);
+      if(act.length){act[0].role='primary';}
+    }
+    if(!INS.primary(S.p)) S.p.journey.plan=0;
+    closeSheet(); route();
+    celebrate({em:'&#128465;&#65039;',title:'Plan removed',body:esc(pl.name)+' is no longer in your wallet.'});
+  });
+}
+function ccQuick(){var p=S.p;if(p&&INS.secondaries(p).length)return['Which plan is my main one?','How do my two plans work together?','What should I verify before treatment?','Which office fits my plans?'];if(p&&INS.status(p)==='none')return['How do I get covered?','What does a plan cover and when?','How do nominations work?'];return['What will a cleaning cost me?','Any waiting periods?','Which office fits my plan?','How do nominations work?'];}
+function ccOpen(){
+  $('ccPanel').classList.add('open');
+  if(!$('ccChat').children.length){
+    var ctx = S.role==='dentist'
+      ? 'Hi Dr. Song. I can explain how patient demand reaches your office, what each membership tier unlocks, or how a coverage snapshot works.'
+      : 'Hi '+(S.p?S.p.first:'there')+'. I can check whether an office fits your plan, estimate a treatment cost, explain how your plans coordinate, or suggest your next step.';
+    ccPush(ctx,'capy');
+  }
+  $('ccQuick').innerHTML=ccQuick().map(function(q){return '<button data-ccq="'+q+'">'+q+'</button>';}).join('');
+}
+function ccClose(){$('ccPanel').classList.remove('open');}
+$('ccX').addEventListener('click',ccClose);
+function ccPush(t,who){var b=document.createElement('div');b.className='bubble '+who;b.innerHTML=t;$('ccChat').appendChild(b);$('ccChat').scrollTop=$('ccChat').scrollHeight;}
+function ccReply(q){
+  var l=q.toLowerCase(), p=S.p, pr=INS.primary(p), sec=INS.secondaries(p)[0];
+  // multi-plan questions first
+  if(l.indexOf('primary')>-1||l.indexOf('main one')>-1||l.indexOf('main plan')>-1||l.indexOf('which plan')>-1)
+    return pr?'Your main plan is '+pr.name+'. '+(sec?'Your '+sec.name+' is additional coverage that helps alongside it. You do not need to do any math: your dentist works out how they apply together when you book.':'You have one plan right now, so there is nothing to coordinate.'):'You do not have an active plan yet. Want to get covered?';
+  if((l.indexOf('secondary')>-1||l.indexOf('both plan')>-1||l.indexOf('use both')>-1||l.indexOf('two plan')>-1||l.indexOf('work together')>-1||l.indexOf('coordinat')>-1))
+    return sec?'Yes, both can help. '+pr.name+' is your main plan and '+sec.name+' helps alongside it. You do not need to work out the numbers yourself: when you book, your dentist sees both and applies them for you. Before a big treatment, ask the office to confirm your estimate. Want me to send that request?':'You have one active plan right now, so there is nothing to coordinate. An additional plan only helps if it covers something your main plan does not.';
+  if(l.indexOf('switch')>-1||l.indexOf('change plan')>-1||l.indexOf('cancel')>-1)
+    return 'Changing plans is a real decision, not something to rush. You can add a new plan to your wallet and remove the old one once the new one is verified, but keep your current coverage active until then so you are never without it. Carriers also have their own enrollment and cancellation timing. Want me to talk through what a plan covers before you decide?';
+  if(l.indexOf('cover')>-1&&(l.indexOf('when')>-1||l.indexOf('and when')>-1))
+    return 'It depends on the plan. A plan like Guardian covers cleanings and exams from day one, basic work like fillings from day one, major work like crowns after a 12 month waiting period, and whitening after 6 months. Other plans activate faster with no waiting on preventive care. Tell me what care you need and I will point you to a fit.';
+  if(l.indexOf('verify')>-1||l.indexOf('before treatment')>-1)
+    return 'Before any major treatment, ask the office to confirm your coverage and give you a written estimate. '+(sec?'You have two plans, and your dentist applies them together, so just have them confirm the estimate before you commit.':'Your benefit details are already shared with the office when you book, so they can check this for you.')+' Want me to send that request now?';
+  if(l.indexOf('which dentist')>-1&&(l.indexOf('both')>-1||l.indexOf('plan')>-1))
+    return sec?'I look for offices in network for both '+pr.carrier+' and '+sec.carrier+'. KYT Dental Services accepts both. Want me to open Find a Dentist filtered to your plans?':'Any office that takes '+(pr?pr.carrier:'your plan')+' works. Want me to show those?';
+  if(l.indexOf('cost')>-1||l.indexOf('cleaning')>-1||l.indexOf('crown')>-1)
+    return pr?'On your '+pr.name+', a routine cleaning and exam is fully covered twice a year, so your cost is $0 at an in network office. Bigger work like a crown is partly covered, and the office gives you a written estimate before treatment'+(sec?'. With two plans, your dentist applies them together for you':'')+'. Want me to ask an office for an estimate?':'Once your coverage is verified I can quote this from your actual plan. Cleanings are typically covered in full on PPO plans. Want to get covered first?';
+  if(l.indexOf('wait')>-1)
+    return pr?(pr.waiting&&pr.waiting!=='None'?'Your '+pr.name+' has this waiting note: '+pr.waiting+'.':'Your '+pr.name+' has no waiting period on preventive or basic care.')+(sec&&sec.waiting&&sec.waiting!=='None'?' Your secondary '+sec.carrier+' has '+sec.waiting+'.':''):'Waiting periods depend on the plan. Most PPO plans cover preventive care immediately; major work can have a waiting period. Want to get covered?';
+  if(l.indexOf('fit')>-1||l.indexOf('office')>-1||l.indexOf('near')>-1)
+    return 'Capybara Cove Dental in Costa Mesa is a strong fit: 4.8 stars across 132 reviews, Mandarin spoken, gentle with kids'+(pr?', and it takes your '+pr.carrier+' PPO':'')+'. Want me to send them a verification request and hold a time?';
+  if(l.indexOf('nominat')>-1)
+    return 'Nominate any office you trust, even if your own dentist already joined. Diamonds build on hard events: 200 on submit, 100 per follow up you send, 100 per office detail you add that we verify, 500 when an office you nominated claims its free profile, and 10,000 when your credited nomination joins as a paying member. If an office has no email on file, add the one you find: when they claim using your address, that is 500 for the claim plus 200 more for the email you sourced. Twenty claimed profiles alone covers a $150 gift card, and 10,000 lifetime diamonds unlocks the Ambassador application. Crowns are separate: coverage, care, and referrals, redeemed for treatments at participating offices.';
+  if(l.indexOf('tier')>-1||l.indexOf('member')>-1||l.indexOf('demand')>-1)
+    return 'Membership is $369 per month after a merit review. It unlocks coverage snapshots, blended reviews from four sources, a 10 mile visibility radius, promotions, and the coverage widget for your own website.';
+  return 'Good question. Tell me the office or the treatment and I will get specific, or tap a suggestion below.';
+}
+function ccSend(v){if(!v.trim())return;ccPush(esc(v),'me');setTimeout(function(){ccPush(ccReply(v),'capy');},400);}
+$('ccSend').addEventListener('click',function(){ccSend($('ccInput').value);$('ccInput').value='';});
+$('ccInput').addEventListener('keydown',function(e){if(e.key==='Enter'){ccSend(this.value);this.value='';}});
+$('fab').addEventListener('click',ccOpen);
+
+/* ===== global delegation ===== */
+document.addEventListener('click',function(e){
+  var t;
+  if((t=e.target.closest('[data-close]'))){closeSheet();return;}
+  if((t=e.target.closest('[data-go]'))){go(t.dataset.go);return;}
+  if((t=e.target.closest('[data-cc]'))){ccOpen();return;}
+  if((t=e.target.closest('[data-ccq]'))){ccSend(t.dataset.ccq);return;}
+  if((t=e.target.closest('[data-ask]'))){ccOpen();ccSend(t.dataset.ask);return;}
+  if((t=e.target.closest('[data-p],[data-role]'))&&t.classList.contains('persona')){
+    S.role=t.dataset.role;
+    S.p=t.dataset.p?DEMO_DATA.personas[t.dataset.p]:null;
+    $('gate').classList.add('hidden');
+    renderChrome();
+    go(S.role==='patient'?'home':'ddash');
+    route();
+    return;
+  }
+  if((t=e.target.closest('[data-filter]'))){S.find.filters[t.dataset.filter]=!S.find.filters[t.dataset.filter];route();return;}
+  if((t=e.target.closest('[data-lmark]'))){S.find.landmark=t.dataset.lmark;route();return;}
+  if((t=e.target.closest('[data-pin]'))){
+    var c=$('dc-'+t.dataset.pin);
+    document.querySelectorAll('.dcard').forEach(function(x){x.classList.remove('hl');});
+    document.querySelectorAll('.pin').forEach(function(x){x.classList.remove('on');});
+    t.classList.add('on');
+    if(c){c.classList.add('hl');c.scrollIntoView({behavior:'smooth',block:'center'});}
+    return;
+  }
+  if((t=e.target.closest('[data-cmp]'))){
+    var id=t.dataset.cmp,ix=S.find.compare.indexOf(id);
+    if(t.checked&&ix<0){if(S.find.compare.length>=3){t.checked=false;}else S.find.compare.push(id);}
+    if(!t.checked&&ix>-1)S.find.compare.splice(ix,1);
+    updateCmpBar();return;
+  }
+  if((t=e.target.closest('#cmpOpen'))){compareSheet();return;}
+  if((t=e.target.closest('#cmpClear'))){S.find.compare=[];route();updateCmpBar();return;}
+  if((t=e.target.closest('[data-profile]'))){profileSheet(t.dataset.profile);return;}
+  if((t=e.target.closest('[data-verify]'))){verifySheet(t.dataset.verify);return;}
+  if((t=e.target.closest('[data-nominate]'))){var p2=t.dataset.nominate.split('|');nominateSheet(p2[0],p2[1]);return;}
+  if((t=e.target.closest('[data-elig]'))){
+    var row=null;DEMO_DATA.inbox.forEach(function(r){if(r.id===t.dataset.elig)row=r;});
+    if(row){eligSheet(row.elig); if(row.coordination){var sin=$('sheetIn'); if(sin){var note=document.createElement('div'); note.className='card pad'; note.style.cssText='box-shadow:none;background:var(--gold-soft);border:none;margin-top:12px'; note.innerHTML='<div class="eyebrow" style="margin-bottom:4px;color:var(--gold-deep)">Coordination of benefits</div><div style="font-size:12.5px;line-height:1.55;color:var(--gold-deep)">'+row.coordination+'</div>'; var btn=sin.querySelector('[data-close]'); if(btn)sin.insertBefore(note,btn); else sin.appendChild(note);}}}
+    return;
+  }
+  if((t=e.target.closest('[data-addnomemail]'))){
+    var nmi=+t.dataset.addnomemail, nmrow=S.p.noms[nmi];
+    if(nmrow){ S.nomEmailIdx=nmi; addNomEmailSheet(nmrow); }
+    return;
+  }
+  if((t=e.target.closest('[data-nudge]'))){
+    var pr=t.dataset.nudge.split('|'), nm2=S.p.noms[+pr[0]];
+    if(nm2){S.nomIdx=+pr[0];S.nomKind=pr[1];S.nomTarget={name:nm2.name,city:nm2.city,email:nm2.email,website:nm2.website};noteSheet(pr[1]);}
+    return;
+  }
+  if((t=e.target.closest('[data-gift]'))){
+    var g2=t.dataset.gift.split('|'); giftConfirm(g2[0],g2[1]); return;
+  }
+  if((t=e.target.closest('[data-treat]'))){
+    var t2=t.dataset.treat.split('|'); treatConfirm(t2[0],t2[1],t2[2],+t2[3]); return;
+  }
+  if((t=e.target.closest('[data-odata]'))){
+    var od=t.dataset.odata.split('|'), inp=$('od-'+od[0]+'-'+od[1]);
+    var val=(inp&&inp.value||'').trim();
+    if(val.length<4){if(inp){inp.style.borderColor='var(--gold)';inp.placeholder='Add the '+od[2].toLowerCase()+' first';}return;}
+    var dd=null; DEMO_DATA.dentists.forEach(function(x){if(x.id===od[0])dd=x;});
+    if(dd&&dd.missing){var ix2=dd.missing.indexOf(od[1]);if(ix2>-1)dd.missing.splice(ix2,1);}
+    closeSheet();
+    celebrate({em:'&#128269;',title:'Detail submitted',chip:'&#128142; +100 pending review',
+      body:'Thank you. Our team verifies the '+od[2].toLowerCase()+', then 100 diamonds land in your wallet. Verified details make this office easier for every patient to reach.'});
+    return;
+  }
+  if((t=e.target.closest('[data-delplan]'))){deletePlanSheet(t.dataset.delplan);return;}
+  if((t=e.target.closest('[data-share]'))){var sd=null;DEMO_DATA.dentists.forEach(function(x){if(x.id===t.dataset.share)sd=x;});shareOfficeSheet(sd);return;}
+  if((t=e.target.closest('[data-sharech]'))){var sp=t.dataset.sharech.split('|');var so=null;DEMO_DATA.dentists.forEach(function(x){if(x.id===sp[1])so=x;});shareVia(sp[0],so);return;}
+  if((t=e.target.closest('[data-verifyplan]'))){
+    var vp=null; INS.plans(S.p).forEach(function(x){if(x.id===t.dataset.verifyplan)vp=x;});
+    if(vp){celebrate({em:'&#9201;',title:vp.name+' is pending',body:'Our team is verifying this plan with '+vp.carrier+', usually the same day. Nothing for you to do. Your benefits and crowns post the moment it clears.'});}
+    return;
+  }
+  if((t=e.target.closest('[data-credit]'))){
+    S.dCredit=+t.dataset.credit; route();
+    celebrate({em:'&#127942;',title:'Nomination credited',body:'Only one patient is credited per office, and you chose '+esc(DEMO_DATA.dnoms[S.dCredit].n)+'. They receive 10,000 Capy Diamonds, a $150 gift card, when your membership starts. The other nominations stay on record without a payout.'});
+    return;
+  }
+  if((t=e.target.closest('.dreply'))){celebrate({em:'&#9989;',title:'Reply sent',body:'The patient is notified right away: this office confirmed how they work with their plan. Offices that answer fast win the booking.'});return;}
+  if((t=e.target.closest('[data-plan]'))){
+    S.chosenPlan=DEMO_DATA.plans[+t.dataset.plan];S.ownPlan=false;
+    celebrate({em:'&#128221;',title:'Enroll in '+S.chosenPlan.n,
+      body:'Enrollment takes about ten minutes through CoverCapy. Your member ID arrives by email, usually the same day. Add it next and our team verifies it: +300 crowns.',
+      cta:'I enrolled, add my member ID',then:memberIdSheet});
+    return;
+  }
+  if((t=e.target.closest('[data-act]'))){
+    var a=t.dataset.act;
+    if(a==='shop')return shopSheet();
+    if(a==='addins')return addInsSheet();
+    if(a==='haveins'){S.chosenPlan=null;S.ownPlan=true;return addInsSheet();}
+    if(a==='book')return bookSheet();
+    if(a==='rate')return rateSheet();
+    if(a==='elig')return eligSheet(DEMO_DATA.eligibility.donnaSelf);
+    if(a==='note')return go('noms');
+    if(a==='rewards')return go('rewards');
+    if(a==='ambassador')return ambassadorSheet();
+    if(a==='refer')return referSheet();
+    if(a==='managesub')return manageSheet();
+    if(a==='annual')return annualSheet();
+    if(a==='tier2')return celebrate({em:'&#127942;',title:'Accreditation review requested',body:'Our team reviews your patient feedback and verification responsiveness. Accreditation is earned on merit; membership is $369 per month once approved.'});
+    if(a==='tier3')return celebrate({em:'&#9670;',title:'Platinum Elite inquiry sent',body:'We will reach out about featured placement in patient searches up to 18 miles from the searched location, featured city slots, and concierge introduction priority.'});
+    if(a.indexOf('go:')===0)return go(a.slice(3));
+  }
+});
+
+/* ===== LIVE BOOT: real session + wallet ===== */
+(function bootLive(){
+  var supa=window.__supa;
+  function initials(n){ n=(n||'').trim(); if(!n) return 'CC'; var a=n.split(/\s+/); var r=((a[0]||'')[0]||'')+((a[1]||'')[0]||''); return (r||a[0].slice(0,2)).toUpperCase(); }
+  supa.auth.getSession().then(function(s){
+    var sess=s.data.session;
+    if(!sess){ location.replace(window.__CC.login); return; }
+    var uid=sess.user.id, email=sess.user.email||'';
+    return Promise.all([
+      supa.from('reward_wallets').select('balance,diamond_balance,tier,network_status,paying_offices').eq('user_id',uid).maybeSingle(),
+      supa.from('user_profiles').select('display_name,city,state').eq('user_id',uid).maybeSingle()
+    ]).then(function(res){
+      var w=(res[0]&&res[0].data)||{balance:0,diamond_balance:0,tier:null};
+      var up=(res[1]&&res[1].data)||{};
+      var meta=sess.user.user_metadata||{};
+      var nm=up.display_name||meta.display_name||meta.full_name||meta.name||(email?email.split('@')[0]:'Member');
+      S.role='patient';
+      S.p={ name:nm, first:(nm.split(/\s+/)[0]||nm), init:initials(nm), avbg:'var(--mint-soft)', avc:'var(--mint-deep)',
+        crowns:(w.balance||0), diamonds:(w.diamond_balance||0), tier:w.tier,
+        journey:{plan:0,visit:0,review:0,refer:0}, noms:[], plans:[],
+        blurb:'Live CoverCapy account', email:email, uid:uid };
+      var g=$('gate'); if(g) g.classList.add('hidden');
+      renderChrome();
+      go('home'); route();
+      var sw=$('switchSeat');
+      if(sw){ sw.textContent='Sign out'; var sw2=sw.cloneNode(true); sw.parentNode.replaceChild(sw2,sw);
+        sw2.addEventListener('click',function(){ supa.auth.signOut().then(function(){ location.replace(window.__CC.login); }); }); }
+    });
+  }).catch(function(e){ console.error('CoverCapy boot error', e); location.replace(window.__CC.login); });
+})();
+})();
+</script>
+</body>
+</html>
