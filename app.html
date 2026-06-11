@@ -596,7 +596,7 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 <script>
 window.__CC={url:"https://hfvbeqlefwwjlrbyxpbj.supabase.co",key:"sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf",login:"./index.html"};
 window.__supa=window.supabase.createClient(__CC.url,__CC.key);
-window.__CC_BUILD='v36';
+window.__CC_BUILD='v37';
 try{ console.log('CoverCapy build', window.__CC_BUILD); }catch(e){}
 </script>
 <script>
@@ -1006,7 +1006,7 @@ function filteredDentists(){
     if(lm!=='all'&&d.landmark!==lm) return false;
     if(F.treatment&&d.treatments.indexOf(F.treatment)<0) return false;
     if(F.ppo&&(!d.accepts||d.accepts.indexOf(F.ppo)<0)) return false;
-    if(F.within&&d.mi>F.within) return false;
+    if(F.within&&(typeof d.mi==='number')&&d.mi>((d.tier==='elite')?Math.max(F.within,18):F.within)) return false;
     if(F.minRating&&d.rating<F.minRating) return false;
     if(f.weekends&&!d.weekends) return false;
     if(f.offer&&!d.offer) return false;
@@ -2615,8 +2615,9 @@ function suggest(q){
       ds.forEach(function(d){ h2+=row({label:d.name,sub:(d.doc||'')+' · '+(d.city||''),ic:'&#129463;',run:function(){ try{ profileSheet(d.id); }catch(e){} }},q); }); }
     if(locs.length){ h2+='<div class="fomni-sec">Locations</div>';
       locs.forEach(function(L){ h2+=row(L,q); }); }
-    if(!items.length){ h2='<div class="fomni-empty">No matches for &quot;'+esc(q)+'&quot;. Try a city, ZIP, or office name.</div>'; }
+    if(!items.length && !(NATQ.q===q&&NATQ.html)){ h2='<div class="fomni-empty">No matches for &quot;'+esc(q)+'&quot;. Try a city, ZIP, or office name.</div>'; }
     open(h2);
+    if(NATQ.q===q && NATQ.html){ var bx=document.getElementById('findOmni'); if(bx) bx.insertAdjacentHTML('beforeend',NATQ.html); }
   };
   /* local city fallback from loaded offices: search still works if the suggest service is unreachable */
   function localLocs(){
@@ -2632,6 +2633,27 @@ function suggest(q){
   }
   /* open instantly with whatever we have locally */
   open(html+'<div class="fomni-empty" id="fomniWait">Searching locations&hellip;</div>');
+  /* nationwide office name search straight from the dentists table */
+  NATQ={q:null,html:null};
+  if(q.length>=3 && window.__supa){
+    var nseq=lastQ;
+    window.__supa.from('dentists').select('id,practice_name,doctor_name,city,state,latitude,longitude')
+      .ilike('practice_name','%'+q.replace(/[%,()]/g,'')+'%').limit(4).then(function(r){
+        if(lastQ!==nseq||r.error||!r.data||!r.data.length) return;
+        var extra='<div class="fomni-sec">Offices nationwide</div>';
+        r.data.forEach(function(x){
+          var it={label:x.practice_name||'Office',sub:(x.doctor_name||'')+' \u00b7 '+[x.city,x.state].filter(Boolean).join(', '),ic:'&#129463;',
+            run:(function(xx){ return function(){
+              if(xx.latitude&&xx.longitude){ window.ccGoSearch(+xx.latitude,+xx.longitude,[xx.city,xx.state].filter(Boolean).join(', ')); }
+              setTimeout(function(){ try{ profileSheet(xx.id); }catch(e){} },900);
+            }; })(x)};
+          extra+=row(it,q);
+        });
+        NATQ={q:nseq,html:extra};
+        var box=document.getElementById('findOmni');
+        if(box && !document.getElementById('fomniWait')) box.insertAdjacentHTML('beforeend',extra);
+      });
+  }
   var settled=false;
   setTimeout(function(){ if(!settled && lastQ===q){ settled=true; fill(localLocs()); } }, 3000);
   if(window.__supa){
@@ -2684,6 +2706,7 @@ function refresh(){
   var rpcWon=false;
   function clientFallback(){
     if(done||rpcWon) return; done=true;
+    window.__geoState='rpc_failed';
     console.error('CoverCapy: coordinate RPC unavailable, querying the directory table directly');
     /* bounding box read straight from the dentists table: plain GET, works even
        when RPC posts are blocked. ~31 mi box, distance computed client side. */
@@ -2726,6 +2749,7 @@ function refresh(){
       },800);
       return; }
     /* late RPC results still replace the fallback: exact server ordering wins */
+    window.__geoState='ok';
     rpcWon=true;
     loadByIds((r&&r.data)||[]);
   }).catch(function(e){ console.error('CoverCapy: geo search threw', e); clientFallback(); });
@@ -2799,7 +2823,7 @@ function loadByIds(data){
 var ENRICH_CACHE={};
 function enrichPage(){
   if(!window.__supa) return;
-  var per=12, p=S.find.page||1;
+  var per=20, p=S.find.page||1;
   var list=filteredDentists();
   var ids=list.slice((p-1)*per,p*per).filter(function(d){ return d._lite&&!ENRICH_CACHE[d.id]; }).map(function(d){ return d.id; });
   if(!ids.length) return;
@@ -2843,7 +2867,7 @@ function ccRefreshUI(){
   var list=filteredDentists();
   var fl=document.getElementById('findList');
   if(fl){
-    var cards=list.length?list.map(dcardHTML).join(''):'<div class="card pad" style="text-align:center"><b>No offices in this radius.</b><div class="muted" style="font-size:13px;margin-top:4px">Widen the radius or change the location.</div></div>';
+    var cards=list.length?list.map(dcardHTML).join(''):'<div class="card pad" style="text-align:center"><b>'+(window.ccEmptyReason?ccEmptyReason():'No offices in this radius.')+'</b><div class="muted" style="font-size:13px;margin-top:4px">Widen the radius, change the location, or check the console for details.</div></div>';
     var scope=(S.find.center&&S.find.center.label)?(' within '+S.find.within+' mi of '+esc(S.find.center.label)):'';
     fl.innerHTML='<div class="muted" style="font-size:13px;margin-bottom:12px">'+list.length+' offices'+scope+' &#183; live directory &#183; sorted by recommended</div>'+cards;
     try{ ccFindPaginate(); }catch(e){}
@@ -2853,6 +2877,13 @@ function ccRefreshUI(){
   var g=document.querySelector('.phead .guide b');
   if(g&&S.find.center&&S.find.center.label) g.textContent=S.find.center.label;
 }
+var NATQ={q:null,html:null};
+window.ccEmptyReason=function(){
+  if(!window.__supa) return 'No Supabase connection.';
+  if(!S.find.center) return 'No city selected yet: pick a city or ZIP, or tap the pin.';
+  if(window.__geoState==='rpc_failed') return 'Live search was blocked in this browser (fallback also returned nothing).';
+  return 'No dentists within '+(S.find.within||30)+' miles of '+((S.find.center&&S.find.center.label)||'this spot')+'.';
+};
 var _radT=null;
 window.ccRadiusGo=function(){
   /* debounced radius search: a burst of clicks fires one query, no layout teardown */
@@ -2936,7 +2967,7 @@ document.addEventListener('click',function(e){
 });
 
 /* ---- 12 results per page ---- */
-var PAGE_SIZE=12;
+var PAGE_SIZE=20;
 window.ccFindPage=function(d){ S.find.page=(S.find.page||1)+d; ccFindPaginate(); try{ enrichPage(); }catch(e){} try{ document.getElementById('findList').scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){} };
 window.ccFindPaginate=function(){
   var listEl=document.getElementById('findList'); if(!listEl) return;
