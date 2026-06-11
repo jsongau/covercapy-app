@@ -185,6 +185,13 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .locbtn.busy{opacity:.5;pointer-events:none}
 .radbtn{flex:none;width:26px;height:26px;border-radius:8px;border:1.5px solid var(--line);background:var(--cream);cursor:pointer;font-size:14px;font-weight:800;display:grid;place-items:center;padding:0;color:var(--ink)}
 .radbtn:hover{border-color:var(--mint);background:var(--mint-soft)}
+.fpills{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 2px}
+.fpill{display:inline-flex;align-items:center;gap:7px;background:var(--paper);border:1.5px solid var(--gold);border-radius:999px;padding:6px 7px 6px 13px;font-size:12px;font-weight:700;color:var(--ink);cursor:pointer;box-shadow:var(--shadow)}
+.fpill .fpx{border:none;background:var(--cream);border-radius:50%;width:18px;height:18px;font-size:9px;cursor:pointer;display:grid;place-items:center;color:var(--slate)}
+.fpill .fpx:hover{background:var(--gold-soft);color:var(--gold-deep)}
+.ppofind{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;font-size:13.5px;font-weight:600;background:var(--paper)}
+.ppofind:focus{outline:none;border-color:var(--gold)}
+#sheetIn{transition:transform .32s cubic-bezier(.2,.8,.2,1)}
 .fcell.omni{position:relative}
 .fomni{position:absolute;top:calc(100% + 8px);left:-1.5px;right:-1.5px;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);z-index:60;max-height:380px;overflow:auto;padding:6px}
 .fomni-sec{font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);padding:9px 11px 4px}
@@ -596,7 +603,7 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 <script>
 window.__CC={url:"https://hfvbeqlefwwjlrbyxpbj.supabase.co",key:"sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf",login:"./index.html"};
 window.__supa=window.supabase.createClient(__CC.url,__CC.key);
-window.__CC_BUILD='v37';
+window.__CC_BUILD='v38';
 try{ console.log('CoverCapy build', window.__CC_BUILD); }catch(e){}
 </script>
 <script>
@@ -992,8 +999,9 @@ function dcardHTML(d){
   +'<div class="conf"><div class="confbox"><span>Coverage confidence</span><b>'+(d.fit==='strong'?'Strong':'Confirm with office')+'</b></div><div class="confbox"><span>Cost confidence</span><b>'+d.cost+'</b></div></div>'
   +fitDetailHTML(d)
   +(d.hasEmail===false?'<div style="font-size:11.5px;color:var(--gold-deep);background:var(--gold-soft);margin:0 18px 10px;border-radius:10px;padding:8px 12px;line-height:1.45">&#9993; No email on file. Found their email? Add it to request verification and earn Diamond Crowns.</div>':'')
-  +'<div class="foot">'+(d.booking_url?'<a class="btn btn-gold btn-sm" href="'+esc(d.booking_url)+'" target="_blank" rel="noopener">Book</a>':'')+'<button class="btn btn-ink btn-sm" data-profile="'+d.id+'">View office</button>'
-  +(d.phone?'<a class="btn btn-ghost btn-sm" href="tel:'+String(d.phone).replace(/[^0-9+]/g,'')+'">Call</a>':'')
+  +'<div class="foot">'+(d.booking_url?'<a class="btn btn-gold btn-sm" href="'+esc(d.booking_url)+'" target="_blank" rel="noopener">Book appointment</a>':'')
+  +(d.phone?'<a class="btn btn-ink btn-sm" href="tel:'+String(d.phone).replace(/[^0-9+]/g,'')+'">Call</a>':'')
+  +'<button class="btn btn-ghost btn-sm" data-profile="'+d.id+'">View profile</button>'
   +'<button class="favbtn" data-fav="'+d.id+'" aria-label="Save office" title="Save to favorites">'+((window.ccIsFav&&window.ccIsFav(d.id))?'&#10084;':'&#9825;')+'</button>'
   +'<button class="btn btn-ghost btn-sm" data-verify="'+d.name+'">'+(d.hasEmail===false?'Add email to verify':'Check my plan')+'</button>'
   +'<button class="btn btn-ghost btn-sm" data-share="'+d.id+'">Share</button>'
@@ -1004,8 +1012,14 @@ function filteredDentists(){
   var f=S.find.filters,lm=S.find.landmark,F=S.find;
   return DEMO_DATA.dentists.filter(function(d){
     if(lm!=='all'&&d.landmark!==lm) return false;
-    if(F.treatment&&d.treatments.indexOf(F.treatment)<0) return false;
-    if(F.ppo&&(!d.accepts||d.accepts.indexOf(F.ppo)<0)) return false;
+    if(F.treatment){
+      var tk=F.treatment.toLowerCase().replace(/\s*dentistry$/,'');
+      if(!(d.treatments||[]).some(function(t){ t=String(t).toLowerCase(); return t.indexOf(tk)>-1||tk.indexOf(t)>-1; })) return false;
+    }
+    if(F.ppo){
+      var pk=F.ppo.toLowerCase().replace(/\s*(ppo|pdp|dppo)$/,'').trim();
+      if(!(d.accepts||[]).some(function(c){ return String(c).toLowerCase().indexOf(pk)>-1; })) return false;
+    }
     if(F.within&&(typeof d.mi==='number')&&d.mi>((d.tier==='elite')?Math.max(F.within,18):F.within)) return false;
     if(F.minRating&&d.rating<F.minRating) return false;
     if(f.weekends&&!d.weekends) return false;
@@ -1069,6 +1083,20 @@ function vFind(){
       +'<div class="map-toggle">'+vbtn('split','List + Map')+vbtn('rec','For you')+vbtn('list','Browse')+vbtn('map','Map')+vbtn('grid','Grid')+'</div>'
       +'<button class="btn '+(n?'btn-ink':'btn-ghost')+' btn-sm" data-morefilters="1">&#9881; Filters'+(n?' &#183; '+n:'')+'</button>'
      +'</div>';
+   })()
+  +(function(){
+     var pills=[];
+     function pill(k,txt){ return '<span class="fpill" data-morefilters="1">'+txt+'<button class="fpx" data-clearf="'+k+'" aria-label="Clear">&#10005;</button></span>'; }
+     if(F.treatment) pills.push(pill('treatment','&#10024; '+esc(F.treatment)));
+     if(F.ppo) pills.push(pill('ppo','&#128737; '+esc(F.ppo)));
+     if(F.minRating>0) pills.push(pill('rating','&#11088; '+F.minRating+'+'));
+     if(f.weekends) pills.push(pill('pref:weekends','&#127774; Weekends'));
+     if(f.acceptingNew) pills.push(pill('pref:acceptingNew','New patients'));
+     if(f.onlineBooking) pills.push(pill('pref:onlineBooking','Online booking'));
+     if(f.english) pills.push(pill('pref:english','English'));
+     if(f.spanish) pills.push(pill('pref:spanish','Spanish'));
+     if(F.preset) pills.push(pill('preset','&#129441; '+esc(F.preset)));
+     return pills.length?'<div class="fpills">'+pills.join('')+'</div>':'';
    })()
   +'<div class="regrow" id="regRow"></div>'
   +body
@@ -2942,6 +2970,7 @@ function applyPreset(list){
   if(p==='invisalign') return list.filter(function(d){ return treatHit(d,/invisalign|aligner|ortho/i); });
   if(p==='cosmetic') return list.filter(function(d){ return treatHit(d,/cosmetic|veneer|whiten|smile/i); });
   if(p==='accredited') return list.filter(function(d){ return d.tier==='tier'||d.tier==='elite'; });
+  if(p==='platinum') return list.filter(function(d){ return d.tier==='elite'; });
   if(p==='bestppo'){
     var mine=null; try{ mine=INS.primary(S.p); }catch(e){}
     if(mine&&mine.carrier){
@@ -3777,34 +3806,95 @@ window.ccShell=function(active, inner){
   return '<div class="cshell">'+rail+'<div class="cbody">'+inner+'</div></div>';
 };
 
+/* ---- contextual filter pill clearing ---- */
+document.addEventListener('click',function(e){
+  var x=e.target.closest&&e.target.closest('[data-clearf]'); if(!x) return;
+  e.stopPropagation();
+  var k=x.dataset.clearf;
+  if(k==='treatment') S.find.treatment='';
+  else if(k==='ppo') S.find.ppo='';
+  else if(k==='rating') S.find.minRating=0;
+  else if(k==='preset') S.find.preset=null;
+  else if(k.indexOf('pref:')===0) delete S.find.filters[k.slice(5)];
+  S.find.page=1;
+  try{ route(); }catch(_){}
+},true);
+
 /* ---- More Filters drawer (hybrid filter architecture) ---- */
 document.addEventListener('click',function(e){
   var b=e.target.closest&&e.target.closest('[data-morefilters]'); if(!b) return;
   var f=S.find.filters, F=S.find;
+  var TREATLIST=['Cleaning','Exam','Emergency','Deep Cleaning','Crowns','Implants','Root Canal','Wisdom Teeth','Cosmetic','Invisalign','Veneers','Whitening','Family Dentistry','Pediatric Dentistry','Sedation','Dentures','TMJ','Botox','Oral Surgery'];
+  var PPOLIST=['Delta Dental PPO','MetLife PDP','Guardian PPO','UnitedHealthcare PPO','Aetna PPO','Cigna DPPO','Ameritas PPO','Principal PPO','Humana PPO','GEHA','Anthem PPO','United Concordia'];
   function dchip(k,label){return '<button class="chip '+(f[k]?'on':'')+'" data-filter="'+k+'">'+label+'</button>';}
   function pchip(k,em,label){return '<button type="button" class="dchip2 '+(F.preset===k?'on':'')+'" data-preset="'+k+'">'+em+' '+label+'</button>';}
-  function dtopt(){return '<option value="">Any reason</option>'+DEMO_DATA.treatmentOptions.map(function(t){return '<option value="'+t+'"'+(F.treatment===t?' selected':'')+'>'+t+'</option>';}).join('');}
-  function dpopt(){var mine=null; try{ mine=INS.primary(S.p); }catch(_){ } return '<option value="">Any PPO</option>'+DEMO_DATA.ppoOptions.map(function(c){return '<option value="'+c+'"'+(F.ppo===c?' selected':'')+'>'+c+(mine&&mine.carrier===c?' (yours)':'')+'</option>';}).join('');}
-  openSheet('<h3 class="serif">Refine filters</h3><div class="ssub">Everything beyond location and distance.</div>'
-   +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px">'
-   +'<div class="field"><label>Treatment</label><select id="drTreat">'+dtopt()+'</select></div>'
-   +'<div class="field"><label>Your PPO</label><select id="drPPO">'+dpopt()+'</select></div></div>'
-   +'<div class="eyebrow" style="margin-bottom:8px">Practical</div>'
-   +'<div class="chips">'+dchip('weekends','Open weekends')+dchip('offer','Has an offer or reward')+dchip('acceptingNew','Accepting new patients')+dchip('onlineBooking','Online booking')+'</div>'
-   +'<div class="eyebrow" style="margin:14px 0 8px">Languages</div>'
-   +'<div class="chips">'+dchip('english','English')+dchip('spanish','Spanish')+'</div>'
-   +'<div class="eyebrow" style="margin:14px 0 8px">Minimum rating</div>'
-   +'<div class="chips">'+[[0,'Any'],[4,'4.0+'],[4.5,'4.5+'],[4.8,'4.8+']].map(function(o){return '<button class="chip '+(F.minRating===o[0]?'on':'')+'" data-minrate="'+o[0]+'">'+o[1]+'</button>';}).join('')+'</div>'
-   +'<div class="eyebrow" style="margin:14px 0 8px">Discover</div>'
-   +'<div class="chips">'+pchip('bestppo','&#128737;','Best PPO match')+pchip('weekends','&#127774;','Open weekends')+pchip('nominated','&#11088;','Most nominated')+pchip('families','&#128106;','Families')+pchip('invisalign','&#128516;','Invisalign')+pchip('cosmetic','&#10024;','Cosmetic')+pchip('accredited','&#127942;','Recently accredited')+pchip('concierge','&#129441;','Concierge picks')+'</div>'
-   +'<div style="display:flex;gap:8px;margin-top:18px"><button class="btn btn-ink btn-full" data-close="1">Show results</button><button class="btn btn-ghost btn-sm" id="filtClear" style="flex:none">Reset</button></div>');
-  var dtv=document.getElementById('drTreat'); if(dtv) dtv.addEventListener('change',function(){ S.find.treatment=this.value; try{ route(); }catch(_){ } });
-  var dpv=document.getElementById('drPPO'); if(dpv) dpv.addEventListener('change',function(){ S.find.ppo=this.value; try{ route(); }catch(_){ } });
-  var fc=document.getElementById('filtClear');
-  if(fc) fc.addEventListener('click',function(){
-    ['weekends','offer','acceptingNew','onlineBooking','english','spanish'].forEach(function(k){ delete S.find.filters[k]; });
-    S.find.minRating=0; S.find.preset=null; closeSheet(); try{ route(); }catch(_){}});
+  function tchip(t){return '<button class="chip '+(F.treatment===t?'on':'')+'" data-tsel="'+esc(t)+'">'+esc(t)+'</button>';}
+  function ppochip(c){return '<button class="chip '+(F.ppo===c?'on':'')+'" data-psel="'+esc(c)+'">'+esc(c)+'</button>';}
+  openSheet('<h3 class="serif">Curate your care</h3><div class="ssub">Tell us what matters; we shape the list around you.</div>'
+   +'<div class="eyebrow" style="margin-bottom:8px">Care type</div>'
+   +'<div class="chips" id="drTreats">'+TREATLIST.map(tchip).join('')+'</div>'
+   +'<div class="eyebrow" style="margin:16px 0 8px">Insurance match</div>'
+   +'<input id="ppoSearch" class="ppofind" placeholder="Search your PPO carrier" autocomplete="off">'
+   +'<div class="chips" id="drPpos" style="margin-top:8px">'+PPOLIST.map(ppochip).join('')
+   +'<button class="chip '+(F.ppo===''?'on':'')+'" data-psel="">No insurance yet</button></div>'
+   +'<div class="muted" id="noInsHint" style="font-size:11.5px;margin-top:6px;'+(F.ppo?'display:none':'')+'">No PPO yet? Most patients save more after activating one. <a href="#" data-act="shop" style="color:var(--ink)">Compare plans</a>.</div>'
+   +'<div class="eyebrow" style="margin:16px 0 8px">Care preferences</div>'
+   +'<div class="chips">'+dchip('weekends','Open weekends')+dchip('acceptingNew','Accepting new patients')+dchip('onlineBooking','Online booking')+dchip('offer','Has an offer or reward')+dchip('english','English')+dchip('spanish','Spanish')+'</div>'
+   +'<div class="eyebrow" style="margin:16px 0 8px">Experience level</div>'
+   +'<div class="chips">'+[[0,'Any rating'],[4,'4.0+'],[4.5,'4.5+'],[4.8,'4.8+']].map(function(o){return '<button class="chip '+(F.minRating===o[0]?'on':'')+'" data-minrate="'+o[0]+'">'+o[1]+'</button>';}).join('')
+   +pchip('accredited','&#127942;','Capy Accredited')+pchip('platinum','&#128081;','Platinum Elite')+'</div>'
+   +'<div class="eyebrow" style="margin:16px 0 8px">Explore</div>'
+   +'<div class="chips">'+pchip('bestppo','&#128737;','Best PPO match')+pchip('nominated','&#11088;','Most nominated')+pchip('families','&#128106;','Families')+pchip('concierge','&#129441;','Concierge picks')+'</div>'
+   +'<div style="display:flex;gap:8px;margin-top:20px"><button class="btn btn-ink btn-full" id="drApply" data-close="1">View results</button><button class="btn btn-ghost btn-sm" id="filtClear" style="flex:none">Reset</button></div>');
+  var ps=document.getElementById('ppoSearch');
+  if(ps) ps.addEventListener('input',function(){
+    var q=this.value.toLowerCase();
+    document.querySelectorAll('#drPpos .chip').forEach(function(c){
+      c.style.display=(!q||c.textContent.toLowerCase().indexOf(q)>-1)?'':'none';
+    });
+  });
+  window.ccDrawerSync();
 });
+window.ccDrawerSync=function(){
+  var btn=document.getElementById('drApply'); if(!btn) return;
+  var n=0; try{ n=filteredDentists().length; }catch(e){}
+  btn.innerHTML=n?('View '+n+' dentist'+(n===1?'':'s')+' &#8594;'):'View results';
+  var hint=document.getElementById('noInsHint'); if(hint) hint.style.display=S.find.ppo?'none':'';
+};
+document.addEventListener('click',function(e){
+  if(e.target.closest&&e.target.closest('#sheetIn')) setTimeout(function(){ try{ window.ccDrawerSync(); }catch(_){ } },60);
+});
+document.addEventListener('click',function(e){
+  var t=e.target.closest&&e.target.closest('[data-tsel]');
+  if(t){ S.find.treatment=(S.find.treatment===t.dataset.tsel?'':t.dataset.tsel); S.find.page=1;
+    document.querySelectorAll('[data-tsel]').forEach(function(x){ x.classList.toggle('on', x.dataset.tsel===S.find.treatment); });
+    try{ route(); }catch(_){ } return; }
+  var p=e.target.closest&&e.target.closest('[data-psel]');
+  if(p){ S.find.ppo=p.dataset.psel; S.find.page=1;
+    document.querySelectorAll('[data-psel]').forEach(function(x){ x.classList.toggle('on', x.dataset.psel===S.find.ppo); });
+    try{ route(); }catch(_){ } return; }
+});
+/* swipe to dismiss the sheet */
+(function(){
+  var startY=null, el=null;
+  document.addEventListener('touchstart',function(e){
+    var g=e.target.closest&&e.target.closest('#sheetIn .grab, #sheetIn h3'); if(!g) return;
+    el=document.getElementById('sheetIn'); startY=e.touches[0].clientY;
+  },{passive:true});
+  document.addEventListener('touchmove',function(e){
+    if(startY==null||!el) return;
+    var dy=e.touches[0].clientY-startY;
+    if(dy>0){ el.style.transform='translateY('+dy+'px)'; el.style.transition='none'; }
+  },{passive:true});
+  document.addEventListener('touchend',function(e){
+    if(startY==null||!el) return;
+    var dy=(e.changedTouches[0].clientY-startY);
+    el.style.transition='transform .28s cubic-bezier(.2,.8,.2,1)';
+    if(dy>110){ el.style.transform='translateY(110%)'; setTimeout(function(){ try{ closeSheet(); }catch(_){ } el.style.transform=''; el.style.transition=''; },200); }
+    else { el.style.transform=''; }
+    startY=null; el=null;
+  },{passive:true});
+})();
 document.addEventListener('click',function(e){
   var b=e.target.closest&&e.target.closest('[data-minrate]'); if(!b) return;
   S.find.minRating=parseFloat(b.dataset.minrate)||0;
