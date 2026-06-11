@@ -402,6 +402,8 @@ window.__supa=window.supabase.createClient(__CC.url,__CC.key);
 
 
 
+
+
 <script>
 (function(){
   var SB_URL='https://hfvbeqlefwwjlrbyxpbj.supabase.co';
@@ -411,6 +413,32 @@ window.__supa=window.supabase.createClient(__CC.url,__CC.key);
     patient:{kick:'Welcome back',ti:'Sign in to your concierge',tc:'Create your account',sub:'Pick up your Capy Crowns, saved dentists, and coverage wallet right where you left off.'},
     dentist:{kick:'For dental offices',ti:'Sign in to your practice',tc:'Create your practice account',sub:'See who booked you, the eligibility they need, and the reviews and nominations they left \u2014 live from CoverCapy.'}
   };
+  var LEFTSWAP=[
+    ['finally handled','Your practice, finally in view.'],
+    ['sits between your PPO','CoverCapy puts the patients who chose you in one place \u2014 their coverage, their bookings, and the reviews and nominations they leave.'],
+    ['ranked by plan fit','See every patient who booked you, with their plan and their reviews.'],
+    ['waiting periods','Verified patient eligibility in your inbox before they arrive.'],
+    ['Earn Capy Crowns','Build your standing and reputation across the network.'],
+    ['plan details stay private','Your patients\u2019 data stays private and secure.']
+  ];
+  var leftEls=null;
+  function findLeaf(phrase){
+    var all=document.body.querySelectorAll('h1,h2,h3,p,li,span,div,a'); var best=null;
+    for(var i=0;i<all.length;i++){ var e=all[i];
+      if((e.textContent||'').indexOf(phrase)>=0){
+        var childHas=false; for(var j=0;j<e.children.length;j++){ if((e.children[j].textContent||'').indexOf(phrase)>=0){childHas=true;break;} }
+        if(!childHas) best=e;
+      }
+    }
+    return best;
+  }
+  function ensureLeft(){
+    if(leftEls) return leftEls;
+    if(!document.body) return null;
+    leftEls=LEFTSWAP.map(function(p){ var el=findLeaf(p[0]); if(el && el.getAttribute('data-ccorig')===null) el.setAttribute('data-ccorig',el.textContent); return {el:el,d:p[1]}; });
+    return leftEls;
+  }
+  function paintLeft(dent){ var L=ensureLeft(); if(!L) return; L.forEach(function(o){ if(o.el) o.el.textContent = dent? o.d : o.el.getAttribute('data-ccorig'); }); }
   function getRole(){ return localStorage.getItem('cc_role')==='dentist'?'dentist':'patient'; }
   function curMode(){ var pc=document.getElementById('pCreate'); return (pc && pc.offsetParent!==null)?'create':'signin'; }
   var pBtn,dBtn;
@@ -420,6 +448,7 @@ window.__supa=window.supabase.createClient(__CC.url,__CC.key);
     var k=document.getElementById('awKick'),ti=document.getElementById('awTitle'),su=document.getElementById('awSub');
     if(k)k.textContent=x.kick; if(ti)ti.textContent=(curMode()==='create'?x.tc:x.ti); if(su)su.textContent=x.sub;
     if(pBtn&&dBtn){ styleBtn(pBtn,r==='patient'); styleBtn(dBtn,r==='dentist'); }
+    paintLeft(r==='dentist');
   }
   function setRole(r){ localStorage.setItem('cc_role',r); paint(); }
   function build(){
