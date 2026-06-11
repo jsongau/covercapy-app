@@ -312,8 +312,15 @@ $('previewBtn').addEventListener('click',function(){
 $('obSignout').addEventListener('click',async function(){await sb.auth.signOut();location.reload();});
 
 async function boot(){
+  $('gate').classList.add('hidden');
+  var qs=new URLSearchParams(location.search);
+  if(qs.get('demo')==='1'){
+    S.preview=true;S.me=SAMPLE.me;S.summary=SAMPLE.summary;S.activity=SAMPLE.activity;S.inbox=SAMPLE.inbox;S.noms=SAMPLE.noms;
+    enterApp();return;
+  }
   var ses=await sb.auth.getSession();
-  if(ses.data.session){await loadOffice();}
+  if(ses.data.session){ await loadOffice(); }
+  else { location.replace('/?role=dentist'); }
 }
 sb.auth.onAuthStateChange(function(ev,session){ if(session && !S.me && !S.preview){ loadOffice(); } });
 
