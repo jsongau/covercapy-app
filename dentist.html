@@ -122,25 +122,92 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .spin{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--mint);border-radius:50%;animation:sp 1s linear infinite;margin:40px auto}
 @keyframes sp{to{transform:rotate(360deg)}}
 .preview-flag{background:var(--gold-soft);color:var(--gold-deep);font-size:11.5px;font-weight:700;padding:8px 14px;border-radius:999px;display:inline-block}
+/* gate two-column (aligned with patient app) */
+.gatewrap{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
+@media(max-width:860px){.gatewrap{grid-template-columns:1fr}.gatebrand{display:none}}
+.gatebrand{background:linear-gradient(160deg,#08312C,#0B3B36 60%,#0E4A41);color:var(--paper);padding:54px 48px;display:flex;flex-direction:column;justify-content:center}
+.gatebrand .blogo{display:flex;align-items:center;gap:12px;margin-bottom:40px}
+.gatebrand .blogo .lm{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.12);display:grid;place-items:center;font-size:21px}
+.gatebrand h1{font-size:clamp(30px,3.4vw,46px);line-height:1.08;margin-bottom:18px}
+.gatebrand p{font-size:15px;line-height:1.6;color:rgba(246,240,230,.82);max-width:430px;margin-bottom:26px}
+.gatebrand .bpt{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;font-size:14px;color:rgba(246,240,230,.92);max-width:430px}
+.gatebrand .bpt .bk{color:var(--mint);font-weight:700;flex-shrink:0}
+.gatecol{display:flex;align-items:center;justify-content:center;padding:40px 26px;background:radial-gradient(110% 70% at 50% 0%,var(--cream),var(--paper) 75%)}
+.gateform{width:100%;max-width:400px}
+.gateform .eyebrow{margin-bottom:8px}
+.gateform h2{font-size:clamp(24px,3vw,30px);margin-bottom:6px}
+.gateform .gsub{font-size:13.5px;color:var(--slate);margin-bottom:20px;line-height:1.5}
+.seg{display:flex;background:var(--cream);border-radius:999px;padding:5px;margin-bottom:18px}
+.seg button{flex:1;padding:10px;border-radius:999px;font-weight:600;font-size:14px;color:var(--slate)}
+.seg button.on{background:var(--paper);color:var(--ink);box-shadow:var(--shadow)}
+.oauthbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:1.5px solid var(--line);border-radius:var(--rad-sm);padding:12px;font-weight:600;font-size:14px;background:var(--paper);margin-bottom:10px}
+.ordiv{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--slate);font-size:11.5px;font-weight:600;letter-spacing:.08em}
+.ordiv::before,.ordiv::after{content:"";flex:1;height:1px;background:var(--line)}
+.obtabs{display:flex;gap:8px;margin-bottom:18px}
+.obtabs button{flex:1;padding:12px;border-radius:var(--rad-sm);font-weight:700;font-size:13.5px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink)}
+.obtabs button.on{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.reslist{display:flex;flex-direction:column;gap:8px;margin-top:6px;max-height:340px;overflow-y:auto}
+.resitem{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:13px;border:1.5px solid var(--line);border-radius:var(--rad-sm);background:var(--paper)}
+.resitem:hover{border-color:var(--mint)}
+.resitem b{display:block;font-size:14px}
+.resitem span{font-size:12px;color:var(--slate)}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+@media(max-width:560px){.formgrid{grid-template-columns:1fr}}
+.formgrid .full{grid-column:1/-1}
 </style>
 </head>
 <body>
 
 <!-- ============ SIGN IN GATE ============ -->
 <div id="gate">
-  <div class="gate-in">
-    <div class="mark">🦫</div>
-    <h1 class="serif">Practice portal</h1>
-    <p class="muted" style="font-size:14px">CoverCapy for dental offices. Your demand, eligibility, reputation, and patient feedback in one place.</p>
-    <div class="gate-card">
-      <div class="gt">Sign in to your office</div>
-      <div class="gs">Use the work email that claimed your CoverCapy listing. We'll send a one-tap sign-in link.</div>
-      <div class="field"><label>Work email</label><input id="email" type="email" placeholder="you@yourpractice.com" autocomplete="email"></div>
-      <button class="btn btn-ink btn-full" id="sendLink">Email me a sign-in link</button>
-      <div id="gateMsg" class="note" style="margin-top:12px"></div>
-      <div style="border-top:1px solid var(--line-soft);margin:18px 0 14px"></div>
-      <button class="btn btn-ghost btn-full btn-sm" id="previewBtn">Preview with a sample office</button>
-      <div class="note" style="margin-top:10px">New office? Offices are claimed from your public listing on CoverCapy. Once claimed, the patient feedback for your practice shows up here automatically.</div>
+  <div class="gatewrap">
+    <div class="gatebrand">
+      <div class="blogo"><div class="lm">🦫</div><div style="font-family:var(--fd);font-size:19px;font-weight:600">CoverCapy <span style="opacity:.7;font-family:var(--fb);font-size:12px;font-weight:600">· Practice portal</span></div></div>
+      <h1 class="serif">Your practice,<br>finally in view.</h1>
+      <p>See the patients who booked you, the eligibility they need, the reviews and nominations they left — all in one place, drawn live from what patients do on CoverCapy.</p>
+      <div class="bpt"><span class="bk">✓</span><span>Every booking, review and nomination for your office, as it happens.</span></div>
+      <div class="bpt"><span class="bk">✓</span><span>Verified patient benefits in your inbox before they arrive.</span></div>
+      <div class="bpt"><span class="bk">✓</span><span>Your standing, your profile, your membership — managed by you.</span></div>
+    </div>
+    <div class="gatecol">
+      <div class="gateform">
+        <div class="eyebrow" id="awKick">For dental offices</div>
+        <h2 class="serif" id="awTitle">Sign in to your practice</h2>
+        <div class="gsub" id="awSub">Pick up your patient feedback, eligibility inbox and profile right where you left off.</div>
+
+        <div class="seg" id="seg">
+          <button id="segSignin" class="on">Sign in</button>
+          <button id="segCreate">Create account</button>
+        </div>
+
+        <div id="authErr" class="note" style="color:#B4453A;margin-bottom:10px"></div>
+        <div class="field"><label>Work email</label><input id="au-email" type="email" placeholder="you@yourpractice.com" autocomplete="email"></div>
+        <div class="field"><label>Password</label><input id="au-pw" type="password" placeholder="••••••••" autocomplete="current-password"></div>
+        <button class="btn btn-ink btn-full" id="auGo">Sign in</button>
+
+        <div class="ordiv">OR CONTINUE WITH</div>
+        <button class="oauthbtn" id="oauthGoogle"><svg width="17" height="17" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.6 9.2c0-.6-.1-1.2-.2-1.8H9v3.4h4.8a4.1 4.1 0 0 1-1.8 2.7v2.2h2.9c1.7-1.6 2.7-3.9 2.7-6.5z"/><path fill="#34A853" d="M9 18c2.4 0 4.5-.8 6-2.2l-2.9-2.2c-.8.5-1.8.9-3.1.9-2.4 0-4.4-1.6-5.1-3.8H.9v2.3A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.9 10.7a5.4 5.4 0 0 1 0-3.4V5H.9a9 9 0 0 0 0 8l3-2.3z"/><path fill="#EA4335" d="M9 3.6c1.3 0 2.5.5 3.4 1.3l2.6-2.6A9 9 0 0 0 .9 5l3 2.3C4.6 5.2 6.6 3.6 9 3.6z"/></svg> Continue with Google</button>
+        <button class="oauthbtn" id="oauthApple"><svg width="16" height="16" viewBox="0 0 18 18"><path fill="#000" d="M12.6 9.6c0-1.7 1.4-2.5 1.5-2.6-.8-1.2-2-1.4-2.5-1.4-1-.1-2 .6-2.6.6-.5 0-1.4-.6-2.3-.6-1.2 0-2.3.7-2.9 1.8-1.2 2.1-.3 5.3.9 7 .6.8 1.2 1.8 2.1 1.7.9 0 1.2-.6 2.3-.6 1 0 1.4.6 2.3.5.9 0 1.5-.8 2.1-1.7.7-1 .9-1.9.9-2-.1 0-1.8-.7-1.8-2.7zM11 4.3c.5-.6.8-1.4.7-2.3-.7 0-1.5.5-2 1.1-.4.5-.8 1.3-.7 2.1.8.1 1.6-.4 2-.9z"/></svg> Continue with Apple</button>
+
+        <div style="text-align:center;margin-top:16px"><button class="btn btn-ghost btn-sm" id="previewBtn">Just exploring? Preview the live demo →</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ONBOARDING (claim or add office) ============ -->
+<div id="onboard" class="hidden">
+  <div class="gatecol" style="min-height:100vh">
+    <div class="gateform" style="max-width:560px">
+      <div class="eyebrow">Set up your office</div>
+      <h2 class="serif">Connect your practice</h2>
+      <div class="gsub">Find your office in the CoverCapy directory to claim it, or add it yourself. We use your NPI and Tax ID to verify you control the practice.</div>
+      <div class="obtabs">
+        <button id="obFind" class="on">Find my office</button>
+        <button id="obAdd">Add my office</button>
+      </div>
+      <div id="obBody"></div>
+      <div style="text-align:center;margin-top:18px"><button class="btn btn-ghost btn-sm" id="obSignout">Sign out</button></div>
     </div>
   </div>
 </div>
@@ -199,40 +266,151 @@ var SAMPLE={
 function isoAgo(days){var d=new Date();d.setDate(d.getDate()-days);return d.toISOString();}
 
 /* ====================== AUTH ====================== */
-$('sendLink').addEventListener('click',async function(){
-  var email=($('email').value||'').trim();
-  if(!email||email.indexOf('@')<0){$('gateMsg').textContent='Enter your work email first.';return;}
-  this.disabled=true;this.textContent='Sending…';
-  var redirect=window.location.origin+window.location.pathname;
-  var res=await sb.auth.signInWithOtp({email:email,options:{emailRedirectTo:redirect}});
-  this.disabled=false;this.textContent='Email me a sign-in link';
-  if(res.error){$('gateMsg').textContent=res.error.message;return;}
-  $('gateMsg').innerHTML='<b style="color:var(--mint-deep)">Check your inbox.</b> Tap the link we just sent to '+esc(email)+' to sign in.';
+var authMode='signin';
+function setAuthMode(m){
+  authMode=m;
+  $('segSignin').classList.toggle('on',m==='signin');
+  $('segCreate').classList.toggle('on',m==='create');
+  $('awTitle').textContent=m==='signin'?'Sign in to your practice':'Create your practice account';
+  $('awSub').textContent=m==='signin'?'Pick up your patient feedback, eligibility inbox and profile right where you left off.':'Set up access for your office. Next you’ll find or add your practice.';
+  $('au-pw').setAttribute('autocomplete',m==='signin'?'current-password':'new-password');
+  $('auGo').textContent=m==='signin'?'Sign in':'Create account';
+  $('authErr').textContent='';
+}
+$('segSignin').addEventListener('click',function(){setAuthMode('signin');});
+$('segCreate').addEventListener('click',function(){setAuthMode('create');});
+
+$('auGo').addEventListener('click',async function(){
+  var email=($('au-email').value||'').trim(), pw=$('au-pw').value||'';
+  $('authErr').textContent='';
+  if(!email||email.indexOf('@')<0){$('authErr').textContent='Enter your work email.';return;}
+  if(pw.length<6){$('authErr').textContent='Password must be at least 6 characters.';return;}
+  this.disabled=true;var lbl=this.textContent;this.textContent='Working…';
+  var res;
+  if(authMode==='signin') res=await sb.auth.signInWithPassword({email:email,password:pw});
+  else res=await sb.auth.signUp({email:email,password:pw,options:{emailRedirectTo:window.location.href}});
+  this.disabled=false;this.textContent=lbl;
+  if(res.error){$('authErr').textContent=res.error.message;return;}
+  if(authMode==='create' && !res.data.session){
+    $('authErr').style.color='var(--mint-deep)';
+    $('authErr').innerHTML='<b>Check your inbox</b> to confirm '+esc(email)+', then come back and sign in.';
+    return;
+  }
+  loadOffice();
 });
+function oauth(provider){return async function(){
+  var res=await sb.auth.signInWithOAuth({provider:provider,options:{redirectTo:window.location.href}});
+  if(res.error)$('authErr').textContent=res.error.message;
+};}
+$('oauthGoogle').addEventListener('click',oauth('google'));
+$('oauthApple').addEventListener('click',oauth('apple'));
+
 $('previewBtn').addEventListener('click',function(){
   S.preview=true;S.me=SAMPLE.me;S.summary=SAMPLE.summary;S.activity=SAMPLE.activity;S.inbox=SAMPLE.inbox;S.noms=SAMPLE.noms;
   enterApp();
 });
+$('obSignout').addEventListener('click',async function(){await sb.auth.signOut();location.reload();});
 
 async function boot(){
   var ses=await sb.auth.getSession();
   if(ses.data.session){await loadOffice();}
 }
-sb.auth.onAuthStateChange(function(ev,session){ if(session && !S.me){ loadOffice(); } });
+sb.auth.onAuthStateChange(function(ev,session){ if(session && !S.me && !S.preview){ loadOffice(); } });
 
 async function loadOffice(){
-  // resolve the office this signed-in user has claimed
-  var r=await sb.from('dentists').select('*').eq('claimed_by',(await sb.auth.getUser()).data.user.id).limit(1);
+  var u=(await sb.auth.getUser()).data.user; if(!u) return;
+  var r=await sb.from('dentists').select('*').eq('claimed_by',u.id).limit(1);
   if(r.error){toast(r.error.message);return;}
-  if(!r.data||!r.data.length){ showClaimNeeded(); return; }
+  if(!r.data||!r.data.length){ showOnboard(u); return; }
   S.me=r.data[0];
   await refreshData();
   enterApp();
 }
 
-function showClaimNeeded(){
-  $('gateMsg').innerHTML='<b>No claimed office found for this account.</b> Find your practice on CoverCapy and claim your listing first — then the feedback for your office shows up here. <button class="btn btn-ghost btn-sm" id="signout" style="margin-top:10px">Sign out</button>';
-  var so=$('signout'); if(so) so.addEventListener('click',async function(){await sb.auth.signOut();location.reload();});
+/* ====================== ONBOARDING ====================== */
+function showOnboard(user){
+  $('gate').classList.add('hidden');
+  $('onboard').classList.remove('hidden');
+  S.authEmail=user&&user.email||'';
+  $('obFind').onclick=function(){$('obFind').classList.add('on');$('obAdd').classList.remove('on');renderFind();};
+  $('obAdd').onclick=function(){$('obAdd').classList.add('on');$('obFind').classList.remove('on');renderAdd();};
+  renderFind();
+}
+function renderFind(){
+  $('obBody').innerHTML='<div class="field"><label>Search the CoverCapy directory</label><input id="obQ" placeholder="Practice name or city" autocomplete="off"></div><div class="reslist" id="obRes"><div class="empty">Start typing to find your office.</div></div>';
+  var q=$('obQ'),tmr;
+  q.addEventListener('input',function(){clearTimeout(tmr);tmr=setTimeout(doSearch,250);});
+  q.focus();
+}
+async function doSearch(){
+  var term=($('obQ').value||'').trim();
+  if(term.length<2){$('obRes').innerHTML='<div class="empty">Keep typing…</div>';return;}
+  var like='*'+term.replace(/[(),*]/g,'')+'*';
+  var r=await sb.from('dentists').select('id,name,practice_name,doctor_name,city,state,claimed_by').or('practice_name.ilike.'+like+',name.ilike.'+like+',city.ilike.'+like).limit(10);
+  if(r.error){$('obRes').innerHTML='<div class="empty">'+esc(r.error.message)+'</div>';return;}
+  if(!r.data.length){$('obRes').innerHTML='<div class="empty">No matches. Try the "Add my office" tab.</div>';return;}
+  $('obRes').innerHTML=r.data.map(function(d){
+    var nm=esc(d.practice_name||d.name||'Office');
+    var claimed=d.claimed_by!=null;
+    return '<button class="resitem" '+(claimed?'disabled style="opacity:.5"':'data-claim="'+d.id+'" data-nm="'+nm+'"')+'><div style="flex:1"><b>'+nm+'</b><span>'+esc([d.doctor_name,d.city,d.state].filter(Boolean).join(' · '))+'</span></div>'+(claimed?'<span class="mini pend">Already claimed</span>':'<span class="mini lang">Claim</span>')+'</button>';
+  }).join('');
+  document.querySelectorAll('[data-claim]').forEach(function(b){b.addEventListener('click',function(){claimSheet(this.getAttribute('data-claim'),this.getAttribute('data-nm'));});});
+}
+function claimSheet(id,nm){
+  $('obBody').innerHTML='<button class="btn btn-ghost btn-sm" id="obBack" style="margin-bottom:14px">← Back to search</button>'
+   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:4px">Claiming</div><div class="serif" style="font-size:18px;margin-bottom:14px">'+esc(nm)+'</div>'
+   +'<div class="field"><label>NPI (National Provider Identifier)</label><input id="cl-npi" inputmode="numeric" placeholder="10-digit NPI"></div>'
+   +'<div class="field"><label>Tax ID / EIN <span class="muted">(kept private, for verification)</span></label><input id="cl-tax" placeholder="XX-XXXXXXX"></div>'
+   +'<div class="field"><label>Work email</label><input id="cl-email" type="email" value="'+esc(S.authEmail)+'"></div>'
+   +'<div class="field"><label>Office phone</label><input id="cl-phone" placeholder="(###) ###-####"></div>'
+   +'<div id="clErr" class="note" style="color:#B4453A;margin-bottom:8px"></div>'
+   +'<button class="btn btn-ink btn-full" id="clGo">Submit claim &amp; open my portal</button>'
+   +'<div class="note" style="margin-top:10px">By claiming you confirm you are authorized to manage this practice. Your submission is verified by our team; access opens now so you can get set up.</div></div>';
+  $('obBack').addEventListener('click',renderFind);
+  $('clGo').addEventListener('click',async function(){
+    var npi=($('cl-npi').value||'').trim();
+    if(npi && !/^\d{10}$/.test(npi)){$('clErr').textContent='NPI should be 10 digits.';return;}
+    this.disabled=true;this.textContent='Submitting…';
+    var r=await sb.rpc('claim_office',{p_dentist:id,p_npi:npi||null,p_tax_id:($('cl-tax').value||'').trim()||null,p_work_email:($('cl-email').value||'').trim()||null,p_phone:($('cl-phone').value||'').trim()||null});
+    if(r.error||(r.data&&r.data.error)){this.disabled=false;this.textContent='Submit claim & open my portal';$('clErr').textContent=(r.error&&r.error.message)||({already_claimed:'This office was just claimed by someone else.',office_not_found:'Office not found.'}[r.data.error]||r.data.error);return;}
+    finishOnboard();
+  });
+}
+function renderAdd(){
+  $('obBody').innerHTML='<div class="card pad"><div class="formgrid">'
+   +'<div class="field full"><label>Practice name *</label><input id="ad-practice" placeholder="Capybara Cove Dental"></div>'
+   +'<div class="field full"><label>Lead dentist</label><input id="ad-doctor" placeholder="Dr. Mia Song"></div>'
+   +'<div class="field"><label>NPI</label><input id="ad-npi" inputmode="numeric" placeholder="10-digit NPI"></div>'
+   +'<div class="field"><label>Tax ID / EIN <span class="muted">(private)</span></label><input id="ad-tax" placeholder="XX-XXXXXXX"></div>'
+   +'<div class="field full"><label>Street address</label><input id="ad-address" placeholder="123 Harbor Blvd"></div>'
+   +'<div class="field"><label>City</label><input id="ad-city" placeholder="Costa Mesa"></div>'
+   +'<div class="field"><label>State</label><input id="ad-state" placeholder="CA" maxlength="2"></div>'
+   +'<div class="field"><label>ZIP</label><input id="ad-zip" placeholder="92626"></div>'
+   +'<div class="field"><label>Office phone</label><input id="ad-phone" placeholder="(###) ###-####"></div>'
+   +'<div class="field full"><label>Website</label><input id="ad-website" placeholder="https://"></div>'
+   +'<div class="field full"><label>Work email</label><input id="ad-email" type="email" value="'+esc(S.authEmail)+'"></div>'
+   +'</div><div id="adErr" class="note" style="color:#B4453A;margin-bottom:8px"></div>'
+   +'<button class="btn btn-ink btn-full" id="adGo">Add my office &amp; open my portal</button>'
+   +'<div class="note" style="margin-top:10px">Your office is created as a claimed listing under your account and reviewed by our team before it appears in the public directory.</div></div>';
+  $('adGo').addEventListener('click',async function(){
+    var practice=($('ad-practice').value||'').trim();
+    if(!practice){$('adErr').textContent='Practice name is required.';return;}
+    var npi=($('ad-npi').value||'').trim();
+    if(npi && !/^\d{10}$/.test(npi)){$('adErr').textContent='NPI should be 10 digits.';return;}
+    this.disabled=true;this.textContent='Creating…';
+    var payload={practice_name:practice,doctor_name:$('ad-doctor').value,npi:npi,tax_id:$('ad-tax').value,
+      address:$('ad-address').value,city:$('ad-city').value,state:$('ad-state').value,zip:$('ad-zip').value,
+      phone:$('ad-phone').value,website:$('ad-website').value,work_email:($('ad-email').value||'').trim()};
+    var r=await sb.rpc('create_office',{p:payload});
+    if(r.error||(r.data&&r.data.error)){this.disabled=false;this.textContent='Add my office & open my portal';$('adErr').textContent=(r.error&&r.error.message)||r.data.error;return;}
+    finishOnboard();
+  });
+}
+async function finishOnboard(){
+  $('onboard').classList.add('hidden');
+  S.me=null;
+  await loadOffice();
+  toast('Welcome aboard — your practice is connected.');
 }
 
 async function refreshData(){
