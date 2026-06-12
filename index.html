@@ -389,7 +389,16 @@ h1,h2,h3,.serif{font-family:'Fraunces',serif}
 </style>
 </head>
 <body>
-<style>.err{font-size:12.5px;color:#B4453A;font-weight:600;margin:2px 0 9px;min-height:1px;line-height:1.45}</style>
+<style>
+.err{font-size:12.5px;color:#B4453A;font-weight:600;margin:2px 0 9px;min-height:1px;line-height:1.45}
+.pw-wrap{position:relative}
+.pw-wrap input{padding-right:44px}
+.pw-eye{position:absolute;right:7px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:5px;color:var(--ink-soft);display:flex;align-items:center;opacity:.6}
+.pw-eye:hover{opacity:1}
+.forgot{display:block;margin:-2px 0 11px;text-align:right;font-size:12.5px;font-weight:600;color:var(--teal-mid);background:none;border:none;cursor:pointer;font-family:inherit;width:100%}
+.panel.gold .forgot{color:var(--gold-deep)}
+.btn[disabled]{opacity:.6;cursor:default}
+</style>
 <div class="auth" id="auth">
   <canvas class="motes motes-fixed" aria-hidden="true"></canvas>
   <div class="auth-left" id="authLeft">
@@ -419,7 +428,7 @@ h1,h2,h3,.serif{font-family:'Fraunces',serif}
   <div class="auth-right">
     <div class="auth-card">
       <div class="ac-brand"><div class="bm">C</div><b>CoverCapy <span>Concierge</span></b></div>
-      <div class="role-switch">
+      <div class="role-switch" id="roleSwitch">
         <button class="on" id="roleP" onclick="setRole('patient')">&#129441; Patient</button>
         <button id="roleD" onclick="setRole('dentist')">&#129463; Dental office</button>
       </div>
@@ -430,9 +439,10 @@ h1,h2,h3,.serif{font-family:'Fraunces',serif}
         <div class="tabs"><button class="on" onclick="pTab(this,'pSignin')">Sign in</button><button onclick="pTab(this,'pCreate')">Create account</button></div>
         <div id="pSignin">
           <div class="fld"><label>Email address</label><input id="pi-email" type="email" placeholder="you@email.com" autocomplete="email"></div>
-          <div class="fld"><label>Password</label><input id="pi-pw" type="password" placeholder="Your password" autocomplete="current-password"></div>
+          <div class="fld"><label>Password</label><div class="pw-wrap"><input id="pi-pw" type="password" placeholder="Your password" autocomplete="current-password"><button type="button" class="pw-eye" aria-label="Show password" onclick="togglePw('pi-pw',this)"></button></div></div>
+          <button class="forgot" onclick="forgotPw('pi-email','pErr')">Forgot your password?</button>
           <div class="err" id="pErr"></div>
-          <button class="btn btn-dark btn-block" onclick="psignin()">Sign in</button>
+          <button class="btn btn-dark btn-block" onclick="psignin(this)">Sign in</button>
           <div class="or">or continue with</div>
           <div class="oauth">
             <button class="btn btn-ghost btn-block" onclick="oauth('google','patient')"><svg class="glogo" viewBox="0 0 18 18" width="16" height="16" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.97 10.72A5.41 5.41 0 0 1 3.69 9c0-.6.1-1.18.28-1.72V4.95H.96A9 9 0 0 0 0 9c0 1.45.35 2.83.96 4.05l3.01-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.59A9 9 0 0 0 9 0 9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/></svg> Continue with Google</button>
@@ -446,10 +456,10 @@ h1,h2,h3,.serif{font-family:'Fraunces',serif}
           </div>
           <div class="or">or use your email</div>
           <div class="fld"><label>Email address</label><input id="pc-email" type="email" placeholder="you@email.com" autocomplete="email"></div>
-          <div class="fld"><label>Create a password</label><input id="pc-pw" type="password" placeholder="8 characters or more" autocomplete="new-password"></div>
+          <div class="fld"><label>Create a password</label><div class="pw-wrap"><input id="pc-pw" type="password" placeholder="8 characters or more" autocomplete="new-password"><button type="button" class="pw-eye" aria-label="Show password" onclick="togglePw('pc-pw',this)"></button></div></div>
           <div class="bonus">&#128081;&nbsp;<span>Your first <b>300 Capy Crowns</b> land the moment you join, on the house.</span></div>
           <div class="err" id="pcErr"></div>
-          <button class="btn btn-mint btn-block" style="margin-top:13px" onclick="pcreate()">Create account</button>
+          <button class="btn btn-mint btn-block" style="margin-top:13px" onclick="pcreate(this)">Create account</button>
         </div>
         <p class="legal">Capy Crowns are membership rewards with no cash value. By continuing you agree to the <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
       </div>
@@ -460,21 +470,30 @@ h1,h2,h3,.serif{font-family:'Fraunces',serif}
         <div class="tabs"><button class="on" onclick="dTab(this,'dSignin')">Sign in</button><button onclick="dTab(this,'dClaim')">Claim your practice</button></div>
         <div id="dSignin">
           <div class="fld"><label>Work email</label><input id="di-email" type="email" placeholder="frontdesk@yourpractice.com" autocomplete="email"></div>
-          <div class="fld"><label>Password</label><input id="di-pw" type="password" placeholder="Your password" autocomplete="current-password"></div>
+          <div class="fld"><label>Password</label><div class="pw-wrap"><input id="di-pw" type="password" placeholder="Your password" autocomplete="current-password"><button type="button" class="pw-eye" aria-label="Show password" onclick="togglePw('di-pw',this)"></button></div></div>
+          <button class="forgot" onclick="forgotPw('di-email','dErr')">Forgot your password?</button>
           <div class="err" id="dErr"></div>
-          <button class="btn btn-gold btn-block" onclick="dsignin()">Sign in to portal</button>
+          <button class="btn btn-gold btn-block" onclick="dsignin(this)">Sign in to portal</button>
           <div class="or">or continue with</div>
           <div class="oauth"><button class="btn btn-ghost btn-block" onclick="oauth('google','dentist')"><svg class="glogo" viewBox="0 0 18 18" width="16" height="16" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.97 10.72A5.41 5.41 0 0 1 3.69 9c0-.6.1-1.18.28-1.72V4.95H.96A9 9 0 0 0 0 9c0 1.45.35 2.83.96 4.05l3.01-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.59A9 9 0 0 0 9 0 9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/></svg> Continue with Google</button></div>
         </div>
         <div id="dClaim" style="display:none">
           <div class="bonus gold" style="margin-top:0">&#11088;&nbsp;<span><b>Is your practice listed?</b> Create an account, then search and claim it free.</span></div>
           <div class="fld" style="margin-top:13px"><label>Work email</label><input id="dc-email" type="email" placeholder="frontdesk@yourpractice.com" autocomplete="email"></div>
-          <div class="fld"><label>Create a password</label><input id="dc-pw" type="password" placeholder="8 characters or more" autocomplete="new-password"></div>
+          <div class="fld"><label>Create a password</label><div class="pw-wrap"><input id="dc-pw" type="password" placeholder="8 characters or more" autocomplete="new-password"><button type="button" class="pw-eye" aria-label="Show password" onclick="togglePw('dc-pw',this)"></button></div></div>
           <div class="err" id="dcErr"></div>
-          <button class="btn btn-gold btn-block" onclick="dclaim()">Create account and claim</button>
+          <button class="btn btn-gold btn-block" onclick="dclaim(this)">Create account and claim</button>
           <p class="hint" style="text-align:center;margin-top:9px">Reach PPO-ready patients who already compared plans and know what they want.</p>
         </div>
         <p class="legal">Accreditation is reviewed on merit and is never sold. By continuing you agree to the <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+      </div>
+      <div class="panel" id="panelR" style="display:none">
+        <div class="eyebrow">Reset password</div>
+        <h2 class="serif">Set a new password</h2>
+        <p class="lead">Choose a new password for your account, then you are in.</p>
+        <div class="fld"><label>New password</label><div class="pw-wrap"><input id="rc-pw" type="password" placeholder="8 characters or more" autocomplete="new-password"><button type="button" class="pw-eye" aria-label="Show password" onclick="togglePw('rc-pw',this)"></button></div></div>
+        <div class="err" id="rcErr"></div>
+        <button class="btn btn-dark btn-block" onclick="doRecovery(this)">Update password</button>
       </div>
       <button class="auth-skip" onclick="previewDemo()">Just exploring? Preview the live demo &rarr;</button>
     </div>
@@ -487,6 +506,10 @@ h1,h2,h3,.serif{font-family:'Fraunces',serif}
   function size(){w=c.width=c.offsetWidth;h=c.height=c.offsetHeight;parts=Array.from({length:reduce?0:26},function(){return{x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.7+.5,vy:-(Math.random()*.28+.06),a:Math.random()*.45+.15}});}
   function draw(){x.clearRect(0,0,w,h);parts.forEach(function(p){p.y+=p.vy;if(p.y<-5){p.y=h+5;p.x=Math.random()*w;}x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fillStyle='rgba(91,224,160,'+p.a+')';x.fill();});requestAnimationFrame(draw);}
   size();addEventListener('resize',size);if(!reduce)draw();});})();
+
+var EYE='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>';
+var EYEOFF='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+function togglePw(id,btn){var i=document.getElementById(id);if(!i)return;var show=i.type==='password';i.type=show?'text':'password';btn.innerHTML=show?EYEOFF:EYE;btn.setAttribute('aria-label',show?'Hide password':'Show password');}
 
 function setRole(r){var p=r==='patient';
  document.getElementById('roleP').classList.toggle('on',p);
@@ -513,28 +536,31 @@ function v(id){var e=document.getElementById(id);return e?(e.value||'').trim():'
 function pv(id){var e=document.getElementById(id);return e?e.value:'';}
 function err(id,m,ok){var e=document.getElementById(id);if(e){e.textContent=m;e.style.color=ok?'#13694A':'#B4453A';}}
 function bad(email,pw,eid){if(!email||email.indexOf('@')<0){err(eid,'Enter a valid email.');return true;}if(!pw||pw.length<6){err(eid,'Password must be at least 6 characters.');return true;}return false;}
-async function psignin(){var email=v('pi-email'),pw=pv('pi-pw');if(bad(email,pw,'pErr'))return;err('pErr','');var r=await sb.auth.signInWithPassword({email:email,password:pw});if(r.error)return err('pErr',r.error.message);location.replace('/app.html');}
-async function pcreate(){var email=v('pc-email'),pw=pv('pc-pw');if(bad(email,pw,'pcErr'))return;err('pcErr','');var r=await sb.auth.signUp({email:email,password:pw,options:{emailRedirectTo:location.origin+'/app.html'}});if(r.error)return err('pcErr',r.error.message);if(!r.data.session)return err('pcErr','Check your inbox to confirm, then sign in.',true);location.replace('/app.html');}
-async function dsignin(){var email=v('di-email'),pw=pv('di-pw');if(bad(email,pw,'dErr'))return;err('dErr','');var r=await sb.auth.signInWithPassword({email:email,password:pw});if(r.error)return err('dErr',r.error.message);location.replace('/dentist.html');}
-async function dclaim(){var email=v('dc-email'),pw=pv('dc-pw');if(bad(email,pw,'dcErr'))return;err('dcErr','');localStorage.setItem('cc_role','dentist');var r=await sb.auth.signUp({email:email,password:pw,options:{emailRedirectTo:location.origin+'/dentist.html'}});if(r.error)return err('dcErr',r.error.message);if(!r.data.session)return err('dcErr','Check your inbox to confirm, then sign in.',true);location.replace('/dentist.html');}
+function busy(btn,on,label){if(!btn)return;if(on){btn.dataset.lbl=btn.textContent;btn.disabled=true;btn.textContent=label||'Working…';}else{btn.disabled=false;if(btn.dataset.lbl)btn.textContent=btn.dataset.lbl;}}
+async function psignin(btn){var email=v('pi-email'),pw=pv('pi-pw');if(bad(email,pw,'pErr'))return;err('pErr','');busy(btn,true);var r=await sb.auth.signInWithPassword({email:email,password:pw});if(r.error){busy(btn,false);return err('pErr',r.error.message);}location.replace('/app.html');}
+async function pcreate(btn){var email=v('pc-email'),pw=pv('pc-pw');if(bad(email,pw,'pcErr'))return;err('pcErr','');busy(btn,true);var r=await sb.auth.signUp({email:email,password:pw,options:{emailRedirectTo:location.origin+'/app.html'}});if(r.error){busy(btn,false);return err('pcErr',r.error.message);}if(!r.data.session){busy(btn,false);return err('pcErr','Check your inbox to confirm, then sign in.',true);}location.replace('/app.html');}
+async function dsignin(btn){var email=v('di-email'),pw=pv('di-pw');if(bad(email,pw,'dErr'))return;err('dErr','');busy(btn,true);var r=await sb.auth.signInWithPassword({email:email,password:pw});if(r.error){busy(btn,false);return err('dErr',r.error.message);}location.replace('/dentist.html');}
+async function dclaim(btn){var email=v('dc-email'),pw=pv('dc-pw');if(bad(email,pw,'dcErr'))return;err('dcErr','');localStorage.setItem('cc_role','dentist');busy(btn,true);var r=await sb.auth.signUp({email:email,password:pw,options:{emailRedirectTo:location.origin+'/dentist.html'}});if(r.error){busy(btn,false);return err('dcErr',r.error.message);}if(!r.data.session){busy(btn,false);return err('dcErr','Check your inbox to confirm, then sign in.',true);}location.replace('/dentist.html');}
 function oauth(provider,role){var t=role==='dentist'?'/dentist.html':'/app.html';sb.auth.signInWithOAuth({provider:provider,options:{redirectTo:location.origin+t}});}
 function previewDemo(){var d=document.getElementById('roleD').classList.contains('on');location.href=d?'/dentist.html?demo=1':'/app.html?demo=1';}
+async function forgotPw(emailId,errId){var email=v(emailId);if(!email||email.indexOf('@')<0){err(errId,'Enter your email above first, then tap Forgot.');return;}var r=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});if(r.error)return err(errId,r.error.message);err(errId,'Reset link sent to '+email+'. Check your inbox.',true);}
+function showRecovery(){var rs=document.getElementById('roleSwitch');if(rs)rs.style.display='none';['panelP','panelD'].forEach(function(id){var e=document.getElementById(id);if(e)e.style.display='none';});var r=document.getElementById('panelR');if(r)r.style.display='block';}
+async function doRecovery(btn){var pw=pv('rc-pw');if(!pw||pw.length<6){return err('rcErr','Password must be at least 6 characters.');}err('rcErr','');busy(btn,true);var r=await sb.auth.updateUser({password:pw});if(r.error){busy(btn,false);return err('rcErr',r.error.message);}err('rcErr','Password updated. Signing you in…',true);setTimeout(routeBySession,800);}
+async function routeBySession(){var u=(await sb.auth.getUser()).data.user;if(!u){return;}var r=await sb.from('dentists').select('id').eq('claimed_by',u.id).limit(1);if(!r.error&&r.data&&r.data.length){location.replace('/dentist.html');return;}if(localStorage.getItem('cc_role')==='dentist'){location.replace('/dentist.html');return;}location.replace('/app.html');}
 
+document.querySelectorAll('.pw-eye').forEach(function(b){b.innerHTML=EYE;});
+['pi-pw','pc-pw','di-pw','dc-pw','rc-pw'].forEach(function(id){var e=document.getElementById(id);if(!e)return;e.addEventListener('keydown',function(ev){if(ev.key!=='Enter')return;ev.preventDefault();var sub=e.closest('#pSignin,#pCreate,#dSignin,#dClaim,#panelR');var b=sub&&sub.querySelector('button.btn-dark,button.btn-mint,button.btn-gold');if(b)b.click();});});
+['pi-email','pi-pw','pc-email','pc-pw','di-email','di-pw','dc-email','dc-pw','rc-pw'].forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener('input',function(){['pErr','pcErr','dErr','dcErr','rcErr'].forEach(function(x){var el=document.getElementById(x);if(el)el.textContent='';});});});
+
+sb.auth.onAuthStateChange(function(ev){ if(ev==='PASSWORD_RECOVERY'){ showRecovery(); } });
 async function boot(){
  var qs=new URLSearchParams(location.search);
  if(qs.get('role')==='dentist')localStorage.setItem('cc_role','dentist');
  if(qs.get('role')==='patient')localStorage.setItem('cc_role','patient');
  setRole(localStorage.getItem('cc_role')==='dentist'?'dentist':'patient');
+ if(location.hash.indexOf('type=recovery')>=0){showRecovery();return;}
  var ses=await sb.auth.getSession();
- if(ses.data.session){
-   var u=(await sb.auth.getUser()).data.user;
-   if(u){
-     var r=await sb.from('dentists').select('id').eq('claimed_by',u.id).limit(1);
-     if(!r.error&&r.data&&r.data.length){location.replace('/dentist.html');return;}
-     if(localStorage.getItem('cc_role')==='dentist'){location.replace('/dentist.html');return;}
-     location.replace('/app.html');return;
-   }
- }
+ if(ses.data.session){await routeBySession();}
 }
 boot();
 </script>
