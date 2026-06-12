@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#082A30">
 <title>CoverCapy · Practice Portal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --ink:#082A30; --ink2:#0E3A41; --paper:#FDFBF7; --cream:#F6F0E6; --sand:#EFE7D8;
@@ -15,6 +15,7 @@
   --gold:#B8924F; --gold-soft:#F4ECDD; --gold-deep:#8A6A33;
   --plum:#5B3E96; --plum-soft:#EDE7F8;
   --slate:#6B7A7E; --line:#E7E0D2; --line-soft:#F0EADD;
+  --warn:#A8552E; --warn-soft:#F6E4D8;
   --shadow:0 1px 2px rgba(8,42,48,.04),0 8px 24px rgba(8,42,48,.06);
   --shadow-lg:0 2px 6px rgba(8,42,48,.06),0 24px 60px rgba(8,42,48,.16);
   --rad:22px; --rad-sm:14px;
@@ -26,123 +27,381 @@ body{font-family:var(--fb);color:var(--ink);background:var(--cream);line-height:
 button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit;border:none;background:none;cursor:pointer}
 input,textarea{cursor:text}
 h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-height:1.14}
+.serif{font-family:var(--fd)}
 .muted{color:var(--slate)}
 .eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--slate)}
 .hidden{display:none!important}
-.serif{font-family:var(--fd)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;font-weight:600;font-size:14.5px;padding:13px 21px;transition:transform .12s,opacity .12s;text-decoration:none;white-space:nowrap}
 .btn:active{transform:scale(.975)}
-.btn:disabled{opacity:.5;cursor:default}
 .btn-ink{background:var(--ink);color:var(--paper)}
 .btn-gold{background:var(--gold);color:#fff}
 .btn-mint{background:var(--mint);color:var(--ink)}
+.btn-plum{background:var(--plum);color:#fff}
 .btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
 .btn-full{width:100%}
 .btn-sm{padding:9px 15px;font-size:13px}
 .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--rad);box-shadow:var(--shadow)}
 .pad{padding:22px}
-.mini{font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--cream);color:var(--ink);white-space:nowrap;display:inline-block}
-.mini.lang{background:var(--mint-soft);color:var(--mint-deep)}
+.mini{font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--cream);color:var(--ink);white-space:nowrap}
+.mini.tier{background:var(--gold-soft);color:var(--gold-deep)}
+.mini.elite{background:var(--plum-soft);color:var(--plum)}
 .mini.pend{background:var(--sand);color:var(--slate)}
+.mini.lang{background:var(--mint-soft);color:var(--mint-deep)}
 .okpill{display:inline-flex;align-items:center;gap:7px;background:var(--mint-soft);color:var(--mint-deep);font-weight:700;font-size:12.5px;padding:7px 13px;border-radius:999px}
 .pendpill{display:inline-flex;align-items:center;gap:7px;background:var(--gold-soft);color:var(--gold-deep);font-weight:700;font-size:12.5px;padding:7px 13px;border-radius:999px}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:12.5px;font-weight:600;color:var(--slate);margin-bottom:6px}
-.field input,.field textarea,.field select{width:100%;border:1.5px solid var(--line);border-radius:var(--rad-sm);padding:12px 15px;font-size:15px;background:var(--paper)}
+.field input,.field select,.field textarea{width:100%;border:1.5px solid var(--line);border-radius:var(--rad-sm);padding:12px 15px;font-size:15px;background:var(--paper)}
 .field input:focus,.field textarea:focus{outline:none;border-color:var(--mint)}
+.up{color:var(--mint-deep);font-weight:700}
+.dn{color:var(--warn);font-weight:700}
 
-/* gate */
+/* ============ GATE ============ */
 #gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px 20px;background:radial-gradient(110% 70% at 50% 0%,var(--cream),var(--paper) 75%)}
-.gate-in{width:100%;max-width:440px;text-align:center}
+.gate-in{width:100%;max-width:760px}
+.gate-head{text-align:center;margin-bottom:30px}
 .mark{width:62px;height:62px;border-radius:18px;background:var(--ink);display:grid;place-items:center;font-size:31px;margin:0 auto 18px}
-.gate-in h1{font-size:clamp(26px,4vw,34px);margin-bottom:6px}
-.gate-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--rad);padding:24px;box-shadow:var(--shadow);margin-top:22px;text-align:left}
-.gate-card .gt{font-family:var(--fd);font-size:19px;margin-bottom:4px}
-.gate-card .gs{font-size:13px;color:var(--slate);margin-bottom:18px}
-.note{font-size:12.5px;line-height:1.55;color:var(--slate)}
+.gate-head h1{font-size:clamp(28px,4vw,40px);margin-bottom:8px}
+.persona{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:17px;border:1.5px solid var(--line);border-radius:var(--rad-sm);background:var(--paper);margin-bottom:11px;transition:border-color .15s,transform .1s;box-shadow:var(--shadow)}
+.persona:hover{border-color:var(--mint)}
+.persona:active{transform:scale(.99)}
+.persona .pav{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-weight:700;font-size:19px;flex-shrink:0}
+.persona b{display:block;font-size:15px}
+.persona span{font-size:12.5px;color:var(--slate);line-height:1.4;display:block}
 
-/* chrome */
+/* ============ WELCOME EXPERIENCE ============ */
+#wx{position:fixed;inset:0;z-index:200;background:linear-gradient(155deg,#082A30,#0E3A41 55%,#0A2C32);color:var(--paper);display:none;overflow-y:auto}
+#wx.open{display:block;animation:wxin .4s ease}
+@keyframes wxin{from{opacity:0}to{opacity:1}}
+.wx-in{max-width:680px;margin:0 auto;padding:54px 24px 60px;position:relative;z-index:1}
+.wx-orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0}
+.wx-eyebrow{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--mint);margin-bottom:14px}
+.wx-in h1{font-size:clamp(30px,5vw,44px);color:var(--paper);line-height:1.12}
+.wx-in h1 em{font-style:italic;color:var(--mint)}
+.wx-sub{margin-top:12px;font-size:15.5px;color:rgba(246,240,230,.75);line-height:1.6;max-width:50ch}
+.wx-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:30px}
+@media(min-width:640px){.wx-grid{grid-template-columns:repeat(3,1fr)}}
+.wx-stat{background:rgba(246,240,230,.06);border:1px solid rgba(246,240,230,.13);border-radius:18px;padding:18px 16px;opacity:0;transform:translateY(10px);transition:opacity .5s,transform .5s}
+.wx-stat.in{opacity:1;transform:none}
+.wx-stat .n{font-family:var(--fd);font-size:30px;font-weight:600;color:var(--paper);line-height:1}
+.wx-stat .n em{font-style:normal;color:var(--mint)}
+.wx-stat .l{font-size:12px;color:rgba(246,240,230,.65);margin-top:7px;line-height:1.4;font-weight:600}
+.wx-next{margin-top:30px;background:rgba(91,224,160,.1);border:1px solid rgba(91,224,160,.3);border-radius:18px;padding:20px;opacity:0;transform:translateY(10px);transition:opacity .5s .2s,transform .5s .2s}
+.wx-next.in{opacity:1;transform:none}
+.wx-next b{font-family:var(--fd);font-size:17px;display:block;margin-bottom:4px}
+.wx-next span{font-size:13.5px;color:rgba(246,240,230,.75);line-height:1.55}
+.wx-acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.wx-foot{margin-top:26px;font-size:12px;color:rgba(246,240,230,.45);line-height:1.55}
+
+/* ============ CHROME ============ */
 #topnav{position:sticky;top:0;z-index:70;background:rgba(253,251,247,.9);backdrop-filter:saturate(180%) blur(14px);border-bottom:1px solid var(--line)}
-.tn-in{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:26px;padding:14px 24px}
-.tn-logo{display:flex;align-items:center;gap:10px;font-family:var(--fd);font-size:18px;font-weight:600}
+.tn-in{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:13px 24px}
+.tn-logo{display:flex;align-items:center;gap:10px;font-family:var(--fd);font-size:18px;font-weight:600;white-space:nowrap}
 .tn-logo .lm{width:34px;height:34px;border-radius:10px;background:var(--ink);display:grid;place-items:center;font-size:17px}
-.tn-links{display:flex;gap:4px;flex:1}
-.tn-links a{padding:9px 15px;border-radius:999px;font-size:14px;font-weight:600;color:var(--slate);text-decoration:none;cursor:pointer}
+.tn-links{display:flex;gap:2px;flex:1;overflow-x:auto;scrollbar-width:none}
+.tn-links::-webkit-scrollbar{display:none}
+.tn-links a{padding:9px 13px;border-radius:999px;font-size:13.5px;font-weight:600;color:var(--slate);text-decoration:none;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px}
 .tn-links a.on{background:var(--cream);color:var(--ink)}
-.tn-right{display:flex;align-items:center;gap:10px}
+.tn-links a .ct{min-width:17px;height:17px;border-radius:99px;background:var(--gold);color:#fff;font-size:10px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
+.tn-right{display:flex;align-items:center;gap:9px}
+.tierpill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 13px;font-size:11.5px;font-weight:800;white-space:nowrap}
 .tabbar{position:fixed;bottom:0;left:0;right:0;background:rgba(253,251,247,.93);backdrop-filter:saturate(180%) blur(16px);border-top:1px solid var(--line);display:none;padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:70}
-.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;color:var(--slate);font-size:10.5px;font-weight:600}
-.tab .ti{font-size:20px;line-height:1}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;color:var(--slate);font-size:10px;font-weight:600;position:relative}
+.tab .ti{font-size:19px;line-height:1}
 .tab.on{color:var(--ink)}
-@media(max-width:899px){.tn-links,.tn-right .btn{display:none}.tabbar{display:flex}body.inapp{padding-bottom:84px}}
+.tab .bub{position:absolute;top:2px;right:50%;margin-right:-20px;min-width:15px;height:15px;border-radius:99px;background:var(--gold);color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 4px}
+@media(max-width:919px){
+  .tn-links,.tn-right .demo-wrap{display:none}
+  .tabbar{display:flex}
+  body.inapp{padding-bottom:84px}
+}
 
-.page{max-width:1240px;margin:0 auto;padding:26px 24px 60px}
-@media(max-width:899px){.page{padding:18px 16px 40px}}
+/* ============ LAYOUT ============ */
+.page{max-width:1280px;margin:0 auto;padding:24px 24px 70px}
+@media(max-width:899px){.page{padding:18px 16px 46px}}
 .phead{margin-bottom:18px}
-.phead h1{font-size:clamp(24px,3vw,32px);margin:4px 0}
-.guide{font-size:13.5px;color:var(--slate);max-width:640px;line-height:1.55}
-.cols2{display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
-@media(max-width:899px){.cols2{grid-template-columns:1fr}}
-.stack{display:flex;flex-direction:column;gap:18px}
-.stat-grid{display:grid;gap:12px}
-.stat{background:var(--cream);border-radius:var(--rad-sm);padding:14px}
-.stat b{font-family:var(--fd);font-size:24px;display:block}
-.stat span{font-size:11.5px;color:var(--slate);line-height:1.3;display:block;margin-top:2px}
-.rowcard{display:flex;align-items:center;gap:13px;width:100%;text-align:left;padding:13px;border:1px solid var(--line);border-radius:var(--rad-sm);background:var(--paper);margin-bottom:9px}
-.rowcard:last-child{margin-bottom:0}
-.rowcard .ic{width:38px;height:38px;border-radius:11px;background:var(--cream);display:grid;place-items:center;font-size:18px;flex-shrink:0}
+.phead .eyebrow{margin-bottom:6px}
+.phead h1{font-size:clamp(24px,3vw,32px);margin-bottom:4px}
+.phead .guide{color:var(--slate);font-size:14.5px}
+.cols2{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;align-items:start}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:899px){.cols2,.cols3{grid-template-columns:1fr}}
+.stack>*{margin-bottom:16px}
+.slabel{display:flex;align-items:baseline;justify-content:space-between;padding:10px 2px 12px;gap:10px;flex-wrap:wrap}
+.slabel h3{font-size:19px}
+.slabel a{font-size:13px;font-weight:600;color:var(--mint-deep);text-decoration:none;cursor:pointer}
+
+/* hero greeting */
+.hero{position:relative;border-radius:var(--rad);overflow:hidden;background:linear-gradient(150deg,#0C3138,#103E44 55%,#0A2C32);color:var(--paper);padding:26px;box-shadow:var(--shadow-lg);margin-bottom:18px}
+.hero .eyebrow{color:var(--mint);margin-bottom:8px}
+.hero h2{font-size:clamp(21px,2.6vw,27px);color:var(--paper);margin-bottom:6px}
+.hero h2 em{font-style:italic;color:var(--mint)}
+.hero p{font-size:14px;color:rgba(246,240,230,.78);max-width:560px}
+.hero .gloss{position:absolute;right:-30px;top:-30px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(91,224,160,.18),transparent 70%)}
+.standing-line{display:inline-flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;background:rgba(246,240,230,.07);border:1px solid rgba(246,240,230,.14);border-radius:999px;padding:8px 16px;font-size:12.5px;color:rgba(246,240,230,.85);cursor:pointer}
+.standing-line .sl-tier{font-family:var(--fd);font-weight:600;color:#E8D9BC;letter-spacing:.02em}
+.standing-line .sl-up{color:var(--mint);font-weight:700}
+
+/* TODAY cards */
+.today-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-bottom:18px}
+@media(min-width:680px){.today-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1020px){.today-grid{grid-template-columns:repeat(5,1fr)}}
+.tcard{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow);text-align:left;transition:transform .12s,border-color .15s;cursor:pointer;display:block;width:100%}
+.tcard:hover{border-color:var(--mint);transform:translateY(-2px)}
+.tcard .tn{font-family:var(--fd);font-size:30px;font-weight:600;line-height:1}
+.tcard .tl{font-size:12px;font-weight:600;color:var(--slate);margin-top:7px;line-height:1.3}
+.tcard .td{font-size:11px;font-weight:700;margin-top:5px;color:var(--mint-deep)}
+.tcard.hot{border-color:rgba(184,146,79,.55);background:linear-gradient(180deg,var(--paper),#FBF6EC)}
+.tcard.hot .tn{color:var(--gold-deep)}
+
+/* opportunity money strip */
+.opp-total{border-radius:var(--rad);background:linear-gradient(140deg,#15535C,#0E3A41);color:var(--paper);padding:24px;box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+.opp-total .gloss{position:absolute;right:-40px;top:-40px;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(184,146,79,.25),transparent 70%)}
+.opp-total .eyebrow{color:var(--mint);margin-bottom:8px}
+.opp-total .big{font-family:var(--fd);font-size:clamp(36px,5vw,46px);line-height:1;font-weight:600}
+.opp-total .big small{font-size:15px;color:rgba(246,240,230,.6);font-weight:400;font-family:var(--fb)}
+.opp-rows{margin-top:16px;border-top:1px solid rgba(246,240,230,.14)}
+.opp-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(246,240,230,.1);font-size:13.5px}
+.opp-row:last-child{border-bottom:none}
+.opp-row .ok{width:32px;height:32px;border-radius:10px;background:rgba(246,240,230,.1);display:grid;place-items:center;font-size:15px;flex-shrink:0}
+.opp-row .ob{flex:1;min-width:0}
+.opp-row .ob b{display:block;font-size:13.5px}
+.opp-row .ob span{font-size:11.5px;color:rgba(246,240,230,.6)}
+.opp-row .ov{font-family:var(--fd);font-weight:600;font-size:16px;color:#E8D9BC;white-space:nowrap}
+.opp-note{font-size:11px;color:rgba(246,240,230,.5);margin-top:12px;line-height:1.5}
+
+/* pipeline board */
+.board{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 18px;-webkit-overflow-scrolling:touch}
+.bcol{flex:0 0 258px;background:var(--sand);border-radius:var(--rad-sm);padding:10px}
+.bcol-head{display:flex;align-items:center;justify-content:space-between;padding:4px 6px 10px}
+.bcol-head b{font-size:13px;font-weight:700}
+.bcol-head .ct{font-size:11.5px;font-weight:700;background:var(--paper);border-radius:99px;padding:2px 8px;color:var(--slate)}
+.pcard{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:13px;margin-bottom:9px;box-shadow:var(--shadow)}
+.pcard .name{font-weight:600;font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:6px}
+.pcard .meta{font-size:12px;color:var(--slate);margin-top:4px;line-height:1.45}
+.pcard .val{font-family:var(--fd);font-size:16px;font-weight:600;color:var(--gold-deep);margin-top:8px}
+.pcard .val small{font-size:10px;font-family:var(--fb);font-weight:700;color:var(--slate);letter-spacing:.04em;text-transform:uppercase}
+.pcard .foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.pcard .ago{font-size:11px;color:var(--slate)}
+.sig{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:6px;padding:3px 7px}
+.sig-high{background:var(--gold-soft);color:var(--gold-deep)}
+.sig-med{background:var(--mint-soft);color:var(--mint-deep)}
+.sig-new{background:var(--paper);border:1px solid var(--mint);color:var(--mint-deep)}
+
+/* performance score */
+.scorewrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.ringnum{font-family:var(--fd);font-weight:600}
+.score-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px}
+.lane{display:grid;grid-template-columns:140px 1fr 56px;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line-soft);font-size:13px}
+.lane:last-child{border-bottom:none}
+.lane b{font-weight:600;font-size:12.5px}
+.lane .cap{font-size:10.5px;color:var(--slate);display:block;font-weight:500}
+.lane-bar{height:7px;border-radius:99px;background:var(--cream);overflow:hidden}
+.lane-bar i{display:block;height:100%;border-radius:99px;background:var(--mint)}
+.lane-bar i.gold{background:var(--gold)}
+.lane .pts{text-align:right;font-weight:600;font-family:var(--fd);font-size:14px}
+@media(max-width:560px){.lane{grid-template-columns:104px 1fr 46px}}
+
+/* activity feed */
+.feed-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line-soft);align-items:flex-start}
+.feed-item:last-child{border-bottom:none}
+.feed-time{font-size:11px;color:var(--slate);min-width:60px;padding-top:3px;font-weight:600}
+.feed-dot{width:9px;height:9px;border-radius:50%;background:var(--mint);margin-top:7px;flex:0 0 9px}
+.feed-dot.gold{background:var(--gold)}
+.feed-dot.plum{background:var(--plum)}
+.feed-text{font-size:13.5px;line-height:1.45}
+.feed-text b{font-weight:600}
+.feed-item.fresh{animation:feedin .5s ease}
+@keyframes feedin{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mint);margin-right:6px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* reputation */
+.rep-strip{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.rep-big{font-family:var(--fd);font-size:52px;font-weight:600;line-height:1}
+.stars{color:var(--gold);font-size:16px;letter-spacing:2px}
+.rep-src{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:4px}
+@media(min-width:760px){.rep-src{grid-template-columns:repeat(4,1fr)}}
+.src-card{padding:14px;text-align:center;background:var(--paper);border:1px solid var(--line);border-radius:var(--rad-sm);box-shadow:var(--shadow)}
+.src-card .s-name{font-size:11.5px;font-weight:700;color:var(--slate)}
+.src-card .s-rate{font-family:var(--fd);font-size:23px;font-weight:600;margin-top:3px}
+.src-card .s-ct{font-size:11px;color:var(--slate)}
+.src-card .s-d{font-size:11px;font-weight:700;color:var(--mint-deep);margin-top:2px}
+.spark{display:flex;align-items:flex-end;gap:5px;height:54px;margin-top:8px}
+.spark i{flex:1;border-radius:5px 5px 2px 2px;background:var(--mint-soft);min-width:8px;position:relative}
+.spark i.on{background:var(--mint)}
+.spark-lbl{display:flex;gap:5px;font-size:9.5px;color:var(--slate);font-weight:700;margin-top:5px}
+.spark-lbl span{flex:1;text-align:center}
+.confbox{background:var(--cream);border-radius:12px;padding:11px 13px}
+.confbox span{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--slate);display:block}
+.confbox b{font-size:14px;font-family:var(--fd)}
+
+/* rankings */
+.plaque{background:linear-gradient(160deg,#082A30,#0E3A41);border-radius:var(--rad);padding:28px 26px;color:var(--paper);position:relative;overflow:hidden;border:1px solid rgba(184,146,79,.4);box-shadow:var(--shadow-lg)}
+.plaque::before{content:"";position:absolute;inset:10px;border:1px solid rgba(184,146,79,.45);border-radius:14px;pointer-events:none}
+.plaque.reveal::before{animation:engrave 1.1s ease forwards}
+@keyframes engrave{from{clip-path:inset(0 100% 0 0);opacity:0}to{clip-path:inset(0 0 0 0);opacity:1}}
+.plaque .pq-eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#E8D9BC}
+.plaque h2{font-family:var(--fd);font-size:clamp(26px,5vw,34px);font-weight:600;margin-top:8px;color:var(--paper)}
+.plaque .pq-sub{font-size:13px;color:rgba(246,240,230,.7);margin-top:6px}
+.pq-num{font-family:var(--fd);font-size:15px;color:#E8D9BC;margin-top:14px;font-weight:600}
+.pq-progress{height:5px;border-radius:99px;background:rgba(246,240,230,.13);margin-top:10px;max-width:400px;overflow:hidden}
+.pq-progress i{display:block;height:100%;background:var(--gold);border-radius:99px}
+.pq-note{font-size:11.5px;color:rgba(246,240,230,.55);margin-top:10px}
+.rank-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
+@media(min-width:760px){.rank-grid{grid-template-columns:repeat(4,1fr)}}
+.rank-card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow);text-align:center}
+.rank-card .rk{font-family:var(--fd);font-size:28px;font-weight:600;line-height:1}
+.rank-card .rl{font-size:11.5px;font-weight:700;color:var(--slate);margin-top:6px}
+.rank-card .rd{font-size:11px;font-weight:700;margin-top:4px}
+.lb-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line-soft);font-size:13.5px}
+.lb-row:last-child{border-bottom:none}
+.lb-row.me{background:#FBF6EC;border-radius:12px;padding:12px;border:1px solid rgba(184,146,79,.4);margin:2px 0}
+.lb-rank{font-family:var(--fd);font-weight:600;font-size:16px;min-width:28px;color:var(--slate)}
+.lb-row.me .lb-rank{color:var(--gold-deep)}
+.lb-name{flex:1;min-width:0}
+.lb-name b{display:block;font-weight:600}
+.lb-name span{font-size:11.5px;color:var(--slate)}
+.lb-score{font-family:var(--fd);font-weight:600;font-size:15px}
+.lb-delta{font-size:11px;font-weight:700;min-width:32px;text-align:right}
+.trophy-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:760px){.trophy-row{grid-template-columns:repeat(3,1fr)}}
+.trophy{padding:16px;text-align:center;background:var(--paper);border:1px solid var(--line);border-radius:var(--rad-sm);box-shadow:var(--shadow)}
+.trophy .t-medal{width:44px;height:44px;margin:0 auto 8px;border-radius:50%;background:linear-gradient(160deg,var(--gold),#8a6a33);color:#fff;display:grid;place-items:center;font-size:19px;box-shadow:inset 0 0 0 3px rgba(255,255,255,.25)}
+.trophy b{font-size:13px;display:block}
+.trophy span{font-size:11.5px;color:var(--slate)}
+.lever{display:flex;gap:12px;align-items:flex-start;padding:14px;background:var(--warn-soft);border:1px solid #EBC8AE;border-radius:var(--rad-sm);font-size:13px;color:#7A3D1E}
+
+/* rewards */
+.rw-head{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.rw-bal{font-family:var(--fd);font-size:34px;font-weight:600;line-height:1}
+.camp{padding:18px;background:var(--paper);border:1px solid var(--line);border-radius:var(--rad-sm);box-shadow:var(--shadow)}
+.camp .c-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.camp b.cn{font-size:15px;font-family:var(--fd)}
+.camp .c-funnel{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:13px}
+.camp .cf{background:var(--cream);border-radius:10px;padding:9px 6px;text-align:center}
+.camp .cf b{font-family:var(--fd);font-size:17px;display:block}
+.camp .cf span{font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--slate)}
+.camp .c-roi{margin-top:11px;font-size:12.5px;font-weight:700;color:var(--mint-deep)}
+
+/* rowcards / tasks / receipts */
+.rowcard{display:flex;align-items:center;gap:13px;padding:14px;background:var(--paper);border:1px solid var(--line);border-radius:var(--rad-sm);box-shadow:var(--shadow);width:100%;text-align:left;margin-bottom:11px;transition:border-color .15s}
+.rowcard:hover{border-color:var(--mint)}
+.rowcard .ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:18px;flex-shrink:0;background:var(--cream)}
 .rowcard .meta{flex:1;min-width:0}
-.rowcard .meta b{display:block;font-size:14px;font-weight:600}
+.rowcard .meta b{font-size:14px;display:block}
 .rowcard .meta span{font-size:12px;color:var(--slate)}
-.rowcard .arr{color:var(--slate);font-size:18px}
-.rcpt{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;padding:11px 0;border-bottom:1px solid var(--line-soft)}
-.rcpt:last-child{border-bottom:none}
-.rcpt .ric{width:30px;font-size:16px;flex-shrink:0;text-align:center}
-.rcpt .rb{flex:1;min-width:0}
-.rcpt .rb b{display:block;font-size:13.5px;font-weight:600}
-.rcpt .rb span{font-size:12px;color:var(--slate);line-height:1.4}
-.rcpt .rd{font-size:11px;color:var(--slate);white-space:nowrap;flex-shrink:0}
+.rowcard .arr{color:var(--slate);font-size:17px}
+.taskrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line-soft);width:100%;text-align:left;transition:opacity .12s}
+.taskrow:last-child{border-bottom:none}
+.taskrow:active{opacity:.7}
+.taskrow .tk{flex:1;min-width:0}
+.taskrow .tk b{font-size:13.5px;display:block}
+.taskrow .tk span{font-size:11.5px;color:var(--slate)}
+.taskrow .gain{font-weight:700;font-size:12px;color:var(--mint-deep);background:var(--mint-soft);border-radius:999px;padding:4px 10px;white-space:nowrap}
+
+/* locked premium features */
+.lockcard{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:var(--rad-sm);box-shadow:var(--shadow);padding:17px;overflow:hidden}
+.lockcard .lk-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.lockcard .lk-top b{font-size:14.5px;font-family:var(--fd)}
+.lockcard .lk-tier{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:99px;padding:4px 9px;background:var(--plum-soft);color:var(--plum);white-space:nowrap}
+.lockcard .lk-tier.gold{background:var(--gold-soft);color:var(--gold-deep)}
+.lockcard .lk-what{font-size:12.5px;color:var(--slate);line-height:1.5}
+.lockcard .lk-why{font-size:12px;margin-top:8px;line-height:1.5}
+.lockcard .lk-why b{color:var(--mint-deep)}
+.lockcard .lk-preview{margin-top:10px;border-radius:10px;background:var(--cream);padding:10px 12px;font-size:11.5px;color:var(--slate);filter:blur(2.5px);user-select:none;pointer-events:none}
+.lockcard .lk-cta{margin-top:11px}
+.lockgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(max-width:760px){.lockgrid{grid-template-columns:1fr}}
+.lockwrap{position:relative}
+.lockover{position:absolute;inset:0;background:rgba(253,251,247,.86);backdrop-filter:blur(2px);border-radius:var(--rad);z-index:5;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;text-align:center;padding:24px}
+
+/* media slots */
+.slotgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px}
+.slot2{border:1.5px dashed var(--line);border-radius:var(--rad-sm);padding:13px 12px;text-align:left;transition:border-color .15s;background:var(--paper)}
+.slot2:hover{border-color:var(--mint)}
+.slot2.done{border-style:solid;border-color:var(--mint);background:var(--mint-soft)}
+.slot2.plat{border-color:var(--plum-soft)}
+.slot2 .si{font-size:19px;margin-bottom:5px}
+.slot2 b{display:block;font-size:12.5px}
+.slot2 span{font-size:10.5px;color:var(--slate);line-height:1.35;display:block;margin-top:2px}
+
+/* onboarding */
+.ob-bar{display:flex;align-items:center;gap:14px;background:var(--paper);border:1px solid rgba(184,146,79,.45);border-radius:var(--rad);padding:16px 20px;box-shadow:var(--shadow);margin-bottom:18px;flex-wrap:wrap}
+.ob-bar .ob-ring{flex-shrink:0}
+.ob-bar .ob-tx{flex:1;min-width:200px}
+.ob-bar .ob-tx b{font-family:var(--fd);font-size:15.5px;display:block}
+.ob-bar .ob-tx span{font-size:12.5px;color:var(--slate)}
+.ob-step{display:flex;gap:13px;position:relative;padding-bottom:18px}
+.ob-step:last-child{padding-bottom:0}
+.ob-step .rail{position:absolute;left:13px;top:28px;bottom:-2px;width:2px;background:var(--line)}
+.ob-step:last-child .rail{display:none}
+.ob-step.done .rail{background:var(--mint)}
+.ob-dot{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;font-size:12px;font-weight:700;border:2px solid var(--line);background:var(--paper);color:var(--slate);z-index:1}
+.ob-step.done .ob-dot{background:var(--mint);border-color:var(--mint);color:var(--ink)}
+.ob-step.now .ob-dot{border-color:var(--ink);color:var(--ink);box-shadow:0 0 0 4px var(--cream)}
+.ob-body{flex:1}
+.ob-body b{font-size:14px;display:block;line-height:1.3}
+.ob-step.done .ob-body b{color:var(--slate);font-weight:500;text-decoration:line-through;text-decoration-color:rgba(107,122,126,.5)}
+.ob-body span{font-size:12px;color:var(--slate);display:block;margin-top:1px}
+.ob-body .gain2{display:inline-block;font-size:11px;font-weight:700;color:var(--mint-deep);background:var(--mint-soft);border-radius:99px;padding:2px 9px;margin-top:5px}
+
+/* tables */
 .tbl{width:100%;border-collapse:collapse;font-size:13.5px}
-.tbl th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--slate);padding:8px 10px;border-bottom:1px solid var(--line)}
-.tbl td{padding:11px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top}
-.letter{background:var(--paper);border:1px solid var(--line);border-radius:var(--rad);padding:20px;box-shadow:var(--shadow);margin-bottom:14px}
-.letter .q{font-family:var(--fd);font-size:18px;line-height:1.5;margin-bottom:10px}
-.letter .who{font-size:12.5px;color:var(--slate)}
-.lrow{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--line-soft)}
-.lrow:last-child{border-bottom:none}
-.lrow .lk{font-size:18px;width:26px;text-align:center}
+.tbl th{text-align:left;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);padding:10px;border-bottom:1px solid var(--line)}
+.tbl td{padding:13px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+.tbl tr:last-child td{border:none}
+
+/* sheets */
+.sheet-back{position:fixed;inset:0;background:rgba(8,42,48,.42);z-index:130;display:none;align-items:flex-end;justify-content:center}
+@media(min-width:900px){.sheet-back{align-items:center}}
+.sheet-back.open{display:flex}
+.sheet{width:100%;max-width:560px;background:var(--paper);border-radius:26px 26px 0 0;padding:12px 24px calc(26px + env(safe-area-inset-bottom));box-shadow:var(--shadow-lg);max-height:92vh;overflow-y:auto;animation:rise .25s cubic-bezier(.2,.8,.2,1)}
+@media(min-width:900px){.sheet{border-radius:26px;padding:28px}}
+@keyframes rise{from{transform:translateY(60px);opacity:.4}to{transform:none;opacity:1}}
+.grab{width:38px;height:4px;border-radius:99px;background:var(--line);margin:0 auto 16px}
+@media(min-width:900px){.grab{display:none}}
+.sheet h3{font-size:21px;margin-bottom:6px}
+.sheet .ssub{color:var(--slate);font-size:14px;margin-bottom:18px}
+.celebrate{text-align:center;padding:4px 0}
+.celebrate .em{font-size:44px;margin-bottom:10px}
+.celebrate h3{font-size:22px}
+.celebrate .chip2{display:inline-block;background:var(--gold-soft);color:var(--gold-deep);font-weight:700;font-size:13px;padding:7px 15px;border-radius:999px;margin:8px 0 10px}
+.celebrate p{color:var(--slate);font-size:14px;margin-bottom:18px}
+
+/* toasts: dentist moments */
+#toasts{position:fixed;top:70px;right:16px;z-index:140;display:flex;flex-direction:column;gap:9px;pointer-events:none;max-width:330px}
+@media(max-width:899px){#toasts{top:62px;left:16px;right:16px;max-width:none}}
+.toast{background:var(--ink);color:var(--paper);border-radius:16px;padding:13px 16px;font-size:13px;box-shadow:var(--shadow-lg);display:flex;gap:11px;align-items:flex-start;animation:toastin .4s cubic-bezier(.2,.8,.2,1);pointer-events:auto;border:1px solid rgba(91,224,160,.3)}
+.toast .tic{font-size:17px;flex-shrink:0}
+.toast b{font-weight:700}
+.toast .tx{line-height:1.45}
+.toast .tx span{display:block;font-size:11.5px;color:rgba(246,240,230,.65)}
+@keyframes toastin{from{opacity:0;transform:translateY(-10px) scale(.97)}to{opacity:1;transform:none}}
+.toast.out{animation:toastout .35s ease forwards}
+@keyframes toastout{to{opacity:0;transform:translateY(-8px)}}
+
+.foot-note{text-align:center;font-size:11.5px;color:var(--slate);padding:26px 30px 6px;line-height:1.5;max-width:720px;margin:0 auto}
+.reqrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line-soft)}
+.reqrow:last-child{border-bottom:none}
+.reqrow .rs{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12px;flex-shrink:0;font-weight:700}
+.reqrow .rs.ok{background:var(--mint-soft);color:var(--mint-deep)}
+.reqrow .rs.no{background:var(--sand);color:var(--slate)}
+.reqrow .rq{flex:1;min-width:0}
+.reqrow .rq b{font-size:13.5px;display:block}
+.reqrow .rq span{font-size:11.5px;color:var(--slate)}
+.lrow{display:flex;align-items:center;gap:13px;padding:12px 2px;border-bottom:1px solid var(--line-soft)}
+.lrow:last-child{border:none}
+.lrow .lk{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:13px;background:var(--cream);flex-shrink:0;font-weight:700}
 .lrow .lt{flex:1}
-.lrow .lt b{display:block;font-size:13.5px}
-.lrow .lt span{font-size:12px;color:var(--slate)}
-.tierpill{font-size:12px;font-weight:700;padding:6px 13px;border-radius:999px}
-.banner{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
-.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:13px 20px;border-radius:999px;font-size:13.5px;font-weight:600;z-index:120;box-shadow:var(--shadow-lg);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
-.empty{text-align:center;padding:30px 20px;color:var(--slate);font-size:13.5px}
-.spin{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--mint);border-radius:50%;animation:sp 1s linear infinite;margin:40px auto}
-@keyframes sp{to{transform:rotate(360deg)}}
-.preview-flag{background:var(--gold-soft);color:var(--gold-deep);font-size:11.5px;font-weight:700;padding:8px 14px;border-radius:999px;display:inline-block}
-/* gate two-column (aligned with patient app) */
-.gatewrap{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
-@media(max-width:860px){.gatewrap{grid-template-columns:1fr}.gatebrand{display:none}}
-.gatebrand{background:linear-gradient(160deg,#08312C,#0B3B36 60%,#0E4A41);color:var(--paper);padding:54px 48px;display:flex;flex-direction:column;justify-content:center}
-.gatebrand .blogo{display:flex;align-items:center;gap:12px;margin-bottom:40px}
-.gatebrand .blogo .lm{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.12);display:grid;place-items:center;font-size:21px}
-.gatebrand h1{font-size:clamp(30px,3.4vw,46px);line-height:1.08;margin-bottom:18px}
-.gatebrand p{font-size:15px;line-height:1.6;color:rgba(246,240,230,.82);max-width:430px;margin-bottom:26px}
-.gatebrand .bpt{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;font-size:14px;color:rgba(246,240,230,.92);max-width:430px}
-.gatebrand .bpt .bk{color:var(--mint);font-weight:700;flex-shrink:0}
+.lrow .lt b{font-size:13.5px;display:block}
+.lrow .lt span{font-size:11.5px;color:var(--slate)}
+.lrow .amt{font-size:12.5px;font-weight:700;color:var(--gold-deep)}
 .gatecol{display:flex;align-items:center;justify-content:center;padding:40px 26px;background:radial-gradient(110% 70% at 50% 0%,var(--cream),var(--paper) 75%)}
-.gateform{width:100%;max-width:400px}
+.gateform{width:100%;max-width:560px}
 .gateform .eyebrow{margin-bottom:8px}
 .gateform h2{font-size:clamp(24px,3vw,30px);margin-bottom:6px}
 .gateform .gsub{font-size:13.5px;color:var(--slate);margin-bottom:20px;line-height:1.5}
-.seg{display:flex;background:var(--cream);border-radius:999px;padding:5px;margin-bottom:18px}
-.seg button{flex:1;padding:10px;border-radius:999px;font-weight:600;font-size:14px;color:var(--slate)}
-.seg button.on{background:var(--paper);color:var(--ink);box-shadow:var(--shadow)}
-.oauthbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:1.5px solid var(--line);border-radius:var(--rad-sm);padding:12px;font-weight:600;font-size:14px;background:var(--paper);margin-bottom:10px}
-.ordiv{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--slate);font-size:11.5px;font-weight:600;letter-spacing:.08em}
-.ordiv::before,.ordiv::after{content:"";flex:1;height:1px;background:var(--line)}
 .obtabs{display:flex;gap:8px;margin-bottom:18px}
 .obtabs button{flex:1;padding:12px;border-radius:var(--rad-sm);font-weight:700;font-size:13.5px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink)}
 .obtabs button.on{border-color:var(--ink);background:var(--ink);color:var(--paper)}
@@ -154,51 +413,19 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
 .formgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
 @media(max-width:560px){.formgrid{grid-template-columns:1fr}}
 .formgrid .full{grid-column:1/-1}
+.note{font-size:12.5px;line-height:1.55;color:var(--slate)}
+.empty{text-align:center;padding:30px 20px;color:var(--slate);font-size:13.5px}
+.spin{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--mint);border-radius:50%;animation:sp 1s linear infinite;margin:40px auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 
-<!-- ============ SIGN IN GATE ============ -->
-<div id="gate">
-  <div class="gatewrap">
-    <div class="gatebrand">
-      <div class="blogo"><div class="lm">🦫</div><div style="font-family:var(--fd);font-size:19px;font-weight:600">CoverCapy <span style="opacity:.7;font-family:var(--fb);font-size:12px;font-weight:600">· Practice portal</span></div></div>
-      <h1 class="serif">Your practice,<br>finally in view.</h1>
-      <p>See the patients who booked you, the eligibility they need, the reviews and nominations they left — all in one place, drawn live from what patients do on CoverCapy.</p>
-      <div class="bpt"><span class="bk">✓</span><span>Every booking, review and nomination for your office, as it happens.</span></div>
-      <div class="bpt"><span class="bk">✓</span><span>Verified patient benefits in your inbox before they arrive.</span></div>
-      <div class="bpt"><span class="bk">✓</span><span>Your standing, your profile, your membership — managed by you.</span></div>
-    </div>
-    <div class="gatecol">
-      <div class="gateform">
-        <div class="eyebrow" id="awKick">For dental offices</div>
-        <h2 class="serif" id="awTitle">Sign in to your practice</h2>
-        <div class="gsub" id="awSub">Pick up your patient feedback, eligibility inbox and profile right where you left off.</div>
-
-        <div class="seg" id="seg">
-          <button id="segSignin" class="on">Sign in</button>
-          <button id="segCreate">Create account</button>
-        </div>
-
-        <div id="authErr" class="note" style="color:#B4453A;margin-bottom:10px"></div>
-        <div class="field"><label>Work email</label><input id="au-email" type="email" placeholder="you@yourpractice.com" autocomplete="email"></div>
-        <div class="field"><label>Password</label><input id="au-pw" type="password" placeholder="••••••••" autocomplete="current-password"></div>
-        <button class="btn btn-ink btn-full" id="auGo">Sign in</button>
-
-        <div class="ordiv">OR CONTINUE WITH</div>
-        <button class="oauthbtn" id="oauthGoogle"><svg width="17" height="17" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.6 9.2c0-.6-.1-1.2-.2-1.8H9v3.4h4.8a4.1 4.1 0 0 1-1.8 2.7v2.2h2.9c1.7-1.6 2.7-3.9 2.7-6.5z"/><path fill="#34A853" d="M9 18c2.4 0 4.5-.8 6-2.2l-2.9-2.2c-.8.5-1.8.9-3.1.9-2.4 0-4.4-1.6-5.1-3.8H.9v2.3A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.9 10.7a5.4 5.4 0 0 1 0-3.4V5H.9a9 9 0 0 0 0 8l3-2.3z"/><path fill="#EA4335" d="M9 3.6c1.3 0 2.5.5 3.4 1.3l2.6-2.6A9 9 0 0 0 .9 5l3 2.3C4.6 5.2 6.6 3.6 9 3.6z"/></svg> Continue with Google</button>
-        <button class="oauthbtn" id="oauthApple"><svg width="16" height="16" viewBox="0 0 18 18"><path fill="#000" d="M12.6 9.6c0-1.7 1.4-2.5 1.5-2.6-.8-1.2-2-1.4-2.5-1.4-1-.1-2 .6-2.6.6-.5 0-1.4-.6-2.3-.6-1.2 0-2.3.7-2.9 1.8-1.2 2.1-.3 5.3.9 7 .6.8 1.2 1.8 2.1 1.7.9 0 1.2-.6 2.3-.6 1 0 1.4.6 2.3.5.9 0 1.5-.8 2.1-1.7.7-1 .9-1.9.9-2-.1 0-1.8-.7-1.8-2.7zM11 4.3c.5-.6.8-1.4.7-2.3-.7 0-1.5.5-2 1.1-.4.5-.8 1.3-.7 2.1.8.1 1.6-.4 2-.9z"/></svg> Continue with Apple</button>
-
-        <div style="text-align:center;margin-top:16px"><button class="btn btn-ghost btn-sm" id="previewBtn">Just exploring? Preview the live demo →</button></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ============ ONBOARDING (claim or add office) ============ -->
+<div id="gate"></div>
 <div id="onboard" class="hidden">
   <div class="gatecol" style="min-height:100vh">
-    <div class="gateform" style="max-width:560px">
+    <div class="gateform">
       <div class="eyebrow">Set up your office</div>
       <h2 class="serif">Connect your practice</h2>
       <div class="gsub">Find your office in the CoverCapy directory to claim it, or add it yourself. We use your NPI and Tax ID to verify you control the practice.</div>
@@ -211,136 +438,884 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;letter-spacing:-.01em;line-hei
     </div>
   </div>
 </div>
-
-<!-- ============ APP ============ -->
-<div id="app" class="hidden">
-  <div id="topnav"></div>
-  <main id="view"></main>
-  <div class="tabbar" id="tabbar"></div>
-</div>
-
-<div class="toast" id="toast"></div>
+<div id="wx"></div>
+<header id="topnav" class="hidden"></header>
+<main id="view"></main>
+<nav class="tabbar hidden" id="tabbar"></nav>
+<div id="toasts"></div>
+<div class="sheet-back" id="sheet"><div class="sheet" id="sheetIn"></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-/* ====================== CONFIG ====================== */
-var SB_URL='https://hfvbeqlefwwjlrbyxpbj.supabase.co';
-var SB_KEY='sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf';
-var sb=window.supabase.createClient(SB_URL,SB_KEY);
-
+(function(){
+'use strict';
 var $=function(id){return document.getElementById(id);};
-function esc(s){return (s==null?'':String(s)).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},2600);}
-function fmtDate(ts){if(!ts)return '';var d=new Date(ts);var now=new Date();var sameDay=d.toDateString()===now.toDateString();if(sameDay)return 'Today';return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});}
-function fmtTime(ts){if(!ts)return '';return new Date(ts).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});}
+var fmt$=function(n){return '$'+n.toLocaleString('en-US');};
 
-/* ====================== STATE ====================== */
-var S={me:null,summary:null,activity:[],inbox:[],noms:[],preview:false,tab:'ddash'};
-
-/* ====================== SAMPLE (preview) ====================== */
-var SAMPLE={
-  me:{practice_name:'Capybara Cove Dental',doctor_name:'Dr. Mia Song',city:'Costa Mesa',state:'CA',
-      membership_tier:'capy_accredited',accreditation_status:'accredited',
-      weighted_rating:4.8,weighted_review_count:132,google_rating:4.8,google_review_count:96,
-      capy_rating:5.0,capy_review_count:12,languages:['English','Mandarin'],open_weekends:true,
-      booking_url:'https://example.com',short_description:'Plain answers and honest pricing.'},
-  summary:{saved_count:38,booking_intents:11,widget_views:142,appointments_total:24,appointments_upcoming:6,reviews_count:12,avg_rating:4.9,nominations_total:3,verification_open:2},
-  activity:[
-    {kind:'verification',patient:'Marcus L.',detail:'Guardian PPO',status:'with_carrier',ts:isoAgo(0)},
-    {kind:'booking',patient:'Donna T.',detail:'confirmed',starts_at:isoAgo(-1),ppo_verified:true,ts:isoAgo(1)},
-    {kind:'nomination',patient:'Mina K.',detail:'Explained every option before treatment',credited:false,ts:isoAgo(2)},
-    {kind:'review',patient:'Donna T.',detail:'Great experience! Gentle and clear.',rating:5,ts:isoAgo(3)},
-    {kind:'nomination',patient:'Marcus L.',detail:'Best cleaning I have had in years',credited:false,ts:isoAgo(6)}
+/* ==================================================================
+   V30 DATA. In the live build these come from Supabase tables and
+   RPCs (dentists, office_events, opportunities, review_sources,
+   market_rankings, reward_campaigns, dentist_profile_items).
+   Estimated production values use national PPO fee averages and are
+   always labeled as estimates.
+   ================================================================== */
+var DATA={
+  office:{name:'Capybara Cove Dental',doc:'Dr. Mia Song',docShort:'Dr. Song',city:'Costa Mesa',county:'Orange County',region:'Southern California',slug:'capybara-cove-dental'},
+  welcome:{ppoPatients:14200,strength:42,opportunities:3,reviews:96,networks:4},
+  today:[
+    {k:'verify',ic:'&#128203;',n:3,l:'Insurance requests',d:'oldest: 2 hrs',go:'patients',hot:true},
+    {k:'reviews',ic:'&#11088;',n:2,l:'Review notifications',d:'1 reply + 1 confirm',go:'reputation',hot:false},
+    {k:'appt',ic:'&#128197;',n:1,l:'Appointment requests',d:'came in today',go:'pipeline',hot:true},
+    {k:'msg',ic:'&#128172;',n:2,l:'Patient messages',d:'reply with one tap',go:'patients',hot:false},
+    {k:'noms',ic:'&#127942;',n:1,l:'New nomination',d:'a patient vouched for you',go:'pipeline',hot:false}
   ],
+  opportunities:[
+    {name:'Donna Tran',kind:'Insurance verification',meta:'Humana PPO &#183; cleaning + exam &#183; booking Jun 12',value:280,vlabel:'Est. production',stage:'verify',age:'2 hrs ago',heat:'high'},
+    {name:'Marcus Lee',kind:'Insurance verification',meta:'Guardian PPO &#183; crown, D2740',value:1250,vlabel:'Est. production',stage:'verify',age:'1 day ago',heat:'med'},
+    {name:'Elena Park',kind:'Appointment request',meta:'UHC Primary &#183; root canal consult, D3330',value:1200,vlabel:'Est. production',stage:'booking',age:'Today',heat:'high'},
+    {name:'New patient lead',kind:'Profile inquiry',meta:'Cigna PPO member &#183; viewed profile, asked about implants',value:2500,vlabel:'Est. production',stage:'new',age:'1 hr ago',heat:'new'},
+    {name:'Mina Kim',kind:'Nomination referral',meta:'"Explained every option before treatment" &#183; vouched publicly',value:4500,vlabel:'Est. lifetime value',stage:'new',age:'Jun 9',heat:'high'},
+    {name:'Grace H.',kind:'Appointment scheduled',meta:'Aetna &#183; exam + xrays &#183; Fri 10:30',value:350,vlabel:'Est. production',stage:'seen',age:'3 days',heat:'med'},
+    {name:'James L.',kind:'Active treatment',meta:'Ameritas &#183; crown sequence &#183; referred 1 friend',value:1450,vlabel:'Est. production',stage:'advocate',age:'1 week',heat:'high'}
+  ],
+  score:{total:87,delta:'+5 this month',pct:'Top 12% in Orange County',
+    lanes:[
+      {n:'Profile completion',cap:'Photos, bio, hours, carriers',pts:18,max:20},
+      {n:'Review strength',cap:'Rating and volume vs market',pts:17,max:20},
+      {n:'Response speed',cap:'Median reply under 24h',pts:12,max:15},
+      {n:'Verification activity',cap:'Requests answered this month',pts:13,max:15},
+      {n:'Patient engagement',cap:'Views, saves, inquiries',pts:10,max:10},
+      {n:'Rewards participation',cap:'Active campaigns and redemptions',pts:8,max:10},
+      {n:'Network standing',cap:'Nominations and referrals',pts:9,max:10}
+    ],
+    strengths:['Patient engagement is maxed: 214 profile views in 30 days, +18%','Review strength beats the 4.4 market average','Three patient nominations on record this season'],
+    weak:[{t:'Response speed slipped to 31h median',s:'Under 24h is worth +3 points and feeds your ranking',go:'patients'},
+          {t:'Doctor bio still empty',s:'The most read block on a profile &#183; +2 points',go:'dprofile'}]},
+  reputation:{rating:4.8,count:132,gcount:96,delta:'+7 this month',pct:'Top 8% in Orange County',velocity:[3,4,2,5,6,4,7],themes:[['Gentle with kids',46],['Honest pricing',39],['Plain language',33]],
+    sources:[{n:'Google',r:4.8,c:86,d:'+4 this month'},{n:'Yelp',r:4.6,c:21,d:'+1 this month'},{n:'ZocDoc',r:4.9,c:13,d:'+1 this month'},{n:'CoverCapy',r:5.0,c:12,d:'+1 this month'}],
+    market:{avg:4.4,n:14}},
+  rankings:{
+    tier:'County Favorite',prestige:87450,nextTier:'Kingdom Elite',nextAt:150000,season:'Season 4',weeksLeft:5,heroLine:'#4 of 23 &#183; small practice bracket &#183; Orange County, Season 4',heroDelta:'&#9650;2 this week',
+    cards:[
+      {rk:'#2',l:'Costa Mesa &#183; City',d:'&#9650;1 this week',up:true},
+      {rk:'#11',l:'Orange County',d:'Top 8% of 142',up:true},
+      {rk:'#37',l:'Southern California',d:'&#9650;4 this month',up:true},
+      {rk:'#3',l:'Family dentistry',d:'Specialty bracket',up:false}
+    ],
+    board:[
+      {r:1,n:'Harbor Point Dental',s:'Newport Beach &#183; Capy Accredited',sc:12480,d:'&#183;',cl:''},
+      {r:2,n:'Serene Dental Center',s:'Irvine &#183; Capy Accredited',sc:11940,d:'&#9650;1',cl:'up'},
+      {r:3,n:'Coast Family Dental',s:'Huntington Beach &#183; Platinum Elite',sc:11580,d:'&#9660;1',cl:'dn'},
+      {r:4,n:'Capybara Cove Dental',s:'Costa Mesa &#183; 163 points behind #3',sc:11417,d:'&#9650;2',cl:'up',me:true},
+      {r:5,n:'Sunrise Smiles Dental',s:'Tustin &#183; Capy Accredited',sc:9640,d:'&#9660;2',cl:'dn'},
+      {r:6,n:'Garden Grove Dental Arts',s:'Garden Grove &#183; Listed',sc:8310,d:'&#9650;1',cl:'up'},
+      {r:7,n:'Mesa Verde Dental',s:'Costa Mesa &#183; Capy Accredited',sc:7890,d:'&#183;',cl:''}
+    ],
+    trophies:[
+      {ic:'&#9201;',n:'Fastest Responder',s:'Orange County &#183; Season 3'},
+      {ic:'&#128081;',n:'Most Backed',s:'Orange County &#183; Season 2'},
+      {ic:'&#127793;',n:'Rising Office',s:'Orange County &#183; Season 1'}
+    ]},
+  rewards:{balance:240,participation:18,pending:[{n:'Priya R.',t:'Whitening Session',c:'2,000 Crowns',s:'Verified visit on file Tuesday'}],
+    campaigns:[
+      {n:'Whitening Session',cost:'2,000 Crowns',claimed:12,booked:5,completed:3,revenue:1250,status:'Live'},
+      {n:'Electric Toothbrush',cost:'1,500 Crowns',claimed:8,booked:4,completed:4,revenue:680,status:'Live'},
+      {n:'$50 Gift Card',cost:'2,000 Crowns',claimed:0,booked:0,completed:0,revenue:0,status:'Draft'}
+    ]},
+  feed:[
+    {t:'9:14 AM',ic:'',cl:'',x:'<b>Donna Tran</b> requested insurance verification for her Jun 12 visit.'},
+    {t:'8:02 AM',ic:'',cl:'gold',x:'<b>Elena Park</b> requested an appointment after viewing your profile.'},
+    {t:'7:40 AM',ic:'',cl:'',x:'Your profile appeared in <b>11 patient searches</b> this morning.'},
+    {t:'Yesterday',ic:'',cl:'plum',x:'<b>Mina Kim</b> nominated your office: "Explained every option before treatment."'},
+    {t:'Yesterday',ic:'',cl:'',x:'<b>Donna Tran</b> left a 5 star CoverCapy review. It shows on your public card.'},
+    {t:'Jun 9',ic:'',cl:'gold',x:'<b>Priya R.</b> redeemed Whitening Session, 2,000 Crowns.'},
+    {t:'Jun 8',ic:'',cl:'',x:'Ranking improved: <b>&#9650;2 this week</b> in Orange County, Season 4.'}
+  ],
+  moments:[
+    {ic:'&#128064;',h:'Profile viewed 47 times this week',s:'+18% over last week'},
+    {ic:'&#11088;',h:'New review detected on Google',s:'Blended rating holding at 4.8'},
+    {ic:'&#9650;',h:'You moved up 2 places this week',s:'#4 in Orange County, Season 4'},
+    {ic:'&#127942;',h:'A patient nominated your office',s:'Read it on the Opportunities page'},
+    {ic:'&#128081;',h:'Reward redeemed: Whitening Session',s:'$1,250 attributed revenue this season'}
+  ],
+  visibility:{searches:142,appearances:104,missed:38,views:214,viewsDelta:'+18%'},
   inbox:[
-    {source:'verification',id:'s1',patient:'Marcus L.',carrier:'Guardian PPO',status:'with_carrier',language:'English',ts:isoAgo(0)},
-    {source:'booking',id:'s2',patient:'Donna T.',carrier:null,status:'confirmed',starts_at:isoAgo(-1),ppo_verified:true,ts:isoAgo(1)},
-    {source:'verification',id:'s3',patient:'Aisha R.',carrier:'Humana PPO',status:'verified',language:'English',ts:isoAgo(4)}
+    {id:'donna',name:'Donna Tran',member:'0000027201988',plan:'Humana PPO',status:'verified',ctx:'Booking &#183; Jun 12, 9:00 AM'},
+    {id:'marcus',name:'Marcus Lee',member:'88012457730',plan:'Guardian PPO',status:'pending',ctx:'Verification request &#183; Jun 10'},
+    {id:'elena',name:'Elena Park',member:'5512093348A',plan:'UHC Primary Dental',status:'verified',ctx:'Verification request &#183; Jun 9'},
+    {id:'priya',name:'Priya R.',member:'',plan:'&#8212;',status:'message',ctx:'Message &#183; asks what whitening costs out of pocket'},
+    {id:'james',name:'James L.',member:'',plan:'&#8212;',status:'message',ctx:'Message &#183; wants to move Friday&#39;s visit'}
   ],
-  noms:[
-    {id:'n1',nominee_name:'Mina K.',trust_reason:'Explained every option before treatment',created_at:isoAgo(2),credited:false},
-    {id:'n2',nominee_name:'Marcus L.',trust_reason:'Best cleaning I have had in years',created_at:isoAgo(6),credited:false},
-    {id:'n3',nominee_name:'Donna T.',trust_reason:'Honest pricing, never upsold me',created_at:isoAgo(9),credited:false}
+  premium:[
+    {n:'Top Placement',tier:'Platinum Elite',what:'Your office appears first in patient searches up to 18 miles out, always labeled Featured.',why:'You currently miss 38 of 142 nearby searches.',benefit:'Offices with featured placement average 2.3x more profile views.',preview:'Featured &#183; Capybara Cove Dental &#183; first result in 8 cities'},
+    {n:'Competitive Analytics',tier:'Platinum Elite',what:'See which offices win the searches you lose, and why.',why:'Coast Family Dental sits 163 points ahead of you.',benefit:'Know exactly which lever closes the gap each week.',preview:'You lost 12 searches to Office B on weekend hours'},
+    {n:'Video Introduction',tier:'Platinum Elite',what:'A 60 second video at the top of your public profile.',why:'Patients book people, not buildings.',benefit:'Profiles with video hold attention 3x longer.',preview:'&#9658; Meet Dr. Song &#183; 0:60'},
+    {n:'Advanced Reputation Insights',tier:'Platinum Elite',what:'Theme analysis across every review source, with alerts.',why:'Your reviews mention "gentle with kids" 46% of the time.',benefit:'Lead with what patients already love about you.',preview:'Trending theme: honest pricing &#9650;12%'},
+    {n:'Market Share Reporting',tier:'Platinum Elite',what:'Your share of patient demand in each nearby city, monthly.',why:'Costa Mesa demand grew 9% last quarter.',benefit:'Spot the city to win before competitors do.',preview:'Costa Mesa: you hold 14% of PPO searches'},
+    {n:'Review Aggregation Boost',tier:'Capy Accredited',what:'Blended rating from Google, Yelp, ZocDoc, and CoverCapy on your public card.',why:'Single source ratings undersell you: your blend is 4.8.',benefit:'132 reviews shown instead of 96.',preview:'4.8 &#9733; across 4 sources &#183; 132 reviews'}
+  ],
+  onboarding:[
+    {k:'claim',b:'Claim your profile',s:'Confirmed when you signed in',gain:6,done:true},
+    {k:'verifyown',b:'Verify ownership',s:'License and identity check, usually same day',gain:6,done:true},
+    {k:'photos',b:'Add office photos',s:'4 slots: reception, exterior, treatment room, team',gain:14,done:false},
+    {k:'desc',b:'Describe your office',s:'Philosophy, technology, amenities, languages',gain:8,done:false},
+    {k:'carriers',b:'Confirm insurance acceptance',s:'Patients filter by carrier first',gain:12,done:false},
+    {k:'rewards',b:'Activate patient rewards',s:'Turn happy patients into bookings',gain:7,done:false},
+    {k:'score',b:'Unlock your performance score',s:'Completes automatically when the steps above are done',gain:0,done:false}
   ]
 };
-function isoAgo(days){var d=new Date();d.setDate(d.getDate()-days);return d.toISOString();}
+DATA.repQueue=[
+  {ic:'&#11088;',t:'"Great experience!" &#183; Donna T. &#183; 5 &#9733;',s:'CoverCapy verified patient &#183; yesterday',btn:'Reply',act:'reply'},
+  {ic:'&#128221;',t:'Priya R. says she left a Google review',s:'Confirm to add her thanks to your timeline',btn:'Confirm',act:'confirmrev'}
+];
+DATA.oppTotal=DATA.opportunities.reduce(function(s,o){return s+o.value;},0);
+DATA.oppProduction=DATA.opportunities.filter(function(o){return o.vlabel!=='Est. lifetime value';}).reduce(function(s,o){return s+o.value;},0);
+DATA.oppLTV=DATA.oppTotal-DATA.oppProduction;
 
-/* ====================== AUTH ====================== */
-var authMode='signin';
-function setAuthMode(m){
-  authMode=m;
-  $('segSignin').classList.toggle('on',m==='signin');
-  $('segCreate').classList.toggle('on',m==='create');
-  $('awTitle').textContent=m==='signin'?'Sign in to your practice':'Create your practice account';
-  $('awSub').textContent=m==='signin'?'Pick up your patient feedback, eligibility inbox and profile right where you left off.':'Set up access for your office. Next you’ll find or add your practice.';
-  $('au-pw').setAttribute('autocomplete',m==='signin'?'current-password':'new-password');
-  $('auGo').textContent=m==='signin'?'Sign in':'Create account';
-  $('authErr').textContent='';
+/* ===== state ===== */
+var S={entered:false,first:false,live:false,row:null,dTier:'accredited',obDone:{claim:true,verifyown:true},momentTimer:null,momentIdx:0};
+var DEMO=new URLSearchParams(location.search).get('demo')==='1';
+var SB_URL='https://hfvbeqlefwwjlrbyxpbj.supabase.co';
+var SB_KEY='sb_publishable_wlfujszvn2logC3KNL3MsA_AW1F42kf';
+var sb=window.supabase?window.supabase.createClient(SB_URL,SB_KEY):null;
+var esc=function(s){return (s==null?'':String(s)).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
+function paid(){return S.dTier==='accredited'||S.dTier==='platinum';}
+function plat(){return S.dTier==='platinum';}
+function tierLabel(){return {unclaimed:'Unclaimed',free:'Claimed &#183; Free',accredited:'Capy Accredited',platinum:'Platinum Elite'}[S.dTier];}
+function tierPillStyle(){return S.dTier==='platinum'?'background:var(--plum-soft);color:var(--plum)':S.dTier==='accredited'?'background:var(--gold-soft);color:var(--gold-deep)':'background:var(--sand);color:var(--slate)';}
+function maskId(m){return '&#8226;&#8226;&#8226;&#8226; '+String(m).slice(-4);}
+function ring(score,size,fs,color){
+  var r=(size-10)/2,c=2*Math.PI*r,off=c*(1-score/100);
+  return '<div style="position:relative;width:'+size+'px;height:'+size+'px;flex-shrink:0">'
+   +'<svg width="'+size+'" height="'+size+'" style="transform:rotate(-90deg)"><circle cx="'+(size/2)+'" cy="'+(size/2)+'" r="'+r+'" fill="none" stroke="var(--line-soft)" stroke-width="8"/><circle cx="'+(size/2)+'" cy="'+(size/2)+'" r="'+r+'" fill="none" stroke="'+(color||'var(--mint)')+'" stroke-width="8" stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'"/></svg>'
+   +'<div class="ringnum" style="position:absolute;inset:0;display:grid;place-items:center;font-size:'+fs+'px">'+score+'</div></div>';
 }
-$('segSignin').addEventListener('click',function(){setAuthMode('signin');});
-$('segCreate').addEventListener('click',function(){setAuthMode('create');});
-
-$('auGo').addEventListener('click',async function(){
-  var email=($('au-email').value||'').trim(), pw=$('au-pw').value||'';
-  $('authErr').textContent='';
-  if(!email||email.indexOf('@')<0){$('authErr').textContent='Enter your work email.';return;}
-  if(pw.length<6){$('authErr').textContent='Password must be at least 6 characters.';return;}
-  this.disabled=true;var lbl=this.textContent;this.textContent='Working…';
-  var res;
-  if(authMode==='signin') res=await sb.auth.signInWithPassword({email:email,password:pw});
-  else res=await sb.auth.signUp({email:email,password:pw,options:{emailRedirectTo:window.location.href}});
-  this.disabled=false;this.textContent=lbl;
-  if(res.error){$('authErr').textContent=res.error.message;return;}
-  if(authMode==='create' && !res.data.session){
-    $('authErr').style.color='var(--mint-deep)';
-    $('authErr').innerHTML='<b>Check your inbox</b> to confirm '+esc(email)+', then come back and sign in.';
+/* ===== GATE ===== */
+function renderGate(){
+  if(DEMO){
+    $('gate').innerHTML='<div class="gate-in"><div class="gate-head"><div class="mark">&#129441;</div>'
+   +'<h1>CoverCapy Practice Portal</h1>'
+   +'<div class="muted" style="font-size:15px">The operating system for dental practice growth. Pick an entry to preview.</div></div>'
+   +'<button class="persona" data-enter="first"><div class="pav" style="background:var(--mint-soft);color:var(--mint-deep)">&#10024;</div><div><b>First time claim &#183; Dr. Mia Song</b><span>Capybara Cove Dental just claimed its profile. See the welcome experience and guided setup.</span></div></button>'
+   +'<button class="persona" data-enter="return"><div class="pav" style="background:var(--ink);color:var(--mint)">&#129441;</div><div><b>Returning sign in &#183; Dr. Mia Song</b><span>Straight to Today: opportunities, reputation, rankings, rewards, and membership. Tier switchable.</span></div></button>'
+   +'<div class="card pad" style="box-shadow:none;background:transparent;border:none;margin-top:6px"><div style="font-size:12.5px;line-height:1.55;color:var(--slate);text-align:center">Preview build with sample data. Accreditation is reviewed on merit and is never sold.</div></div></div>';
     return;
   }
-  loadOffice();
-});
-function oauth(provider){return async function(){
-  var res=await sb.auth.signInWithOAuth({provider:provider,options:{redirectTo:window.location.href}});
-  if(res.error)$('authErr').textContent=res.error.message;
-};}
-$('oauthGoogle').addEventListener('click',oauth('google'));
-$('oauthApple').addEventListener('click',oauth('apple'));
+  $('gate').innerHTML='<div class="gate-in" style="max-width:420px;text-align:center"><div class="mark">&#129441;</div><div class="serif" style="font-size:22px;margin-bottom:6px">Practice portal</div><div class="muted" style="font-size:14px;margin-bottom:14px">Loading your practice portal&#8230;</div><div class="spin"></div></div>';
+}
 
-$('previewBtn').addEventListener('click',function(){
-  S.preview=true;S.me=SAMPLE.me;S.summary=SAMPLE.summary;S.activity=SAMPLE.activity;S.inbox=SAMPLE.inbox;S.noms=SAMPLE.noms;
-  enterApp();
-});
-$('obSignout').addEventListener('click',async function(){await sb.auth.signOut();location.reload();});
-
-async function boot(){
-  $('gate').classList.add('hidden');
-  var qs=new URLSearchParams(location.search);
-  if(qs.get('demo')==='1'){
-    S.preview=true;S.me=SAMPLE.me;S.summary=SAMPLE.summary;S.activity=SAMPLE.activity;S.inbox=SAMPLE.inbox;S.noms=SAMPLE.noms;
-    enterApp();return;
+/* ===== WELCOME EXPERIENCE (first claim) ===== */
+function countUp(el,target,ms){
+  var t0=null,from=0;
+  function step(ts){
+    if(!t0)t0=ts;
+    var p=Math.min(1,(ts-t0)/ms);p=1-Math.pow(1-p,3);
+    el.textContent=Math.round(from+(target-from)*p).toLocaleString('en-US');
+    if(p<1)requestAnimationFrame(step);
   }
-  var ses=await sb.auth.getSession();
-  if(ses.data.session){ await loadOffice(); }
-  else { location.replace('/?role=dentist'); }
+  requestAnimationFrame(step);
 }
-sb.auth.onAuthStateChange(function(ev,session){ if(session && !S.me && !S.preview){ loadOffice(); } });
-
-async function loadOffice(){
-  var u=(await sb.auth.getUser()).data.user; if(!u) return;
-  var r=await sb.from('dentists').select('*').eq('claimed_by',u.id).limit(1);
-  if(r.error){toast(r.error.message);return;}
-  if(!r.data||!r.data.length){ showOnboard(u); return; }
-  S.me=r.data[0];
-  await refreshData();
-  enterApp();
+function wxStats(){
+  if(S.live&&DATA.welcomeLive)return DATA.welcomeLive;
+  var w=DATA.welcome;
+  return [
+    {v:w.ppoPatients,em:true,l:'PPO patients searching in your area'},
+    {v:w.strength,suffix:'<span style="font-size:16px;color:rgba(246,240,230,.5)"> / 100</span>',l:'Current profile strength'},
+    {v:w.opportunities,em:true,l:'Patient requests already waiting'},
+    {v:w.reviews,l:'Reviews found and imported'},
+    {v:w.networks,l:'Insurance networks detected'},
+    {html:'<em>#6</em>',l:'Costa Mesa ranking, unclaimed'}
+  ];
+}
+function openWelcome(){
+  var w=DATA.welcome;
+  $('wx').innerHTML='<div class="wx-orb" style="width:280px;height:280px;top:-80px;right:-80px;background:rgba(91,224,160,.07)"></div>'
+   +'<div class="wx-orb" style="width:160px;height:160px;bottom:10%;left:-50px;background:rgba(184,146,79,.1)"></div>'
+   +'<div class="wx-in">'
+   +'<div class="wx-eyebrow">Profile claimed &#183; '+DATA.office.name+'</div>'
+   +'<h1>Welcome, '+(DATA.office.docShort||'Doctor')+'.<br><em>Patients can already find you.</em></h1>'
+   +'<div class="wx-sub">Your profile is live on CoverCapy. Here is what is waiting for you before you have touched a thing.</div>'
+   +'<div class="wx-grid">'
+   +wxStats().map(function(st,i){
+      return '<div class="wx-stat" data-wx="'+i+'"><div class="n">'+(st.html||((st.em?'<em':'<span')+' data-count="'+st.v+'">0'+(st.em?'</em>':'</span>')+(st.suffix||'')))+'</div><div class="l">'+st.l+'</div></div>';
+    }).join('')
+   +'</div>'
+   +'<div class="wx-next" id="wxNext"><b>Recommended next step</b><span>'+((S.live&&DATA.welcomeNextText)?DATA.welcomeNextText:'Complete your profile to unlock a visibility boost. Five short steps, about 15 minutes, and your profile strength climbs from 42 to 83, clearing the 80 bar where accredited placement opens up.')+'</span></div>'
+   +'<div class="wx-acts"><button class="btn btn-mint" data-wxgo="setup">Start guided setup</button><button class="btn btn-ghost" style="border-color:rgba(246,240,230,.3);color:var(--paper)" data-wxgo="skip">Take me to my portal</button></div>'
+   +'<div class="wx-foot">Counts above are live patient activity near '+DATA.office.city+'. Dollar figures elsewhere in the portal are estimates and are always labeled.</div>'
+   +'</div>';
+  $('wx').classList.add('open');
+  var stats=$('wx').querySelectorAll('.wx-stat');
+  stats.forEach(function(st,i){setTimeout(function(){st.classList.add('in');
+    st.querySelectorAll('[data-count]').forEach(function(c){countUp(c,parseInt(c.getAttribute('data-count'),10),900);});
+  },250+i*180);});
+  setTimeout(function(){var nx=$('wxNext');if(nx)nx.classList.add('in');},250+stats.length*180);
+  $('wx').querySelectorAll('[data-wxgo]').forEach(function(b){
+    b.addEventListener('click',function(){
+      $('wx').classList.remove('open');
+      enter(b.getAttribute('data-wxgo')==='setup');
+    });
+  });
 }
 
-/* ====================== ONBOARDING ====================== */
+/* ===== CHROME ===== */
+var NAV=[['today','Today','&#9737;'],['pipeline','Opportunities','&#9826;'],['patients','Patients','&#128203;'],['reputation','Reputation','&#11088;'],['rankings','Rankings','&#9650;'],['rewards','Rewards','&#128081;'],['dprofile','Profile','&#9671;'],['membership','Membership','&#9819;']];
+var TABS=[['today','Today','&#9737;'],['pipeline','Opps','&#9826;'],['reputation','Reviews','&#11088;'],['rankings','Rank','&#9650;'],['membership','More','&#9819;']];
+function navCount(id){
+  if(S.dTier==='unclaimed')return 0;
+  if(id==='pipeline')return DATA.opportunities.length;
+  if(id==='patients')return DATA.today.filter(function(c){return c.go==='patients';}).reduce(function(s,c){return s+c.n;},0);
+  if(id==='reputation')return DATA.today.filter(function(c){return c.go==='reputation';}).reduce(function(s,c){return s+c.n;},0);
+  return 0;
+}
+/* tier aware content: free tier never sees paid-only signals */
+function feedItems(){
+  if(S.live)return DATA.feed;
+  if(paid())return DATA.feed;
+  return DATA.feed.filter(function(f){return f.x.indexOf('redeemed')<0&&f.x.indexOf('Ranking improved')<0;});
+}
+function momentsFor(){
+  if(S.live)return DATA.momentsLive||[];
+  if(S.first||!paid())return [DATA.moments[0],DATA.moments[1],DATA.moments[3]];
+  return DATA.moments;
+}
+function repCount(){return paid()?DATA.reputation.count:(DATA.reputation.gcount||DATA.reputation.count);}
+function renderChrome(){
+  $('topnav').innerHTML='<div class="tn-in"><div class="tn-logo"><div class="lm">&#129441;</div>CoverCapy <span class="muted" style="font-family:var(--fb);font-size:12px;font-weight:600">&#183; Practice portal</span></div>'
+   +'<nav class="tn-links">'+NAV.map(function(n){var c=navCount(n[0]);return '<a data-go="'+n[0]+'">'+n[1]+(c?'<span class="ct">'+c+'</span>':'')+'</a>';}).join('')+'</nav>'
+   +'<div class="tn-right"><span class="tierpill" id="dTierPill"></span>'
+   +(S.live?'':'<span class="demo-wrap"><select id="dTierSel" style="border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12px;font-weight:700;background:var(--paper)"><option value="free">Demo: Claimed free</option><option value="accredited">Demo: Capy Accredited</option><option value="platinum">Demo: Platinum Elite</option></select></span>')
+   +'<button class="btn btn-ghost btn-sm" id="switchSeat">'+(S.live?'Sign out':'Exit demo')+'</button></div></div>';
+  $('tabbar').innerHTML=TABS.map(function(n){var c=navCount(n[0]);return '<button class="tab" data-go="'+n[0]+'"><span class="ti">'+n[2]+'</span>'+n[1]+(c?'<span class="bub">'+c+'</span>':'')+'</button>';}).join('');
+  $('topnav').classList.remove('hidden');$('tabbar').classList.remove('hidden');
+  document.body.classList.add('inapp');
+  $('switchSeat').addEventListener('click',function(){
+    if(S.live&&sb){sb.auth.signOut().then(function(){location.replace('/?role=dentist');});}
+    else{location.hash='';location.href=location.pathname;}
+  });
+  var ts=$('dTierSel');
+  if(ts){ts.value=S.dTier;ts.addEventListener('change',function(){S.dTier=this.value;route();});}
+}
+function setActive(id){
+  document.querySelectorAll('[data-go]').forEach(function(a){
+    if(a.closest('#view'))return;
+    a.classList.toggle('on',a.dataset.go===id);
+  });
+}
+
+/* ===== onboarding helpers ===== */
+function obSteps(){
+  return DATA.onboarding.map(function(st){
+    var done=st.done||!!S.obDone[st.k];
+    if(st.k==='score'){
+      var others=DATA.onboarding.filter(function(x){return x.k!=='score';});
+      done=others.every(function(x){return x.done||S.obDone[x.k];});
+    }
+    return {k:st.k,b:st.b,s:st.s,gain:st.gain,done:done};
+  });
+}
+function obProgress(){var s=obSteps();return {done:s.filter(function(x){return x.done;}).length,total:s.length};}
+function obComplete(k){
+  if(S.obDone[k])return;
+  S.obDone[k]=true;
+  var p=obProgress();
+  var st=null;DATA.onboarding.forEach(function(x){if(x.k===k)st=x;});
+  if(p.done>=p.total){
+    celebrate({em:'&#127881;',title:'Setup complete',chip:'Profile strength 83 &#183; Strong',body:'Your performance score is unlocked and your profile now clears the bar for accredited placement. Patients searching in 8 nearby cities can find you.'});
+  } else {
+    celebrate({em:'&#9650;',title:st.b+' &#10003;',chip:'+'+st.gain+' profile strength',body:'Live on your public card. '+(p.total-p.done)+' step'+(p.total-p.done>1?'s':'')+' left to unlock your full performance score.'});
+  }
+  route();
+}
+function obSpine(){
+  var steps=obSteps(),u=null;
+  steps.forEach(function(st){if(!u&&!st.done)u=st.k;});
+  return steps.map(function(st){
+    var now=st.k===u;
+    return '<div class="ob-step '+(st.done?'done':now?'now':'')+'"><div class="rail"></div><div class="ob-dot">'+(st.done?'&#10003;':now?'&#9679;':'')+'</div>'
+     +'<div class="ob-body"><b>'+st.b+'</b><span>'+st.s+'</span>'
+     +(st.done||st.k==='score'?'':'<div style="margin-top:7px"><button class="btn btn-mint btn-sm" data-ob="'+st.k+'">'+(now?'Do this now':'Mark done')+'</button>'+(st.gain?' <span class="gain2">+'+st.gain+' strength</span>':'')+'</div>')
+     +'</div></div>';
+  }).join('');
+}
+function obBar(){
+  if(S.live)return '';
+  var p=obProgress();
+  if(p.done>=p.total||!S.first)return '';
+  return '<div class="ob-bar"><div class="ob-ring">'+ring(Math.round(p.done/p.total*100),58,15,'var(--gold)')+'</div>'
+   +'<div class="ob-tx"><b>Finish setting up your office</b><span>'+p.done+' of '+p.total+' steps done &#183; each step raises your visibility immediately</span></div>'
+   +'<button class="btn btn-gold btn-sm" data-act="setup">Continue setup</button></div>';
+}
+
+/* ===== TODAY ===== */
+function visCardHTML(){
+  if(S.live){
+    var V=DATA.visCards||[];
+    if(!V.length)return '';
+    return '<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Patient demand</div>'
+     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+     +V.map(function(c){return '<div class="confbox"><span>'+c.l+'</span><b>'+c.v+'</b></div>';}).join('')
+     +'</div>'+(DATA.visNote?'<div class="muted" style="font-size:11.5px;margin-top:10px;line-height:1.5">'+DATA.visNote+'</div>':'')+'</div>';
+  }
+  return '<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Visibility, last 30 days</div>'
+   +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+   +'<div class="confbox"><span>Patient searches</span><b>'+DATA.visibility.searches+'</b></div>'
+   +'<div class="confbox"><span>You appeared in</span><b>'+DATA.visibility.appearances+'</b></div>'
+   +'<div class="confbox"><span>Profile views</span><b>'+DATA.visibility.views+' <small style="color:var(--mint-deep);font-size:11px">'+DATA.visibility.viewsDelta+'</small></b></div>'
+   +'<div class="confbox" style="'+(paid()?'':'background:var(--warn-soft)')+'"><span>Missed searches</span><b style="'+(paid()?'':'color:var(--warn)')+'">'+DATA.visibility.missed+'</b></div>'
+   +'</div>'
+   +(paid()?'<div class="muted" style="font-size:11.5px;margin-top:10px;line-height:1.5">Missed searches were outside your placement radius.'+(plat()?'':' Platinum extends placement to 18 miles and recovers most of them.')+'</div>'
+     :'<div style="font-size:12px;margin-top:10px;line-height:1.5;color:var(--gold-deep)"><b>38 missed searches</b> were inside the accredited 10 mile radius. <a data-go="membership" style="text-decoration:underline;cursor:pointer">See membership</a>.</div>')+'</div>';
+}
+
+function vToday(){
+  var hr=new Date().getHours(),g=hr<12?'Good morning':hr<18?'Good afternoon':'Good evening';
+  var waiting=DATA.today[0].n+DATA.today[2].n;
+  var totalItems=DATA.today.reduce(function(s,c){return s+c.n;},0);
+  var sc=DATA.score;
+  var upsell='';
+  if(S.live){
+    if(S.dTier==='free') upsell='<div class="card pad" style="border-color:var(--gold);margin-bottom:16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><div style="font-size:24px">&#128274;</div><div style="flex:1;min-width:220px"><b>Accredited placement covers a 10 mile radius across 8 nearby cities</b><div class="muted" style="font-size:13px">Blended reviews from 4 sources, verified benefit snapshots, and the trust badge come with it. Reviewed on merit, never sold.</div></div><button class="btn btn-gold btn-sm" data-go="membership">See what membership unlocks</button></div>';
+    else if(S.dTier==='accredited') upsell='<div class="card pad" style="margin-bottom:16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;background:var(--plum-soft);border-color:var(--plum)"><div style="font-size:24px">&#9670;</div><div style="flex:1;min-width:220px"><b style="color:var(--plum)">Rankings are earned. Platinum widens your reach.</b><div class="muted" style="font-size:13px">Featured placement up to 18 miles out, the Showcase Builder, and the video profile.</div></div><button class="btn btn-plum btn-sm" data-go="membership">See Platinum</button></div>';
+  }
+  else if(S.dTier==='free'){
+    upsell='<div class="card pad" style="border-color:var(--gold);margin-bottom:16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><div style="font-size:24px">&#128274;</div><div style="flex:1;min-width:220px"><b>38 patient searches near you did not show your office this month</b><div class="muted" style="font-size:13px">Accredited placement covers a 10 mile radius across 8 cities. Your reviews, your rankings, and verified coverage snapshots come with it.</div></div><button class="btn btn-gold btn-sm" data-go="membership">See what membership unlocks</button></div>';
+  } else if(S.dTier==='accredited'){
+    upsell='<div class="card pad" style="margin-bottom:16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;background:var(--plum-soft);border-color:var(--plum)"><div style="font-size:24px">&#9670;</div><div style="flex:1;min-width:220px"><b style="color:var(--plum)">Rankings are earned. Platinum widens your reach.</b><div class="muted" style="font-size:13px">Tier never moves the board, but featured placement up to 18 miles out brings more of the patient activity that earns Prestige. Coast Family Dental, one place above you, is already Platinum.</div></div><button class="btn btn-plum btn-sm" data-go="membership">Unlock with Platinum</button></div>';
+  }
+  return '<div class="page">'
+  +'<div class="hero"><div class="gloss"></div><div class="eyebrow">Today at CoverCapy</div>'
+   +'<h2>'+g+', '+(DATA.office.docShort||'Doctor')+'. <em>'+waiting+' patient'+(waiting===1?'':'s')+'</em> '+(waiting===1?'is':'are')+' waiting on you.</h2>'
+   +'<p>'+DATA.today[0].n+' insurance requests and '+DATA.today[2].n+' appointment request came in since yesterday, '+totalItems+' new items in all. Revenue potential in your pipeline: <b style="color:#E8D9BC">'+fmt$(DATA.oppTotal)+'</b>.</p>'
+   +(S.first||!DATA.rankings.heroLine?'':'<div class="standing-line" data-go="rankings"><span class="sl-tier">'+DATA.rankings.tier+'</span><span>'+DATA.rankings.heroLine+'</span>'+(DATA.rankings.heroDelta?'<span class="sl-up">'+DATA.rankings.heroDelta+'</span>':'')+'</div>')+'</div>'
+  +obBar()
+  +upsell
+  +'<div class="today-grid">'+DATA.today.map(function(c){
+     return '<button class="tcard'+(c.hot?' hot':'')+'" data-go="'+c.go+'"><div class="tn">'+c.n+'</div><div class="tl">'+c.l+'</div><div class="td">'+c.d+'</div></button>';
+   }).join('')+'</div>'
+  +'<div class="cols2"><div class="stack">'
+  +oppTotalCard(3)
+  +'<div class="card pad"><div class="slabel" style="padding-top:0"><h3><span class="live-dot"></span>Live activity</h3><a data-go="pipeline">Open opportunities</a></div><div id="feedList">'
+   +feedItems().map(feedHTML).join('')+'</div>'
+   +'<div class="muted" style="font-size:11.5px;margin-top:10px;line-height:1.5">Every line is a named event from your CoverCapy profile. The feed updates as patients interact with your office.</div></div>'
+  +'</div><div class="stack">'
+  +scoreCard(true)
+  +visCardHTML()
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:6px">Reputation pulse</div>'
+   +'<div style="display:flex;align-items:baseline;gap:10px"><span class="serif" style="font-size:36px;font-weight:600">'+DATA.reputation.rating+'</span><span class="stars" style="font-size:13px">&#9733;&#9733;&#9733;&#9733;&#9733;</span></div>'
+   +'<div class="muted" style="font-size:12.5px;margin-top:2px">'+[repCount()+' reviews'+(paid()?' across 4 sources':' on Google'),(DATA.reputation.delta?'<span class="up">'+DATA.reputation.delta+'</span>':''),DATA.reputation.pct].filter(Boolean).join(' &#183; ')+'</div>'
+   +'<button class="btn btn-ghost btn-sm btn-full" data-go="reputation" style="margin-top:12px">Open reputation center</button></div>'
+  +'</div></div>'
+  +'<div class="foot-note">Estimated production values use national PPO fee averages and are always labeled as estimates. Named events are real activity from your profile.</div></div>';
+}
+function feedHTML(f){
+  return '<div class="feed-item"><div class="feed-time">'+f.t+'</div><div class="feed-dot '+f.cl+'"></div><div class="feed-text">'+f.x+'</div></div>';
+}
+function oppTotalCard(limit){
+  var items=limit?DATA.opportunities.slice(0,limit):DATA.opportunities;
+  return '<div class="opp-total"><div class="gloss"></div><div class="eyebrow">Opportunity pipeline</div>'
+   +'<div class="big">'+fmt$(DATA.oppTotal)+' <small>pending revenue potential</small></div>'
+   +'<div style="font-size:12px;color:rgba(246,240,230,.65);margin-top:7px">'+fmt$(DATA.oppProduction)+' est. production + '+fmt$(DATA.oppLTV)+' est. lifetime value</div>'
+   +'<div class="opp-rows">'+items.map(function(o){
+      return '<div class="opp-row"><div class="ok">'+({'Insurance verification':'&#128203;','Appointment request':'&#128197;','Profile inquiry':'&#128100;','Nomination referral':'&#127942;'}[o.kind]||'&#9826;')+'</div>'
+       +'<div class="ob"><b>'+o.kind+' &#183; '+o.name+'</b><span>'+o.meta+'</span></div>'
+       +'<div class="ov">'+fmt$(o.value)+'</div></div>';
+    }).join('')+'</div>'
+   +(limit&&DATA.opportunities.length>limit?'<button class="btn btn-mint btn-sm" data-go="pipeline" style="margin-top:14px">All '+DATA.opportunities.length+' opportunities &#8594;</button>':'')
+   +'<div class="opp-note">Estimated production based on national PPO fee averages for the requested treatment. Lifetime value estimates use average new patient retention. Always labeled, never billed.</div></div>';
+}
+function scoreCard(compact){
+  var sc=DATA.score;
+  var p=obProgress();
+  if(!S.live&&S.first&&p.done<p.total){
+    return '<div class="card pad"><div class="slabel" style="padding-top:0"><h3>Performance score</h3></div>'
+     +'<div class="scorewrap"><div style="position:relative;width:92px;height:92px;flex-shrink:0;border-radius:50%;border:8px solid var(--line-soft);display:grid;place-items:center;font-size:26px">&#128274;</div>'
+     +'<div style="flex:1;min-width:150px"><div class="serif" style="font-size:17px">Unlocks at setup step 7</div>'
+     +'<div class="muted" style="font-size:12px;margin-top:6px;line-height:1.5">Weighted across profile, reviews, speed, engagement, rewards, and standing. '+(p.total-p.done)+' setup steps to go.</div></div></div>'
+     +'<button class="btn btn-gold btn-sm btn-full" data-act="setup" style="margin-top:12px">Continue setup</button></div>';
+  }
+  return '<div class="card pad"><div class="slabel" style="padding-top:0"><h3>Performance score</h3>'+(compact?'<a data-go="dprofile">Improve it</a>':'')+'</div>'
+   +'<div class="scorewrap">'+ring(sc.total,compact?92:116,compact?26:32)+'<div style="flex:1;min-width:150px">'
+   +'<div class="serif" style="font-size:17px">'+sc.pct+'</div>'
+   +'<div class="score-line"><span class="okpill" style="font-size:11px;padding:4px 10px">'+sc.delta+'</span></div>'
+   +'<div class="muted" style="font-size:12px;margin-top:6px;line-height:1.5">Weighted across profile, reviews, speed, engagement, rewards, and standing. Tier never buys points.</div>'
+   +'</div></div>'
+   +(compact
+     ?'<div style="margin-top:12px">'+sc.weak.slice(0,1).map(function(w){return '<button class="taskrow" data-go="'+w.go+'"><div class="tk"><b>'+w.t+'</b><span>'+w.s+'</span></div><span class="gain">Fix</span></button>';}).join('')+'</div>'
+     :'')
+   +'</div>';
+}
+
+/* ===== OPPORTUNITIES (pipeline) ===== */
+function vPipeline(){
+  var stages=[['new','New'],['verify','Insurance'],['booking','Booking'],['seen','Seen'],['advocate','Advocate']];
+  var all=DATA.opportunities;
+  return '<div class="page"><div class="phead"><div class="eyebrow">Opportunities</div><h1>Your pipeline, in dollars</h1><div class="guide">Every patient interaction, staged from first touch to advocate, with estimated production attached.</div></div>'
+  +oppTotalCard(0)
+  +'<div class="slabel" style="margin-top:18px"><h3>Pipeline board</h3><span class="muted" style="font-size:12.5px">Tap a card to act on it</span></div>'
+  +'<div class="board">'+stages.map(function(st){
+     var cards=all.filter(function(o){return o.stage===st[0];});
+     return '<div class="bcol"><div class="bcol-head"><b>'+st[1]+'</b><span class="ct">'+cards.length+'</span></div>'
+      +cards.map(function(o){
+        return '<button class="pcard" style="width:100%;text-align:left;cursor:pointer" data-opp="'+o.name+'"><div class="name">'+o.name+' <span class="sig sig-'+(o.heat==='high'?'high':o.heat==='new'?'new':'med')+'">'+(o.heat==='new'?'New':o.heat==='high'?'High':'Medium')+'</span></div>'
+         +'<div class="meta">'+o.kind+'<br>'+o.meta+'</div>'
+         +'<div class="val">'+fmt$(o.value)+' <small>'+o.vlabel+'</small></div>'
+         +'<div class="foot"><span class="ago">'+o.age+'</span></div></button>';
+      }).join('')+'</div>';
+   }).join('')+'</div>'
+  +'<div class="cols2" style="margin-top:6px"><div class="stack">'
+  +(S.live?'':'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">Nomination waiting</div>'
+   +'<div class="serif" style="font-size:17px;line-height:1.45;margin-bottom:6px">"Explained every option before treatment."</div>'
+   +'<div class="muted" style="font-size:12px;margin-bottom:12px">Mina Kim &#183; nominated your office Jun 9 &#183; estimated lifetime value '+fmt$(4500)+'</div>'
+   +'<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-mint btn-sm" data-act="thank">Send a thank you</button><button class="btn btn-ghost btn-sm" data-act="nomwall">Feature on profile</button></div></div>')
+  +'</div><div class="stack">'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">Why these numbers</div><div class="muted" style="font-size:13px;line-height:1.65">Estimates use national PPO fee averages for the requested treatment code, and lifetime value uses average new patient retention at PPO offices. They exist to help you prioritize, and they are never invoiced or shown to patients.</div></div>'
+  +(paid()?'':'<div class="lockcard"><div class="lk-top"><b>Pipeline replies</b><span class="lk-tier gold">Capy Accredited</span></div><div class="lk-what">Reply to verification and booking requests directly from this board, with verified benefit snapshots attached.</div><div class="lk-why"><b>Why it matters:</b> offices replying under 24h convert 2x more requests.</div><div class="lk-cta"><button class="btn btn-gold btn-sm" data-go="membership">Unlock with accreditation</button></div></div>')
+  +'</div></div>'
+  +'<div class="foot-note">Pipeline stages reflect real patient actions. Estimated values are clearly labeled and never shown to patients.</div></div>';
+}
+/* ===== REPUTATION CENTER ===== */
+function vReputation(){
+  var R=DATA.reputation;
+  var spark='';
+  if(R.velocity){
+    var maxV=Math.max.apply(null,R.velocity);
+    spark='<div class="spark">'+R.velocity.map(function(v,i){
+      return '<i class="'+(i===R.velocity.length-1?'on':'')+'" style="height:'+Math.round(v/maxV*100)+'%"></i>';
+    }).join('')+'</div><div class="spark-lbl"><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span></div>';
+  }
+  var blendBlock=paid()
+   ? '<div class="rep-src">'+R.sources.map(function(s){
+       return '<div class="src-card"><div class="s-name">'+s.n+'</div><div class="s-rate">'+s.r+'</div><div class="s-ct">'+s.c+' reviews</div><div class="s-d">'+s.d+'</div></div>';
+     }).join('')+'</div>'
+   : '<div class="lockcard" style="margin-top:4px"><div class="lk-top"><b>Review Aggregation Boost</b><span class="lk-tier gold">Capy Accredited</span></div><div class="lk-what">Blend Google, Yelp, ZocDoc, and CoverCapy into one rating on your public card.</div><div class="lk-why"><b>Why it matters:</b> your Google-only card shows 96 reviews. Your real blend is 132 at 4.8.</div><div class="lk-preview">Google 4.8 &#183; 86 &nbsp;&#183;&nbsp; Yelp 4.6 &#183; 21 &nbsp;&#183;&nbsp; ZocDoc 4.9 &#183; 13 &nbsp;&#183;&nbsp; CoverCapy 5.0 &#183; 12</div><div class="lk-cta"><button class="btn btn-gold btn-sm" data-go="membership">Unlock with accreditation</button></div></div>';
+  return '<div class="page"><div class="phead"><div class="eyebrow">Reputation Center</div><h1>How patients talk about you</h1><div class="guide">Your blended rating, its movement, and where you sit in the market. Dentists love progress: here is yours.</div></div>'
+  +'<div class="card rep-strip pad" style="margin-bottom:16px">'
+   +'<div><div class="rep-big">'+R.rating+'</div><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div>'
+   +'<div style="flex:1;min-width:200px"><b style="font-size:16px;font-family:var(--fd)">'+(paid()?R.count+' reviews across 4 sources':'96 Google reviews')+'</b>'
+   +'<div class="muted" style="font-size:13px;margin-top:2px">'+[(R.delta?'<span class="up">'+R.delta+'</span>':''),(R.delta?'trending up':''),R.pct].filter(Boolean).join(' &#183; ')+'</div>'
+   +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">'+(R.market&&R.market.avg?'<span class="mini lang">Market average: '+R.market.avg+' &#9733;</span><span class="mini">'+R.market.n+' offices nearby</span>':'')+(R.velocity?'<span class="mini tier">Review velocity: 7 / month</span>':'')+'</div></div>'
+   +(paid()?'<span class="tierpill" style="'+tierPillStyle()+'">'+tierLabel()+' aggregation</span>':'')
+  +'</div>'
+  +blendBlock
+  +'<div class="cols2" style="margin-top:16px"><div class="stack">'
+  +(R.velocity?'<div class="card pad"><div class="eyebrow" style="margin-bottom:6px">Review velocity</div><div class="muted" style="font-size:12.5px">New reviews per month, all sources.</div>'+spark+'</div>':'')
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">Needs your attention</div>'
+   +((DATA.repQueue&&DATA.repQueue.length)?DATA.repQueue.map(function(q){return '<div class="lrow"><div class="lk">'+(q.ic||'&#11088;')+'</div><div class="lt"><b>'+q.t+'</b><span>'+q.s+'</span></div>'+(q.btn?'<button class="btn btn-mint btn-sm" data-act="'+q.act+'">'+q.btn+'</button>':'')+'</div>';}).join(''):'<div class="muted" style="font-size:13px">Nothing waiting. New reviews to confirm or reply to land here.</div>')
+   +'<div class="muted" style="font-size:11.5px;margin-top:10px;line-height:1.5">You reply to CoverCapy reviews here. Google and Yelp replies happen on their pages; we link you straight there.</div>'
+   +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn btn-ghost btn-sm">Respond on Google</button><button class="btn btn-ghost btn-sm">Respond on Yelp</button></div></div>'
+  +'</div><div class="stack">'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">What reviews say about you</div>'
+   +((R.themes&&R.themes.length)?R.themes.map(function(t){return '<div class="lane"><div><b>'+t[0]+'</b><span class="cap">'+t[1]+'% of reviews mention it</span></div><div class="lane-bar"><i style="width:'+t[1]+'%"></i></div><div class="pts">'+t[1]+'%</div></div>';}).join(''):'<div class="muted" style="font-size:13px">Theme analysis appears once enough reviews are connected.</div>')
+   +(plat()?'<div class="muted" style="font-size:11.5px;margin-top:10px">Advanced insight: "honest pricing" mentions are up 12% this quarter. Lead with it in your profile story.</div>'
+     :'<div class="lockcard" style="margin-top:12px;border:none;box-shadow:none;background:var(--cream)"><div class="lk-top"><b>Advanced Reputation Insights</b><span class="lk-tier">Platinum Elite</span></div><div class="lk-what">Theme trends, sentiment alerts, and competitor comparisons across every source.</div><div class="lk-preview">Trending theme: honest pricing &#9650;12% this quarter</div><div class="lk-cta"><button class="btn btn-plum btn-sm" data-go="membership">Unlock with Platinum</button></div></div>')+'</div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">Review request kit</div>'
+   +'<div class="muted" style="font-size:13px;line-height:1.6;margin-bottom:12px">Your short link and a printable QR card for the front desk. Invite every patient to share their experience; reviews are voluntary and never rewarded.</div>'
+   +'<div style="background:var(--cream);border-radius:12px;padding:13px;text-align:center;font-size:13.5px;font-weight:600;margin-bottom:10px">covercapy.com/r/'+(DATA.office.slug||'your-office')+'</div>'
+   +'<div style="display:flex;gap:9px;flex-wrap:wrap"><button class="btn btn-ink btn-sm" data-act="copylink">Copy link</button><button class="btn btn-ghost btn-sm">Print the QR card</button></div></div>'
+  +'</div></div>'
+  +'<div class="foot-note">Reviews are always honest and never rewarded. Blended scores recompute nightly from each source.</div></div>';
+}
+
+/* ===== RANKINGS ===== */
+function vRankings(){
+  if(S.live)return vRankingsLive();
+  var K=DATA.rankings;
+  var pct=Math.round(K.prestige/K.nextAt*100);
+  if(S.first){
+    return '<div class="page"><div class="phead"><div class="eyebrow">Rankings &#183; '+K.season+'</div><h1>Where you stand</h1><div class="guide">Earned from patient care, identical at every membership tier. '+K.weeksLeft+' weeks left in the season.</div></div>'
+    +'<div class="plaque" id="plaque"><div class="pq-eyebrow">Kingdom standing &#183; Earned, never bought</div>'
+     +'<h2>Newcomer</h2>'
+     +'<div class="pq-sub">'+DATA.office.name+' &#183; '+DATA.office.city+' &#183; claimed today</div>'
+     +'<div class="pq-num">#6 of 14 in '+DATA.office.city+' &#183; your starting position</div>'
+     +'<div class="pq-progress"><i style="width:4%"></i></div>'
+     +'<div class="pq-note">Prestige comes from patient care: completed visits, fast replies, and nominations. Your first points land with your first reply.</div></div>'
+    +'<div class="cols2" style="margin-top:18px"><div class="stack">'
+    +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">How offices climb</div>'
+     +'<div class="lane"><div><b>Care</b><span class="cap">Visits completed &#183; uncapped</span></div><div class="lane-bar"><i style="width:0%"></i></div><div class="pts">0</div></div>'
+     +'<div class="lane"><div><b>Responsiveness</b><span class="cap">Replies under 24h &#183; 50 each</span></div><div class="lane-bar"><i style="width:0%"></i></div><div class="pts">0</div></div>'
+     +'<div class="lane"><div><b>Network</b><span class="cap">Nominations converted</span></div><div class="lane-bar"><i style="width:8%"></i></div><div class="pts">1 waiting</div></div>'
+     +'<div class="muted" style="font-size:11.5px;margin-top:10px;line-height:1.5">Three patients are already waiting on you. Answering them today starts your season score.</div></div>'
+    +'</div><div class="stack">'
+    +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">'+K.season+' leaders &#183; '+DATA.office.city+'</div>'
+     +'<div class="muted" style="font-size:13px;line-height:1.6;margin-bottom:10px">The offices above you, and what they did to get there. The current city leader is a Capy Accredited office.</div>'
+     +'<button class="btn btn-gold btn-sm btn-full" data-act="setup">Finish setup to start climbing</button></div>'
+    +'</div></div>'
+    +'<div class="foot-note">Rankings are scored independently from membership. Featured placement is a separate, always labeled, paid position.</div></div>';
+  }
+  return '<div class="page"><div class="phead"><div class="eyebrow">Rankings &#183; '+K.season+'</div><h1>Where you stand</h1><div class="guide">Earned from patient care, identical at every membership tier. '+K.weeksLeft+' weeks left in the season.</div></div>'
+  +'<div class="plaque" id="plaque"><div class="pq-eyebrow">Kingdom standing &#183; Earned, never bought</div>'
+   +'<h2>'+K.tier+'</h2>'
+   +'<div class="pq-sub">'+DATA.office.name+' &#183; '+DATA.office.city+' &#183; '+DATA.office.county+'</div>'
+   +'<div class="pq-num">'+K.prestige.toLocaleString('en-US')+' lifetime Prestige</div>'
+   +'<div class="pq-progress"><i style="width:'+pct+'%"></i></div>'
+   +'<div class="pq-note">'+pct+'% toward '+K.nextTier+' at '+K.nextAt.toLocaleString('en-US')+'. Prestige comes from patient care and is identical at every tier.</div></div>'
+  +'<div class="slabel" style="margin-top:18px"><h3>Your rankings</h3><span class="muted" style="font-size:12.5px">Updated weekly</span></div>'
+  +'<div class="rank-grid">'+K.cards.map(function(c){
+     return '<div class="rank-card"><div class="rk">'+c.rk+'</div><div class="rl">'+c.l+'</div><div class="rd '+(c.up?'up':'muted')+'">'+c.d+'</div></div>';
+   }).join('')+'</div>'
+  +'<div class="cols2" style="margin-top:18px"><div class="stack">'
+  +'<div class="card pad"><div class="slabel" style="padding-top:0"><h3>'+K.season+' &#183; '+DATA.office.county+'</h3><span class="muted" style="font-size:12px">Solo and small practice bracket</span></div>'
+   +K.board.map(function(b){
+     return '<div class="lb-row'+(b.me?' me':'')+'"><div class="lb-rank">'+b.r+'</div><div class="lb-name"><b>'+b.n+'</b><span>'+b.s+'</span></div><div class="lb-score">'+b.sc.toLocaleString('en-US')+'</div><div class="lb-delta '+b.cl+'">'+b.d+'</div></div>';
+   }).join('')
+   +'<div class="muted" style="font-size:11.5px;margin-top:10px;line-height:1.5">Solo and small practice bracket: #4 of 23. Across all 142 county offices you rank #11. Season rank reflects patient generated Prestige only; membership tier never moves this board.</div></div>'
+  +'<div class="lever">&#9201;&nbsp;<span><b>Your lever this week:</b> response time slipped to a 31h median. Under 24h earns 50 Prestige per request; at your ~13 requests a month, that is ~650 Prestige, which covers the 163 points to #3 within weeks.</span></div>'
+  +'</div><div class="stack">'
+  +(plat()
+    ?'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px;color:var(--plum)">Competitive analytics &#183; Platinum</div>'
+     +'<div style="font-size:13.5px;line-height:1.65;margin-bottom:10px">You lost <b>12 searches</b> to Serene Dental Center this month, mostly on weekend availability filters. You won <b>9</b> on language match (Mandarin).</div>'
+     +'<div class="lane"><div><b>Weekend filter</b><span class="cap">searches lost</span></div><div class="lane-bar"><i class="gold" style="width:60%"></i></div><div class="pts">12</div></div>'
+     +'<div class="lane"><div><b>Language match</b><span class="cap">searches won</span></div><div class="lane-bar"><i style="width:45%"></i></div><div class="pts">9</div></div></div>'
+    :'<div class="lockcard"><div class="lk-top"><b>Competitive Analytics</b><span class="lk-tier">Platinum Elite</span></div><div class="lk-what">See which offices win the searches you lose, and the exact filter that decided it.</div><div class="lk-why"><b>Why it matters:</b> Coast Family Dental sits 163 points ahead of you and is already Platinum.</div><div class="lk-preview">You lost 12 searches to Office B on weekend hours</div><div class="lk-cta"><button class="btn btn-plum btn-sm" data-go="membership">Unlock with Platinum</button></div></div>')
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Trophy case</div><div class="trophy-row">'
+   +K.trophies.map(function(t){return '<div class="trophy"><div class="t-medal">'+t.ic+'</div><b>'+t.n+'</b><span>'+t.s+'</span></div>';}).join('')
+   +'</div></div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:6px">Backed by 41 patients this season</div>'
+   +'<div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:6px">'+['Donna T.','Mina K.','Marcus L.','Priya R.','Elena P.','Grace H.','James L.','and 34 more'].map(function(n){return '<span class="mini">'+n+'</span>';}).join('')+'</div>'
+   +'<div class="muted" style="font-size:11.5px;margin-top:10px;line-height:1.5">Backers spend their own earned Crowns and appear by choice. Offices cannot purchase backing.</div></div>'
+  +'</div></div>'
+  +'<div class="foot-note">Rankings are scored independently from membership. Featured placement is a separate, always labeled, paid position.</div></div>';
+}
+
+/* ===== REWARDS (Patient Rewards wallet) ===== */
+function vRewards(){
+  if(S.live)return vRewardsLive();
+  var W=DATA.rewards;
+  var totalRev=W.campaigns.reduce(function(s,c){return s+c.revenue;},0);
+  if(!paid()){
+    return '<div class="page"><div class="phead"><div class="eyebrow">Patient Rewards</div><h1>Marketing that pays you back</h1><div class="guide">Patients redeem earned Crowns at your office. You see exactly what each campaign produced.</div></div>'
+    +'<div class="cols2"><div class="stack">'
+    +'<div class="lockcard"><div class="lk-top"><b>Run reward campaigns</b><span class="lk-tier gold">Capy Accredited</span></div>'
+     +'<div class="lk-what">Offer whitening, gift cards, or care credits that patients claim with Crowns they earned by getting covered and getting care.</div>'
+     +'<div class="lk-why"><b>Why it matters:</b> every completed redemption comes with a verified visit, so this reads as marketing ROI, not coupons.</div>'
+     +'<div class="lk-preview">Whitening Session &#183; 12 claimed &#183; 5 booked &#183; 3 completed &#183; $1,250 revenue</div>'
+     +'<div class="lk-cta"><button class="btn btn-gold btn-sm" data-act="apply">Unlock with accreditation</button></div></div>'
+    +'</div><div class="stack">'
+    +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">How it works</div><div class="muted" style="font-size:13px;line-height:1.65">Patients earn Crowns by getting covered, getting care, and referring friends. They spend them at offices they love. You fund only the reward itself, and every redemption is tied to a real visit.</div></div>'
+    +'</div></div>'
+    +'<div class="foot-note">Listings carry a 1,500 Crown floor and CoverCapy approval. Rewards never change rankings or review scores.</div></div>';
+  }
+  return '<div class="page"><div class="phead"><div class="eyebrow">Patient Rewards</div><h1>Marketing that pays you back</h1><div class="guide">Patients redeem earned Crowns at your office. You see exactly what each campaign produced.</div></div>'
+  +'<div class="cols2"><div class="stack">'
+  +'<div class="card pad"><div class="rw-head">'
+   +'<div><div class="eyebrow" style="margin-bottom:4px">Rewards balance</div><div class="rw-bal">'+fmt$(W.balance)+'</div></div>'
+   +'<div style="flex:1;min-width:200px" class="muted"><div style="font-size:13px;line-height:1.55">Funds redemptions as they happen. Campaigns pause automatically at zero. Auto top up is off.</div></div>'
+   +'<button class="btn btn-ink btn-sm">Add funds</button></div>'
+   +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px">'
+   +'<div class="confbox"><span>Attributed revenue</span><b style="color:var(--mint-deep)">'+fmt$(totalRev)+'</b></div>'
+   +'<div class="confbox"><span>Patient participation</span><b>'+W.participation+'%</b></div>'
+   +'<div class="confbox"><span>Pending redemptions</span><b>'+W.pending.length+'</b></div>'
+   +'</div></div>'
+  +'<div class="slabel"><h3>Campaign performance</h3><button class="btn btn-ghost btn-sm" data-act="newcamp">New campaign</button></div>'
+  +W.campaigns.map(function(c){
+     return '<div class="camp"><div class="c-top"><div><b class="cn">'+c.n+'</b><div class="muted" style="font-size:12px;margin-top:2px">'+c.cost+' &#183; in office</div></div>'
+      +'<span class="'+(c.status==='Live'?'okpill':'pendpill')+'" style="font-size:11px;padding:5px 11px">'+c.status+'</span></div>'
+      +'<div class="c-funnel">'
+      +'<div class="cf"><b>'+c.claimed+'</b><span>Claimed</span></div>'
+      +'<div class="cf"><b>'+c.booked+'</b><span>Booked</span></div>'
+      +'<div class="cf"><b>'+c.completed+'</b><span>Completed</span></div>'
+      +'<div class="cf" style="background:var(--mint-soft)"><b style="color:var(--mint-deep)">'+(c.revenue?fmt$(c.revenue):'&#8212;')+'</b><span>Revenue</span></div>'
+      +'</div>'
+      +(c.revenue?'<div class="c-roi">Marketing ROI, not coupons: every completed redemption above came with a verified visit.</div>':'<div class="muted" style="font-size:12px;margin-top:10px">Goes live after a quick review.</div>')
+      +'</div>';
+   }).join('')
+  +'</div><div class="stack">'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">Redemption queue</div>'
+   +W.pending.map(function(p){
+     return '<div class="lrow"><div class="lk">&#128081;</div><div class="lt"><b>'+p.n+' redeemed '+p.t+'</b><span>'+p.c+' &#183; '+p.s+'</span></div><button class="btn btn-gold btn-sm" data-act="approve">Approve</button></div>';
+   }).join('')
+   +'<div class="muted" style="font-size:11.5px;margin-top:10px;line-height:1.5">Redemptions require a verified visit within 12 months or a confirmed booking.</div></div>'
+  +(plat()
+      ?'<div class="card pad" style="background:linear-gradient(140deg,#3D2A6B,#5B3E96);border:none;color:var(--paper)"><div class="eyebrow" style="color:#CBB8F2;margin-bottom:6px">Platinum &#183; Expanded rewards</div><div style="font-size:13.5px;line-height:1.6;color:rgba(246,240,230,.88)">Seasonal featured campaigns, custom reward art, and placement in the patient rewards gallery are active for your office.</div></div>'
+      :'<div class="lockcard"><div class="lk-top"><b>Expanded Rewards</b><span class="lk-tier">Platinum Elite</span></div><div class="lk-what">Featured campaign slots in the patient rewards gallery, custom art, and seasonal placements.</div><div class="lk-why"><b>Why it matters:</b> featured campaigns average 3x the claim rate.</div><div class="lk-cta"><button class="btn btn-plum btn-sm" data-go="membership">Unlock with Platinum</button></div></div>')
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">How it works</div><div class="muted" style="font-size:13px;line-height:1.65">Patients earn Crowns by getting covered, getting care, and referring friends. They spend them at offices they love. You fund only the reward itself, and every redemption is tied to a real visit.</div></div>'
+  +'</div></div>'
+  +'<div class="foot-note">Listings carry a 1,500 Crown floor and CoverCapy approval. Rewards never change rankings or review scores.</div></div>';
+}
+/* ===== PROFILE: brand studio ===== */
+var MEDIA=[
+  {k:'logo',ic:'&#127912;',n:'Office logo',why:'Anchors your brand on every card',done:false},
+  {k:'portrait',ic:'&#128100;',n:'Doctor portrait',why:'Patients book people, not buildings',done:false},
+  {k:'reception',ic:'&#128715;',n:'Reception area',why:'First thing they will see',done:false},
+  {k:'operatory',ic:'&#129463;',n:'Treatment room',why:'The room they are imagining',done:true},
+  {k:'team',ic:'&#129309;',n:'Team photo',why:'Who greets them at the door',done:false},
+  {k:'tech',ic:'&#128300;',n:'Technology',why:'Counts toward amenity tags',done:false},
+  {k:'beforeafter',ic:'&#10024;',n:'Before and after',why:'Platinum &#183; consent required per photo',done:false,plat:true},
+  {k:'video',ic:'&#127909;',n:'Video introduction',why:'Platinum &#183; 60 seconds is plenty',done:false,plat:true}
+];
+var BRAND=[
+  {n:'Office description',s:'Philosophy and what makes you different',done:true},
+  {n:'Doctor biography',s:'The most read block on a profile',done:false},
+  {n:'Languages spoken',s:'English, Mandarin',done:true},
+  {n:'Technology used',s:'2 of 5 tags added',done:false},
+  {n:'Insurance accepted',s:'4 carriers confirmed',done:true},
+  {n:'Patient amenities',s:'Parking, kids area, weekend hours',done:true},
+  {n:'Custom tags',s:'Accredited and Platinum offices',done:false,paid:true},
+  {n:'Service highlights',s:'Pin 3 procedures patients see first',done:false,plat:true},
+  {n:'Review highlights',s:'Feature a quote from your real reviews',done:false,plat:true}
+];
+function vDProfile(){
+  if(S.live)return vDProfileLive();
+  return '<div class="page"><div class="phead"><div class="eyebrow">Profile &#183; Brand studio</div><h1>How patients see you</h1><div class="guide">Your profile is your storefront. Free stays basic; each tier unlocks more of the page.</div></div>'
+  +(S.first&&obProgress().done<obProgress().total
+    ?'<div class="card pad" style="margin-bottom:16px;border-color:var(--gold)"><div class="slabel" style="padding-top:0"><h3>Guided setup</h3><span class="muted" style="font-size:12px">'+obProgress().done+' of '+obProgress().total+' done</span></div>'+obSpine()+'</div>'
+    :'')
+  +'<div class="cols2"><div class="stack">'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Profile strength</div>'
+   +'<div class="scorewrap">'+ring(S.first?42+(S.obDone.photos?14:0)+(S.obDone.desc?8:0)+(S.obDone.carriers?12:0)+(S.obDone.rewards?7:0):86,108,30,'var(--gold)')
+   +'<div style="flex:1;min-width:160px"><div class="serif" style="font-size:19px;margin-bottom:2px">'+(S.first?'Getting started':'Strong')+'</div><div class="muted" style="font-size:12.5px;line-height:1.55">Solid at 60, Strong at 80, Complete at 95. Within your placement tier, stronger profiles rank higher. Tier never buys points.</div></div></div>'
+   +'<div style="margin-top:10px">'
+   +'<button class="taskrow" data-act="taskbio"><div class="tk"><b>Write the doctor biography</b><span>about 4 min</span></div><span class="gain">+8</span></button>'
+   +'<button class="taskrow" data-act="tasksite"><div class="tk"><b>Verify your website</b><span>about 2 min</span></div><span class="gain">+6</span></button>'
+   +'<button class="taskrow" data-act="taskphotos"><div class="tk"><b>Fill remaining photo slots</b><span>1 of 4 done &#183; about 6 min</span></div><span class="gain">+9</span></button>'
+   +'</div></div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Practice media</div>'
+   +'<div class="slotgrid">'+MEDIA.map(function(m){
+      return '<button class="slot2'+(m.done?' done':'')+(m.plat&&!plat()?' plat':'')+'" data-slot="'+m.k+'"><div class="si">'+m.ic+'</div><b>'+m.n+(m.done?' &#10003;':'')+'</b><span>'+m.why+'</span></button>';
+    }).join('')+'</div>'
+   +'<div class="muted" style="font-size:11.5px;margin-top:10px">Uploads pass a quick review before going public. Platinum slots are part of the Showcase Builder.</div></div>'
+  +'</div><div class="stack">'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Brand blocks</div>'
+   +BRAND.map(function(b){
+     var locked=(b.plat&&!plat())||(b.paid&&!paid());
+     return '<div class="reqrow"><div class="rs '+(b.done?'ok':'no')+'">'+(b.done?'&#10003;':'&#9675;')+'</div><div class="rq"><b>'+b.n+(locked?' &#128274;':'')+'</b><span>'+b.s+'</span></div>'
+      +(locked?'<span class="mini '+(b.plat?'elite':'tier')+'">'+(b.plat?'Platinum':'Accredited')+'</span>':(b.done?'':'<button class="btn btn-ghost btn-sm" data-act="brand">Add</button>'))+'</div>';
+   }).join('')+'</div>'
+  +(plat()
+    ?'<div class="card pad" style="background:linear-gradient(140deg,#3D2A6B,#5B3E96);border:none;color:var(--paper)"><div class="eyebrow" style="color:#CBB8F2;margin-bottom:6px">Platinum Elite</div><div class="serif" style="font-size:19px;margin-bottom:8px">Showcase Builder</div><div style="font-size:13px;line-height:1.6;color:rgba(246,240,230,.85);margin-bottom:14px">Cover image, featured procedures, a quote from your real reviews, video, gallery, and section ordering. A live preview shows your page exactly as patients see it.</div><button class="btn btn-mint btn-sm" data-act="showcase">Open Showcase Builder</button></div>'
+    :'<div class="lockcard"><div class="lk-top"><b>Showcase Builder</b><span class="lk-tier">Platinum Elite</span></div><div class="lk-what">Shape your whole public page: cover image, featured procedures, video introduction, gallery, and section ordering.</div><div class="lk-why"><b>Why it matters:</b> Platinum profiles hold patient attention 3x longer.</div><div class="lk-preview">&#9658; Meet Dr. Song &#183; 0:60 &nbsp;&#183;&nbsp; Featured: Implants, Whitening, Kids</div><div class="lk-cta"><button class="btn btn-plum btn-sm" data-go="membership">Unlock with Platinum</button></div></div>')
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:6px">See it as patients do</div><div class="muted" style="font-size:13px;margin-bottom:12px">Your live public card, exactly as it renders in patient search.</div><button class="btn btn-ink btn-sm btn-full" data-act="publiccard">View my public card</button></div>'
+  +'</div></div>'
+  +'<div class="foot-note">Free tier keeps the basics: name, hours, one photo, Google rating. Paid tiers unlock the storefront above.</div></div>';
+}
+
+/* ===== PATIENTS ===== */
+function vPatients(){
+  if(S.live)return vPatientsLive();
+  return '<div class="page"><div class="phead"><div class="eyebrow">Patients</div><h1>Inbox and eligibility</h1><div class="guide">Patients who booked or asked about your office.'+(paid()?' Verified benefits arrive with each request.':'')+'</div></div>'
+  +'<div class="card pad"><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Patient</th><th>Plan</th><th>Status</th><th>Context</th><th></th></tr></thead><tbody>'
+  +DATA.inbox.map(function(r){
+    var isMsg=r.status==='message';
+    var statusCell=isMsg
+      ? '<span class="mini" style="padding:6px 11px">Message</span>'
+      : paid()
+      ? (r.status==='verified'?'<span class="okpill" style="font-size:11px;padding:5px 10px">Verified</span>':'<span class="pendpill" style="font-size:11px;padding:5px 10px">With carrier</span>')
+      : '<span class="mini pend" style="padding:6px 11px">Snapshot with membership</span>';
+    var action=isMsg
+      ? '<button class="btn btn-mint btn-sm" data-act="reply1">Reply</button>'
+      : paid()
+      ? '<button class="btn btn-ghost btn-sm" data-elig="'+r.id+'">'+(r.status==='verified'?'View':'Status')+'</button>'
+      : '<button class="btn btn-ghost btn-sm" data-go="membership">See membership</button>';
+    return '<tr><td><b>'+r.name+'</b>'+(r.member?'<div class="muted" style="font-size:11.5px">ID '+maskId(r.member)+'</div>':'')+'</td><td>'+r.plan+'</td><td>'+statusCell+'</td><td style="font-size:12.5px">'+r.ctx+'</td><td>'+action+'</td></tr>';
+  }).join('')+'</tbody></table></div>'
+  +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="btn btn-mint btn-sm" data-act="reply1">We accept this insurance</button><button class="btn btn-ghost btn-sm" data-act="reply1">Out of network but welcome</button><button class="btn btn-ghost btn-sm" data-act="reply1">Need more info</button></div>'
+  +(paid()?'<div class="muted" style="font-size:11.5px;margin-top:12px">Member IDs are masked here. Full IDs open inside each snapshot, and every open is logged.</div>':'<div class="muted" style="font-size:11.5px;margin-top:12px">You can reply to every patient on the free tier. Verified benefit snapshots arrive with membership.</div>')
+  +'</div>'
+  +(paid()?'<div class="card pad" style="margin-top:16px"><div class="eyebrow" style="margin-bottom:6px">Day sheet &#183; Thu Jun 12</div><div class="lrow"><div class="lk">&#128197;</div><div class="lt"><b>Donna Tran &#183; 9:00 AM</b><span>Humana PPO verified &#183; snapshot ready &#183; est. production '+fmt$(280)+'</span></div><button class="btn btn-ghost btn-sm" data-elig="donna">Open</button></div><div class="muted" style="font-size:11.5px;margin-top:8px">A printable sheet of tomorrow&#39;s CoverCapy patients for the morning huddle.</div></div>':'')
+  +'</div>';
+}
+
+/* ===== MEMBERSHIP ===== */
+function vMembership(){
+  function col(eyebrow,title,items,cta,hot,style){
+    return '<div class="card pad" style="'+(hot?'border-color:var(--gold);':'')+'position:relative">'
+    +(hot?'<span style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--mint);font-size:10px;font-weight:800;letter-spacing:.07em;border-radius:99px;padding:4px 11px;text-transform:uppercase">The standard</span>':'')
+    +'<div class="eyebrow" style="margin-bottom:4px;'+(style||'')+'">'+eyebrow+'</div><div class="serif" style="font-size:17px;margin-bottom:10px">'+title+'</div>'
+    +'<div style="font-size:13px;line-height:2.05">'+items.map(function(i){return '&#10003; '+i;}).join('<br>')+'</div>'
+    +'<div style="margin-top:14px">'+cta+'</div></div>';
+  }
+  var cur='<span class="okpill" style="font-size:11px;padding:6px 11px">Current plan</span>';
+  var roi='';
+  if(paid()){
+    var RO=S.live?DATA.roi:{cells:[['Bookings attributed',plat()?'5':'2'],['Snapshots delivered',plat()?'7':'3'],['Est. production','<span style="color:var(--mint-deep)">'+(plat()?fmt$(6100):fmt$(2400))+'</span>']],note:'Each number is a named, dated event. Membership is '+(plat()?'$6,990 per year':'$369 per month')+'. The demand behind it is what you are paying for.'};
+    if(RO)roi='<div class="card pad" style="margin-bottom:16px"><div class="eyebrow" style="margin-bottom:10px">Membership return, this month</div>'
+     +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">'
+     +RO.cells.map(function(c){return '<div class="confbox"><span>'+c[0]+'</span><b>'+c[1]+'</b></div>';}).join('')
+     +'</div>'
+     +(RO.note?'<div class="muted" style="font-size:12px;margin-top:10px;line-height:1.55">'+RO.note+'</div>':'')+'</div>';
+  }
+  return '<div class="page"><div class="phead"><div class="eyebrow">Membership</div><h1>The support behind your office</h1><div class="guide">Every premium feature is visible below: what it does, why it matters, and what it could be worth to you.</div></div>'
+  +roi
+  +'<div class="cols3" style="margin-top:8px">'
+  +col('Tier 1 &#183; Free','Listed',['Profile, hours, one photo','Reply to every patient request','Google review score','Profile strength score and tasks','Nominations on record'],(S.dTier==='free'?cur:'<span class="muted" style="font-size:12px">Included</span>'))
+  +col('Tier 2 &#183; $369 per month','Capy Accredited',['Trust badge after passing review','Verified coverage snapshots in your inbox','Blended reviews from 4 sources','10 mile placement radius, 8 cities','Reward campaigns and review kit','Full media slots and custom tags','Coverage widget for your website'],(S.dTier==='accredited'?cur:paid()?'<span class="muted" style="font-size:12px">Included</span>':'<button class="btn btn-gold btn-sm" data-act="apply">Apply for accreditation</button>'),true,'color:var(--gold-deep)')
+  +col('Tier 3 &#183; $6,990 per year, about $583 per month','Platinum Elite',['Everything in Capy Accredited','Top placement up to 18 miles, labeled Featured','Competitive analytics and market share','Advanced reputation insights','Video introduction and Showcase Builder','Expanded rewards and premium badges','Quarterly growth review call'],(S.dTier==='platinum'?cur:'<button class="btn btn-plum btn-sm" data-act="tier3">Talk to us about Platinum</button>'),false,'color:var(--plum)')
+  +'</div>'
+  +'<div class="slabel" style="margin-top:18px"><h3>Everything you have not unlocked yet</h3><span class="muted" style="font-size:12.5px">Locked, never hidden</span></div>'
+  +'<div class="lockgrid">'
+  +DATA.premium.filter(function(p){
+     if(plat())return false;
+     if(paid()&&p.tier==='Capy Accredited')return false;
+     return true;
+   }).map(function(p){
+     var goldTier=p.tier==='Capy Accredited';
+     return '<div class="lockcard"><div class="lk-top"><b>'+p.n+'</b><span class="lk-tier'+(goldTier?' gold':'')+'">'+p.tier+'</span></div>'
+      +'<div class="lk-what">'+p.what+'</div>'
+      +'<div class="lk-why"><b>Why it matters:</b> '+p.why+' '+p.benefit+'</div>'
+      +'<div class="lk-preview">'+p.preview+'</div>'
+      +'<div class="lk-cta"><button class="btn '+(goldTier?'btn-gold':'btn-plum')+' btn-sm" data-act="'+(goldTier?'apply':'tier3')+'">'+(goldTier?'Unlock with accreditation':'Unlock with Platinum')+'</button></div></div>';
+   }).join('')
+  +(plat()?'<div class="card pad"><div class="eyebrow" style="margin-bottom:6px">All features unlocked</div><div class="muted" style="font-size:13.5px;line-height:1.6">Your office runs the full CoverCapy stack: top placement, competitive analytics, video profile, advanced insights, market reporting, and the review blend. Your quarterly growth review is scheduled for Jul 2.</div></div>':'')
+  +'</div>'
+  +'<div class="foot-note">Accreditation is reviewed on merit and is never sold. Featured placement is always labeled. Rankings and review scores are never tier influenced.</div></div>';
+}
+
+
+/* =====================================================================
+   LIVE MODE: signed-in offices. Data comes from Supabase:
+   dentists (own row + public directory), office_feedback_summary,
+   office_inbox, office_recent_activity, dentist_nominations,
+   dentist_promotions, credit_nomination, verification_responses.
+   Estimated dollar values use national PPO fee averages, always labeled.
+   ===================================================================== */
+function mapTier(t){return t==='platinum_elite'?'platinum':(t==='capy_accredited'?'accredited':'free');}
+function fmtDate(ts){if(!ts)return '';var d=new Date(ts),now=new Date();if(d.toDateString()===now.toDateString())return 'Today';return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+function fmtTime(ts){if(!ts)return '';return new Date(ts).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});}
+function vOpen(st){return ['verified','closed','declined','expired','answered','canceled','cancelled'].indexOf(String(st||'').toLowerCase())<0;}
+var EST={verify:400,verifyMajor:1250,booking:350,lead:2500,nomination:4500};
+function estVerify(reason){
+  var r=String(reason||'').toLowerCase();
+  if(/crown|implant|root canal|bridge|denture|surgery/.test(r))return EST.verifyMajor;
+  return EST.verify;
+}
+function liveScoreItems(row){
+  var g=(row.gallery_images||[]).length,pr=(row.procedures||[]).length;
+  return [
+    {n:'Practice description',w:8,f:row.short_description?1:0,t:'Write a short practice description'},
+    {n:'Doctor name',w:6,f:row.doctor_name?1:0,t:'Add the doctor name'},
+    {n:'Office photos',w:14,f:g>=4?1:(g>0?0.5:0),t:'Add office photos ('+g+' of 4)'},
+    {n:'Cover image',w:4,f:row.cover_image_url?1:0,t:'Add a cover image'},
+    {n:'Languages',w:6,f:(row.languages||[]).length?1:0,t:'List the languages you speak'},
+    {n:'Weekend hours declared',w:4,f:(row.open_weekends===true||row.open_weekends===false)?1:0,t:'Declare weekend availability'},
+    {n:'Insurance networks',w:12,f:(row.insurance_networks||[]).length?1:0,t:'Confirm the PPO networks you accept'},
+    {n:'Procedures listed',w:10,f:pr>=5?1:(pr>0?0.5:0),t:'List your procedures ('+pr+' added)'},
+    {n:'Online booking link',w:8,f:row.booking_url?1:0,t:'Add your online booking link'},
+    {n:'Website',w:8,f:row.website?1:0,t:'Add your website'},
+    {n:'Google reviews connected',w:10,f:(row.google_review_count||0)>0?1:0,t:'Connect your Google reviews'},
+    {n:'Profile claimed',w:10,f:row.is_claimed?1:0,t:'Finish claiming your profile'}
+  ];
+}
+function liveScore(row){
+  var items=liveScoreItems(row),s=0;
+  items.forEach(function(i){s+=i.w*i.f;});
+  s=Math.round(s);
+  var band=s>=95?'Complete':s>=80?'Strong':s>=60?'Solid':'Getting started';
+  var tasks=items.filter(function(i){return i.f<1;}).map(function(i){return {t:i.t,gain:Math.round(i.w*(1-i.f))};}).sort(function(a,b){return b.gain-a.gain;});
+  return {total:s,band:band,tasks:tasks};
+}
+function feedLine(a){
+  var who=esc(a.patient||'A patient');
+  if(a.kind==='nomination')return '<b>'+who+'</b> nominated your office'+(a.detail?': "'+esc(a.detail)+'"':'.');
+  if(a.kind==='review')return '<b>'+who+'</b> left a '+(a.rating||5)+' star CoverCapy review'+(a.detail?': "'+esc(a.detail)+'"':'.');
+  if(a.kind==='booking')return '<b>'+who+'</b> booked your office'+(a.starts_at?' for '+fmtTime(a.starts_at):'')+(a.ppo_verified?' &#183; PPO verified':'')+'.';
+  if(a.kind==='verification')return '<b>'+who+'</b> asked you to verify '+(esc(a.detail||'their insurance'))+'.';
+  return '<b>'+who+'</b> interacted with your profile.';
+}
+function buildLiveData(row,sum,act,inb,noms,cityList,county){
+  sum=sum||{};act=act||[];inb=inb||[];noms=noms||[];cityList=cityList||[];
+  S.row=row;
+  var sc=liveScore(row);
+  var openVer=inb.filter(function(r){return r.source==='verification'&&vOpen(r.status);});
+  var upBook=inb.filter(function(r){return r.source==='booking'&&r.starts_at&&new Date(r.starts_at)>=new Date();});
+  var recentRev=act.filter(function(a){return a.kind==='review';});
+  var openNoms=noms.filter(function(n){return !n.credited;});
+  DATA.office={name:row.practice_name||row.name||'Your office',doc:row.doctor_name||'',docShort:row.doctor_name||row.practice_name||'Doctor',city:row.city||'',county:row.market_area||row.local_area||'your area',region:row.state||'',slug:row.slug||''};
+  DATA.today=[
+    {k:'verify',ic:'&#128203;',n:openVer.length,l:'Insurance requests',d:openVer.length?'waiting on a reply':'none open',go:'patients',hot:openVer.length>0},
+    {k:'reviews',ic:'&#11088;',n:recentRev.length,l:'Reviews on CoverCapy',d:recentRev.length?'latest '+fmtDate(recentRev[0].ts):'none yet',go:'reputation',hot:false},
+    {k:'appt',ic:'&#128197;',n:upBook.length,l:'Upcoming visits',d:upBook.length?'next '+fmtDate(upBook[0].starts_at):'none booked',go:'pipeline',hot:upBook.length>0},
+    {k:'noms',ic:'&#127942;',n:noms.length,l:'Nominations',d:openNoms.length?openNoms.length+' to credit':'on record',go:'pipeline',hot:false}
+  ];
+  DATA.opportunities=[];
+  openVer.forEach(function(r){DATA.opportunities.push({_id:r.id,_src:'verification',name:esc(r.patient||'Verified patient'),kind:'Insurance verification',meta:esc(r.carrier||'PPO')+(r.reason?' &#183; '+esc(r.reason):''),value:estVerify(r.reason),vlabel:'Est. production',stage:'verify',age:fmtDate(r.ts),heat:'high'});});
+  upBook.forEach(function(r){DATA.opportunities.push({_id:r.id,_src:'booking',name:esc(r.patient||'Verified patient'),kind:'Appointment booked',meta:fmtTime(r.starts_at)+(r.ppo_verified?' &#183; PPO verified':''),value:EST.booking,vlabel:'Est. production',stage:'booking',age:fmtDate(r.ts),heat:'high'});});
+  openNoms.forEach(function(n){DATA.opportunities.push({_id:n.id,_src:'nomination',name:esc(n.nominee_name||'A patient'),kind:'Nomination referral',meta:n.trust_reason?'"'+esc(n.trust_reason)+'"':'Vouched for your office',value:EST.nomination,vlabel:'Est. lifetime value',stage:'new',age:fmtDate(n.created_at),heat:'med'});});
+  DATA.oppTotal=DATA.opportunities.reduce(function(s,o){return s+o.value;},0);
+  DATA.oppProduction=DATA.opportunities.filter(function(o){return o.vlabel!=='Est. lifetime value';}).reduce(function(s,o){return s+o.value;},0);
+  DATA.oppLTV=DATA.oppTotal-DATA.oppProduction;
+  DATA.feed=act.slice(0,10).map(function(a){return {t:fmtDate(a.ts),cl:a.kind==='nomination'?'plum':(a.kind==='booking'?'gold':''),x:feedLine(a)};});
+  var others=cityList.filter(function(d){return d.id!==row.id;});
+  var avg=others.length?(others.reduce(function(s,d){return s+(Number(d.weighted_rating)||0);},0)/others.filter(function(d){return d.weighted_rating;}).length):0;
+  var themes=null;
+  if(Array.isArray(row.review_themes)&&row.review_themes.length&&Array.isArray(row.review_themes[0]))themes=row.review_themes.slice(0,4);
+  DATA.reputation={rating:Number(row.weighted_rating||row.google_rating||0).toFixed(1),count:row.weighted_review_count||row.google_review_count||0,gcount:row.google_review_count||0,delta:'',pct:'',velocity:null,themes:themes,
+    sources:[['Google',row.google_rating,row.google_review_count],['Yelp',row.yelp_rating,row.yelp_review_count],['ZocDoc',row.zocdoc_rating,row.zocdoc_review_count],['CoverCapy',row.capy_rating,row.capy_review_count]].filter(function(s){return s[1];}).map(function(s){return {n:s[0],r:Number(s[1]).toFixed(1),c:s[2]||0,d:''};}),
+    market:{avg:avg?avg.toFixed(1):null,n:others.length}};
+  DATA.repQueue=recentRev.slice(0,3).map(function(a){return {ic:'&#11088;',t:'"'+esc((a.detail||'Great experience').slice(0,80))+'" &#183; '+esc(a.patient||'Patient')+' &#183; '+(a.rating||5)+' &#9733;',s:'CoverCapy verified patient &#183; '+fmtDate(a.ts),btn:null,act:''};});
+  var idx=cityList.findIndex(function(d){return d.id===row.id;});
+  var cityRank=idx>=0?idx+1:null,cityN=cityList.length;
+  DATA.rankings={
+    tier:cityRank===1?'City Leader':(cityRank&&cityRank<=Math.max(3,Math.round(cityN*0.1))?'Top of '+(row.city||'your city'):'Climbing'),
+    heroLine:cityRank?('#'+cityRank+' of '+cityN+' &#183; '+esc(row.city)+' &#183; by blended rating'):null,heroDelta:'',
+    cityRank:cityRank,cityN:cityN,county:county,
+    board:cityList.slice(0,7).map(function(d,i){return {r:i+1,n:esc(d.practice_name),s:esc(d.city)+(d.membership_tier&&d.membership_tier!=='free'?' &#183; '+(d.membership_tier==='platinum_elite'?'Platinum Elite':'Capy Accredited'):''),sc:(d.weighted_rating?Number(d.weighted_rating).toFixed(1)+' ★':'—')+' · '+(d.weighted_review_count||0),d:'',cl:'',me:d.id===row.id};})
+  };
+  if(cityRank&&cityRank>7)DATA.rankings.board.push({r:cityRank,n:esc(row.practice_name||row.name),s:esc(row.city),sc:(row.weighted_rating?Number(row.weighted_rating).toFixed(1)+' ★':'—')+' · '+(row.weighted_review_count||0),d:'',cl:'',me:true});
+  DATA.score={total:sc.total,delta:'',pct:'Profile strength &#183; '+sc.band,lanes:[],strengths:[],weak:sc.tasks.slice(0,2).map(function(t){return {t:t.t,s:'+'+t.gain+' profile strength',go:'dprofile'};})};
+  DATA.scoreTasks=sc.tasks;
+  DATA.visCards=[{l:'Patients saved your office',v:sum.saved_count||0},{l:'Booking clicks',v:sum.booking_intents||0},{l:'Coverage widget views',v:sum.widget_views||0},{l:'Upcoming visits',v:sum.appointments_upcoming||0}];
+  DATA.visNote='Counted from real patient actions on CoverCapy. Nothing modeled.';
+  DATA.roi={cells:[['Bookings, all time',sum.appointments_total||0],['Verification requests',(inb.filter(function(r){return r.source==='verification';})).length],['Nominations',sum.nominations_total||0]],note:'Each number is a named patient event attributed to CoverCapy.'};
+  DATA.momentsLive=act.filter(function(a){return (new Date()-new Date(a.ts))<7*86400000;}).slice(0,2).map(function(a){return {ic:a.kind==='review'?'&#11088;':a.kind==='nomination'?'&#127942;':'&#128203;',h:feedLine(a).replace(/<[^>]+>/g,''),s:fmtDate(a.ts)};});
+  DATA.inboxLive=inb;
+  DATA.nomsLive=noms;
+  DATA.welcomeLive=[
+    {v:sc.total,suffix:'<span style="font-size:16px;color:rgba(246,240,230,.5)"> / 100</span>',l:'Current profile strength'},
+    {v:openVer.length+upBook.length,em:true,l:'Patient requests already waiting'},
+    {v:(row.google_review_count||0)+(row.yelp_review_count||0)+(row.zocdoc_review_count||0),l:'Reviews found and imported'},
+    {v:(row.insurance_networks||[]).length,l:'Insurance networks detected'},
+    {v:noms.length,em:true,l:'Patients who nominated you'},
+    {html:cityRank?'<em>#'+cityRank+'</em>':'<em>—</em>',l:esc(row.city||'City')+' ranking today'}
+  ];
+  DATA.welcomeNextText='Complete your profile to unlock a visibility boost. Your profile strength is '+sc.total+'; at 80, accredited placement opens up. Every completed task moves you up within your tier.';
+}
+function gateMsg(html){var g=$('gMsg');if(g)g.innerHTML=html;}
+function loadOffice(){
+  sb.auth.getUser().then(function(u){
+    var uid=u.data&&u.data.user&&u.data.user.id;
+    if(!uid)return;
+    sb.from('dentists').select('*').eq('claimed_by',uid).limit(1).then(function(r){
+      if(r.error){gateMsg(esc(r.error.message));return;}
+      if(!r.data||!r.data.length){ showOnboard(u.data.user); return; }
+      var row=r.data[0];
+      Promise.all([
+        sb.rpc('office_feedback_summary',{p_dentist:row.id}),
+        sb.rpc('office_recent_activity',{p_dentist:row.id,p_limit:30}),
+        sb.rpc('office_inbox',{p_dentist:row.id}),
+        sb.from('dentist_nominations').select('*').eq('dentist_id',row.id).order('created_at',{ascending:false}),
+        sb.from('dentists').select('id,practice_name,name,city,membership_tier,weighted_rating,weighted_review_count').eq('city',row.city||'').order('weighted_rating',{ascending:false}).limit(200),
+        sb.from('dentist_promotions').select('*').eq('dentist_id',row.id).order('created_at',{ascending:false})
+      ]).then(function(res){
+        buildLiveData(row,res[0].data||{},res[1].data||[],res[2].data||[],res[3].data||[],res[4].data||[],null);
+        DATA.promotionsLive=res[5].data||[];
+        S.live=true;S.first=false;S.dTier=mapTier(row.membership_tier);S.entered=true;
+        $('gate').classList.add('hidden');
+        var wkey='ccv30_welcomed_'+row.id;
+        var fresh=DATA.score.total<60;
+        if(fresh&&!localStorage.getItem(wkey)){try{localStorage.setItem(wkey,'1');}catch(e){}openWelcome();}
+        else enter(false);
+      });
+    });
+  });
+}
+function boot(){
+  if(DEMO||!sb)return;
+  sb.auth.getSession().then(function(s){
+    if(s.data&&s.data.session)loadOffice();
+    else location.replace('/?role=dentist');
+  });
+  sb.auth.onAuthStateChange(function(ev,session){if(session&&!S.live)loadOffice();});
+}
+
+/* ===== ONBOARDING: find or add your office (ported from live portal) ===== */
 function showOnboard(user){
   $('gate').classList.add('hidden');
   $('onboard').classList.remove('hidden');
   S.authEmail=user&&user.email||'';
   $('obFind').onclick=function(){$('obFind').classList.add('on');$('obAdd').classList.remove('on');renderFind();};
   $('obAdd').onclick=function(){$('obAdd').classList.add('on');$('obFind').classList.remove('on');renderAdd();};
+  $('obSignout').onclick=function(){sb.auth.signOut().then(function(){location.reload();});};
   renderFind();
 }
 function renderFind(){
@@ -349,23 +1324,24 @@ function renderFind(){
   q.addEventListener('input',function(){clearTimeout(tmr);tmr=setTimeout(doSearch,250);});
   q.focus();
 }
-async function doSearch(){
+function doSearch(){
   var term=($('obQ').value||'').trim();
-  if(term.length<2){$('obRes').innerHTML='<div class="empty">Keep typing…</div>';return;}
+  if(term.length<2){$('obRes').innerHTML='<div class="empty">Keep typing&#8230;</div>';return;}
   var like='*'+term.replace(/[(),*]/g,'')+'*';
-  var r=await sb.from('dentists').select('id,name,practice_name,doctor_name,city,state,claimed_by').or('practice_name.ilike.'+like+',name.ilike.'+like+',city.ilike.'+like).limit(10);
-  if(r.error){$('obRes').innerHTML='<div class="empty">'+esc(r.error.message)+'</div>';return;}
-  if(!r.data.length){$('obRes').innerHTML='<div class="empty">No matches. Try the "Add my office" tab.</div>';return;}
-  $('obRes').innerHTML=r.data.map(function(d){
-    var nm=esc(d.practice_name||d.name||'Office');
-    var claimed=d.claimed_by!=null;
-    return '<button class="resitem" '+(claimed?'disabled style="opacity:.5"':'data-claim="'+d.id+'" data-nm="'+nm+'"')+'><div style="flex:1"><b>'+nm+'</b><span>'+esc([d.doctor_name,d.city,d.state].filter(Boolean).join(' · '))+'</span></div>'+(claimed?'<span class="mini pend">Already claimed</span>':'<span class="mini lang">Claim</span>')+'</button>';
-  }).join('');
-  document.querySelectorAll('[data-claim]').forEach(function(b){b.addEventListener('click',function(){claimSheet(this.getAttribute('data-claim'),this.getAttribute('data-nm'));});});
+  sb.from('dentists').select('id,name,practice_name,doctor_name,city,state,claimed_by').or('practice_name.ilike.'+like+',name.ilike.'+like+',city.ilike.'+like).limit(10).then(function(r){
+    if(r.error){$('obRes').innerHTML='<div class="empty">'+esc(r.error.message)+'</div>';return;}
+    if(!r.data.length){$('obRes').innerHTML='<div class="empty">No matches. Try the "Add my office" tab.</div>';return;}
+    $('obRes').innerHTML=r.data.map(function(d){
+      var nm=esc(d.practice_name||d.name||'Office');
+      var claimed=d.claimed_by!=null;
+      return '<button class="resitem" '+(claimed?'disabled style="opacity:.5"':'data-claim="'+d.id+'" data-nm="'+nm+'"')+'><div style="flex:1"><b>'+nm+'</b><span>'+esc([d.doctor_name,d.city,d.state].filter(Boolean).join(' · '))+'</span></div>'+(claimed?'<span class="mini pend">Already claimed</span>':'<span class="mini lang">Claim</span>')+'</button>';
+    }).join('');
+    document.querySelectorAll('[data-claim]').forEach(function(b){b.addEventListener('click',function(){claimSheet(this.getAttribute('data-claim'),this.getAttribute('data-nm'));});});
+  });
 }
 function claimSheet(id,nm){
-  $('obBody').innerHTML='<button class="btn btn-ghost btn-sm" id="obBack" style="margin-bottom:14px">← Back to search</button>'
-   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:4px">Claiming</div><div class="serif" style="font-size:18px;margin-bottom:14px">'+esc(nm)+'</div>'
+  $('obBody').innerHTML='<button class="btn btn-ghost btn-sm" id="obBack" style="margin-bottom:14px">&#8592; Back to search</button>'
+   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:4px">Claiming</div><div class="serif" style="font-size:18px;margin-bottom:14px">'+nm+'</div>'
    +'<div class="field"><label>NPI (National Provider Identifier)</label><input id="cl-npi" inputmode="numeric" placeholder="10-digit NPI"></div>'
    +'<div class="field"><label>Tax ID / EIN <span class="muted">(kept private, for verification)</span></label><input id="cl-tax" placeholder="XX-XXXXXXX"></div>'
    +'<div class="field"><label>Work email</label><input id="cl-email" type="email" value="'+esc(S.authEmail)+'"></div>'
@@ -374,13 +1350,14 @@ function claimSheet(id,nm){
    +'<button class="btn btn-ink btn-full" id="clGo">Submit claim &amp; open my portal</button>'
    +'<div class="note" style="margin-top:10px">By claiming you confirm you are authorized to manage this practice. Your submission is verified by our team; access opens now so you can get set up.</div></div>';
   $('obBack').addEventListener('click',renderFind);
-  $('clGo').addEventListener('click',async function(){
-    var npi=($('cl-npi').value||'').trim();
+  $('clGo').addEventListener('click',function(){
+    var btn=this,npi=($('cl-npi').value||'').trim();
     if(npi && !/^\d{10}$/.test(npi)){$('clErr').textContent='NPI should be 10 digits.';return;}
-    this.disabled=true;this.textContent='Submitting…';
-    var r=await sb.rpc('claim_office',{p_dentist:id,p_npi:npi||null,p_tax_id:($('cl-tax').value||'').trim()||null,p_work_email:($('cl-email').value||'').trim()||null,p_phone:($('cl-phone').value||'').trim()||null});
-    if(r.error||(r.data&&r.data.error)){this.disabled=false;this.textContent='Submit claim & open my portal';$('clErr').textContent=(r.error&&r.error.message)||({already_claimed:'This office was just claimed by someone else.',office_not_found:'Office not found.'}[r.data.error]||r.data.error);return;}
-    finishOnboard();
+    btn.disabled=true;btn.textContent='Submitting…';
+    sb.rpc('claim_office',{p_dentist:id,p_npi:npi||null,p_tax_id:($('cl-tax').value||'').trim()||null,p_work_email:($('cl-email').value||'').trim()||null,p_phone:($('cl-phone').value||'').trim()||null}).then(function(r){
+      if(r.error||(r.data&&r.data.error)){btn.disabled=false;btn.textContent='Submit claim & open my portal';$('clErr').textContent=(r.error&&r.error.message)||({already_claimed:'This office was just claimed by someone else.',office_not_found:'Office not found.'}[r.data.error]||r.data.error);return;}
+      finishOnboard();
+    });
   });
 }
 function renderAdd(){
@@ -399,292 +1376,311 @@ function renderAdd(){
    +'</div><div id="adErr" class="note" style="color:#B4453A;margin-bottom:8px"></div>'
    +'<button class="btn btn-ink btn-full" id="adGo">Add my office &amp; open my portal</button>'
    +'<div class="note" style="margin-top:10px">Your office is created as a claimed listing under your account and reviewed by our team before it appears in the public directory.</div></div>';
-  $('adGo').addEventListener('click',async function(){
-    var practice=($('ad-practice').value||'').trim();
+  $('adGo').addEventListener('click',function(){
+    var btn=this,practice=($('ad-practice').value||'').trim();
     if(!practice){$('adErr').textContent='Practice name is required.';return;}
     var npi=($('ad-npi').value||'').trim();
     if(npi && !/^\d{10}$/.test(npi)){$('adErr').textContent='NPI should be 10 digits.';return;}
-    this.disabled=true;this.textContent='Creating…';
+    btn.disabled=true;btn.textContent='Creating…';
     var payload={practice_name:practice,doctor_name:$('ad-doctor').value,npi:npi,tax_id:$('ad-tax').value,
       address:$('ad-address').value,city:$('ad-city').value,state:$('ad-state').value,zip:$('ad-zip').value,
       phone:$('ad-phone').value,website:$('ad-website').value,work_email:($('ad-email').value||'').trim()};
-    var r=await sb.rpc('create_office',{p:payload});
-    if(r.error||(r.data&&r.data.error)){this.disabled=false;this.textContent='Add my office & open my portal';$('adErr').textContent=(r.error&&r.error.message)||r.data.error;return;}
-    finishOnboard();
+    sb.rpc('create_office',{p:payload}).then(function(r){
+      if(r.error||(r.data&&r.data.error)){btn.disabled=false;btn.textContent='Add my office & open my portal';$('adErr').textContent=(r.error&&r.error.message)||r.data.error;return;}
+      finishOnboard();
+    });
   });
 }
-async function finishOnboard(){
+function finishOnboard(){
   $('onboard').classList.add('hidden');
-  S.me=null;
-  await loadOffice();
-  toast('Welcome aboard — your practice is connected.');
+  loadOffice();
+  showMoment({ic:'&#129441;',h:'Welcome aboard',s:'Your practice is connected.'});
 }
 
-async function refreshData(){
-  if(S.preview)return;
-  var id=S.me.id;
-  var [sum,act,inb,noms]=await Promise.all([
-    sb.rpc('office_feedback_summary',{p_dentist:id}),
-    sb.rpc('office_recent_activity',{p_dentist:id,p_limit:30}),
-    sb.rpc('office_inbox',{p_dentist:id}),
-    sb.from('dentist_nominations').select('*').eq('dentist_id',id).order('created_at',{ascending:false})
-  ]);
-  S.summary=sum.data||{};
-  S.activity=act.data||[];
-  S.inbox=inb.data||[];
-  S.noms=noms.data||[];
+/* ===== LIVE VIEWS ===== */
+function vRankingsLive(){
+  var K=DATA.rankings;
+  return '<div class="page"><div class="phead"><div class="eyebrow">Rankings</div><h1>Where you stand</h1><div class="guide">Computed from the public directory: blended ratings and review counts of the '+K.cityN+' offices listed in '+esc(DATA.office.city)+'. Membership tier never moves these numbers.</div></div>'
+  +'<div class="plaque" id="plaque"><div class="pq-eyebrow">Standing &#183; Earned, never bought</div>'
+   +'<h2>'+K.tier+'</h2>'
+   +'<div class="pq-sub">'+esc(DATA.office.name)+' &#183; '+esc(DATA.office.city)+'</div>'
+   +(K.heroLine?'<div class="pq-num">'+K.heroLine+'</div>':'')
+   +'<div class="pq-note">Climb by collecting reviews, replying fast, and completing your profile. Seasons and Prestige scoring launch soon; your standing today is pure directory fact.</div></div>'
+  +'<div class="slabel" style="margin-top:18px"><h3>Your market</h3></div>'
+  +'<div class="rank-grid">'
+   +'<div class="rank-card"><div class="rk">'+(K.cityRank?'#'+K.cityRank:'—')+'</div><div class="rl">'+esc(DATA.office.city)+' &#183; of '+K.cityN+'</div><div class="rd muted">by blended rating</div></div>'
+   +'<div class="rank-card"><div class="rk">'+DATA.reputation.rating+'&#9733;</div><div class="rl">Your blended rating</div><div class="rd muted">'+(DATA.reputation.market.avg?'city average '+DATA.reputation.market.avg:'')+'</div></div>'
+   +'<div class="rank-card"><div class="rk">'+DATA.reputation.count+'</div><div class="rl">Reviews, all sources</div><div class="rd muted">&nbsp;</div></div>'
+   +'<div class="rank-card"><div class="rk">'+DATA.score.total+'</div><div class="rl">Profile strength</div><div class="rd '+(DATA.score.total>=80?'up':'muted')+'">'+(DATA.score.total>=80?'Strong':'raises rank in tier')+'</div></div>'
+  +'</div>'
+  +'<div class="cols2" style="margin-top:18px"><div class="stack">'
+  +'<div class="card pad"><div class="slabel" style="padding-top:0"><h3>'+esc(DATA.office.city)+' leaderboard</h3><span class="muted" style="font-size:12px">blended rating &#183; reviews</span></div>'
+   +DATA.rankings.board.map(function(b){return '<div class="lb-row'+(b.me?' me':'')+'"><div class="lb-rank">'+b.r+'</div><div class="lb-name"><b>'+b.n+'</b><span>'+b.s+'</span></div><div class="lb-score">'+b.sc+'</div></div>';}).join('')
+   +'<div class="muted" style="font-size:11.5px;margin-top:10px;line-height:1.5">Ranked by blended rating, then review count, from public directory data.</div></div>'
+  +'</div><div class="stack">'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">How offices climb</div>'
+   +'<div class="lrow"><div class="lk">&#11088;</div><div class="lt"><b>Collect reviews everywhere</b><span>Your blend counts Google, Yelp, ZocDoc, and CoverCapy</span></div></div>'
+   +'<div class="lrow"><div class="lk">&#9201;</div><div class="lt"><b>Reply fast</b><span>Open requests are patients deciding right now</span></div></div>'
+   +'<div class="lrow"><div class="lk">&#9650;</div><div class="lt"><b>Complete your profile</b><span>Within your tier, stronger profiles rank higher</span></div></div>'
+   +'<button class="btn btn-mint btn-sm btn-full" data-go="dprofile" style="margin-top:12px">Open profile tasks</button></div>'
+  +(plat()?'':'<div class="lockcard"><div class="lk-top"><b>Competitive Analytics</b><span class="lk-tier">Platinum Elite</span></div><div class="lk-what">See which offices win the searches you lose, and the exact filter that decided it.</div><div class="lk-preview">You lost 12 searches to a nearby office on weekend hours</div><div class="lk-cta"><button class="btn btn-plum btn-sm" data-go="membership">Unlock with Platinum</button></div></div>')
+  +'</div></div>'
+  +'<div class="foot-note">Rankings are scored independently from membership. Featured placement is a separate, always labeled, paid position.</div></div>';
 }
-
-/* ====================== APP SHELL ====================== */
-var DNAV=[['ddash','Today','☉'],['patients','Patients','◆'],['standing','Standing','▲'],['dnoms','Nominations','★'],['dprofile','Profile','◇'],['membership','Membership','♛']];
-function enterApp(){
-  $('gate').classList.add('hidden');
-  $('app').classList.remove('hidden');
-  document.body.classList.add('inapp');
-  chrome();go(S.tab);
-}
-function chrome(){
-  var nameTag=S.preview?' <span class="preview-flag">Preview</span>':'';
-  $('topnav').innerHTML='<div class="tn-in"><div class="tn-logo"><div class="lm">🦫</div>CoverCapy <span class="muted" style="font-family:var(--fb);font-size:12px;font-weight:600">· Practice portal</span></div>'
-   +'<div class="tn-links">'+DNAV.map(function(n){return '<a data-go="'+n[0]+'">'+n[1]+'</a>';}).join('')+'</div>'
-   +'<div class="tn-right">'+nameTag+'<button class="btn btn-ghost btn-sm" id="signoutTop">'+(S.preview?'Exit preview':'Sign out')+'</button></div></div>';
-  $('tabbar').innerHTML=DNAV.slice(0,5).map(function(n){return '<button class="tab" data-go="'+n[0]+'"><span class="ti">'+n[2]+'</span>'+n[1]+'</button>';}).join('');
-  var so=$('signoutTop');so.addEventListener('click',async function(){ if(S.preview){location.reload();return;} await sb.auth.signOut();location.reload();});
-}
-function setNav(){
-  document.querySelectorAll('[data-go]').forEach(function(a){a.classList.toggle('on',a.getAttribute('data-go')===S.tab);});
-}
-function go(tab){
-  S.tab=tab;setNav();
-  var v=$('view');v.innerHTML='<div class="spin"></div>';
-  var fn={ddash:vToday,patients:vPatients,standing:vStanding,dnoms:vNoms,dprofile:vProfile,membership:vMembership}[tab]||vToday;
-  v.innerHTML=fn();bindActions();window.scrollTo(0,0);
-}
-document.addEventListener('click',function(e){
-  var g=e.target.closest('[data-go]');if(g){go(g.getAttribute('data-go'));}
-});
-
-/* ====================== HELPERS ====================== */
-function tier(){return S.me.membership_tier||'unclaimed';}
-function paid(){return tier()==='capy_accredited'||tier()==='platinum_elite';}
-function tierLabel(){return {unclaimed:'Unclaimed listing',claimed_free:'Claimed free profile',free:'Claimed free profile',capy_accredited:'Capy Accredited',platinum_elite:'Platinum Elite'}[tier()]||'Claimed profile';}
-function tierStyle(){return paid()?(tier()==='platinum_elite'?'background:var(--plum-soft);color:var(--plum)':'background:var(--gold-soft);color:var(--gold-deep)'):'background:var(--sand);color:var(--slate)';}
-function officeName(){return S.me.practice_name||S.me.name||'Your office';}
-function activityIcon(k){return {nomination:'★',review:'⭐',booking:'📅',verification:'📋'}[k]||'•';}
-function activityLine(a){
-  if(a.kind==='nomination')return {t:esc(a.patient)+' nominated your office',s:a.detail?'"'+esc(a.detail)+'"':'For Capy Accreditation',go:'dnoms'};
-  if(a.kind==='review')return {t:esc(a.patient)+' left a '+(a.rating||5)+'★ CoverCapy review',s:a.detail?'"'+esc(a.detail)+'"':'Shows on your public card',go:'standing'};
-  if(a.kind==='booking')return {t:esc(a.patient)+' booked your office',s:(a.ppo_verified?'PPO verified · ':'')+(a.starts_at?fmtTime(a.starts_at):esc(a.detail||'')),go:'patients'};
-  if(a.kind==='verification')return {t:'Eligibility request from '+esc(a.patient),s:(a.detail?esc(a.detail)+' · ':'')+'status '+esc(a.status||'open'),go:'patients'};
-  return {t:esc(a.patient||'Activity'),s:'',go:'ddash'};
-}
-
-/* ====================== TODAY ====================== */
-function vToday(){
-  var s=S.summary||{};
-  var attention=S.activity.filter(function(a){return (a.kind==='verification'&&a.status!=='verified')||(a.kind==='booking');}).slice(0,3);
-  var banner='';
-  if(tier()==='unclaimed'||tier()==='claimed_free'||tier()==='free'){
-    banner='<div class="card pad banner" style="border-color:var(--gold)"><div style="font-size:24px">★</div><div style="flex:1;min-width:220px"><b>'+(s.nominations_total||0)+' patient'+((s.nominations_total||0)===1?'':'s')+' vouched for your office</b><div class="muted" style="font-size:13px">Their notes are on your nominations page. Accredited offices carry the trust badge and appear across a 10-mile radius.</div></div><button class="btn btn-gold btn-sm" data-go="dnoms">Read them</button></div>';
+function vRewardsLive(){
+  if(!paid()){
+    return '<div class="page"><div class="phead"><div class="eyebrow">Patient Rewards</div><h1>Marketing that pays you back</h1><div class="guide">Patients redeem earned Crowns at your office, tied to verified visits.</div></div>'
+    +'<div class="cols2"><div class="stack"><div class="lockcard"><div class="lk-top"><b>Run reward campaigns</b><span class="lk-tier gold">Capy Accredited</span></div><div class="lk-what">Offer whitening, gift cards, or care credits that patients claim with Crowns they earned by getting covered and getting care.</div><div class="lk-why"><b>Why it matters:</b> every completed redemption comes with a verified visit, so this reads as marketing ROI, not coupons.</div><div class="lk-cta"><button class="btn btn-gold btn-sm" data-act="apply">Unlock with accreditation</button></div></div></div>'
+    +'<div class="stack"><div class="card pad"><div class="eyebrow" style="margin-bottom:8px">How it works</div><div class="muted" style="font-size:13px;line-height:1.65">Patients earn Crowns by getting covered, getting care, and referring friends. They spend them at offices they love. You fund only the reward itself.</div></div></div></div></div>';
   }
-  return '<div class="page"><div class="phead"><div class="eyebrow">'+esc(officeName())+(S.me.city?' · '+esc(S.me.city):'')+'</div><h1>Your practice today</h1><div class="guide">Real events from your patients and your own profile. Every line below is something a patient actually did — nothing is projected.</div></div>'
-   +banner
-   +'<div class="cols2"><div class="stack">'
-   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Needs your attention</div>'
-     +(attention.length?attention.map(function(a){var l=activityLine(a);return '<button class="rowcard" data-go="'+l.go+'"><div class="ic">'+activityIcon(a.kind)+'</div><div class="meta"><b>'+l.t+'</b><span>'+l.s+'</span></div><div class="arr">›</div></button>';}).join(''):'<div class="empty">Nothing waiting right now. New bookings and eligibility requests land here.</div>')
-   +'</div>'
-   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:6px">This week, in receipts</div>'
-     +(S.activity.length?S.activity.slice(0,8).map(function(a){var l=activityLine(a);return '<button class="rcpt" data-go="'+l.go+'"><div class="ric">'+activityIcon(a.kind)+'</div><div class="rb"><b>'+l.t+'</b><span>'+l.s+'</span></div><div class="rd">'+fmtDate(a.ts)+'</div></button>';}).join(''):'<div class="empty">No patient activity yet.</div>')
-     +'<div class="muted" style="font-size:11.5px;margin-top:10px;line-height:1.5">Each line is a named event from a real patient. We never show projections or modeled numbers.</div></div>'
-   +'</div><div class="stack">'
-   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Patient demand</div>'
-     +'<div class="stat-grid" style="grid-template-columns:1fr 1fr">'
-     +'<div class="stat"><b>'+(s.saved_count||0)+'</b><span>Patients saved your office</span></div>'
-     +'<div class="stat"><b>'+(s.booking_intents||0)+'</b><span>Booking clicks</span></div>'
-     +'<div class="stat"><b>'+(s.appointments_upcoming||0)+'</b><span>Upcoming CoverCapy visits</span></div>'
-     +'<div class="stat"><b>'+(s.verification_open||0)+'</b><span>Open eligibility requests</span></div>'
-     +'</div><div class="muted" style="font-size:11.5px;margin-top:10px">Counted from real patient actions on CoverCapy.</div></div>'
-   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:4px">Status</div><div style="margin-bottom:10px"><span class="tierpill" style="'+tierStyle()+'">'+tierLabel()+'</span></div>'
-     +'<div class="muted" style="font-size:13px">'+(paid()?'Visible with the trust badge across a 10-mile radius. Verified patient benefits arrive with each request.':'Claimed offices can reply to patients. Accredited offices appear across a 10-mile radius with the trust badge.')+'</div>'
-     +(paid()?'':'<button class="btn btn-gold btn-sm btn-full" data-go="membership" style="margin-top:12px">See accreditation</button>')+'</div>'
-   +(S.noms.length?'<div class="card pad"><div class="eyebrow" style="margin-bottom:6px">Latest nomination</div><div class="q serif" style="font-size:16px;line-height:1.45;margin-bottom:6px">"'+esc(S.noms[0].trust_reason||'They vouched for your office')+'"</div><div class="muted" style="font-size:12px;margin-bottom:12px">'+esc(S.noms[0].nominee_name||'A patient')+' · '+fmtDate(S.noms[0].created_at)+'</div><button class="btn btn-mint btn-sm btn-full" data-go="dnoms">Open nominations</button></div>':'')
-   +'</div></div></div>';
+  var P=DATA.promotionsLive||[];
+  return '<div class="page"><div class="phead"><div class="eyebrow">Patient Rewards &amp; Promotions</div><h1>Marketing that pays you back</h1><div class="guide">Your live promotions, visible to patients on your public card. Crown reward campaigns expand here as redemptions begin.</div></div>'
+  +'<div class="cols2"><div class="stack">'
+  +'<div class="card pad"><div class="slabel" style="padding-top:0"><h3>Your promotions</h3></div>'
+   +(P.length?P.map(function(x){return '<div class="lrow"><div class="lk">&#128227;</div><div class="lt"><b>'+esc(x.title)+'</b><span>'+esc(x.body||'')+(x.ends_on?' &#183; ends '+x.ends_on:'')+'</span></div><span class="'+(x.status==='active'?'okpill':'pendpill')+'" style="font-size:11px;padding:5px 10px">'+esc(x.status||'draft')+'</span></div>';}).join(''):'<div class="muted" style="font-size:13px">No promotions yet. Launch your first below.</div>')
+   +'<div class="field" style="margin-top:14px"><label>New promotion title</label><input id="promoT" placeholder="New patient whitening special"></div>'
+   +'<div class="field"><label>Details</label><input id="promoD" placeholder="Free take home kit with first exam &#183; ends Jul 15"></div>'
+   +'<button class="btn btn-gold btn-sm" data-act="promolive">Launch promotion</button>'
+   +'<div class="muted" style="font-size:11.5px;margin-top:8px">Promotions never change ranking or review scores.</div></div>'
+  +'</div><div class="stack">'
+  +(plat()?'':'<div class="lockcard"><div class="lk-top"><b>Expanded Rewards</b><span class="lk-tier">Platinum Elite</span></div><div class="lk-what">Featured campaign slots in the patient rewards gallery, custom art, and seasonal placements.</div><div class="lk-cta"><button class="btn btn-plum btn-sm" data-go="membership">Unlock with Platinum</button></div></div>')
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">How Crown rewards work</div><div class="muted" style="font-size:13px;line-height:1.65">Patients earn Crowns by getting covered, getting care, and referring friends, then spend them at offices they love. Redemptions require a verified visit. Campaign funnels (claimed, booked, completed, revenue) appear here as patients redeem.</div></div>'
+  +'</div></div></div>';
+}
+function vPatientsLive(){
+  var rows=DATA.inboxLive||[];
+  return '<div class="page"><div class="phead"><div class="eyebrow">Patients</div><h1>Inbox and eligibility</h1><div class="guide">Patients who booked your office or asked about coverage, live from CoverCapy.'+(paid()?' Verified benefits arrive with each request.':'')+'</div></div>'
+  +'<div class="card pad"><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Patient</th><th>Plan</th><th>Status</th><th>Context</th><th></th></tr></thead><tbody>'
+  +(rows.length?rows.map(function(r){
+     var isVer=r.source==='verification';
+     var ctx=isVer?('Verification request &#183; '+fmtDate(r.ts)):('Booking'+(r.starts_at?' &#183; '+fmtTime(r.starts_at):''));
+     var st=isVer?(vOpen(r.status)?'<span class="pendpill" style="font-size:11px;padding:5px 10px">'+esc(r.status||'open')+'</span>':'<span class="okpill" style="font-size:11px;padding:5px 10px">'+esc(r.status)+'</span>'):(r.ppo_verified?'<span class="okpill" style="font-size:11px;padding:5px 10px">PPO verified</span>':'<span class="mini" style="padding:6px 11px">'+esc(r.status||'booked')+'</span>');
+     var actn=isVer&&vOpen(r.status)?'<button class="btn btn-mint btn-sm" data-vreply="'+esc(r.id)+'">We accept &#10003;</button>':'';
+     return '<tr><td><b>'+esc(r.patient||'Verified patient')+'</b></td><td>'+esc(r.carrier||'—')+'</td><td>'+st+'</td><td style="font-size:12.5px">'+ctx+'</td><td>'+actn+'</td></tr>';
+   }).join(''):'<tr><td colspan="5"><div class="muted" style="text-align:center;padding:24px;font-size:13.5px">No patient requests yet. When patients book you or ask about coverage on CoverCapy, they appear here within seconds.</div></td></tr>')
+  +'</tbody></table></div>'
+  +(paid()?'<div class="muted" style="font-size:11.5px;margin-top:12px">Replying marks the request answered and notifies the patient in their app.</div>':'<div class="muted" style="font-size:11.5px;margin-top:12px">You can reply to every patient on the free tier. Verified benefit snapshots arrive with membership.</div>')
+  +'</div></div>';
+}
+function vDProfileLive(){
+  var row=S.row||{},sc=liveScore(row),tasks=DATA.scoreTasks||[];
+  var g=(row.gallery_images||[]).length;
+  return '<div class="page"><div class="phead"><div class="eyebrow">Profile &#183; Brand studio</div><h1>How patients see you</h1><div class="guide">Your profile is your storefront. Changes save straight to your public card.</div></div>'
+  +'<div class="cols2"><div class="stack">'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Profile strength</div>'
+   +'<div class="scorewrap">'+ring(sc.total,108,30,sc.total>=80?'var(--mint)':'var(--gold)')
+   +'<div style="flex:1;min-width:160px"><div class="serif" style="font-size:19px;margin-bottom:2px">'+sc.band+'</div><div class="muted" style="font-size:12.5px;line-height:1.55">Solid at 60, Strong at 80, Complete at 95. Within your placement tier, stronger profiles rank higher. Tier never buys points.</div></div></div>'
+   +(tasks.length?'<div style="margin-top:10px">'+tasks.slice(0,5).map(function(t){return '<div class="taskrow"><div class="tk"><b>'+t.t+'</b></div><span class="gain">+'+t.gain+'</span></div>';}).join('')+'</div>':'<div class="okpill" style="margin-top:12px">Profile complete</div>')+'</div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Practice details</div>'
+   +'<div class="field"><label>Practice name</label><input id="pf_practice" value="'+esc(row.practice_name||'')+'"></div>'
+   +'<div class="field"><label>Doctor name</label><input id="pf_doctor" value="'+esc(row.doctor_name||'')+'"></div>'
+   +'<div class="field"><label>Short description</label><textarea id="pf_desc" rows="3">'+esc(row.short_description||'')+'</textarea></div>'
+   +'<div class="field"><label>Online booking link</label><input id="pf_book" value="'+esc(row.booking_url||'')+'" placeholder="https://"></div>'
+   +'<div class="field"><label>Website</label><input id="pf_site" value="'+esc(row.website||'')+'" placeholder="https://"></div>'
+   +'<button class="btn btn-ink btn-sm" data-act="savepflive">Save changes</button></div>'
+  +'</div><div class="stack">'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:6px">Languages</div><div style="display:flex;flex-wrap:wrap;gap:6px">'+((row.languages&&row.languages.length?row.languages:['English']).map(function(l){return '<span class="mini lang">'+esc(l)+'</span>';}).join(''))+'</div></div>'
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:6px">Practice media</div><div class="muted" style="font-size:13px;line-height:1.6">'+g+' of 4 photo slots filled'+(row.cover_image_url?' &#183; cover image set':'')+'. Photo uploads land in the next portal update; for now our team adds them for you: email them to <b>photos@covercapy.com</b> with your practice name.</div></div>'
+  +(plat()?'<div class="card pad" style="background:linear-gradient(140deg,#3D2A6B,#5B3E96);border:none;color:var(--paper)"><div class="eyebrow" style="color:#CBB8F2;margin-bottom:6px">Platinum Elite</div><div class="serif" style="font-size:19px;margin-bottom:8px">Showcase Builder</div><div style="font-size:13px;line-height:1.6;color:rgba(246,240,230,.85)">Cover image, featured procedures, video, gallery, and section ordering. Your growth specialist sets these with you.</div></div>'
+    :'<div class="lockcard"><div class="lk-top"><b>Showcase Builder</b><span class="lk-tier">Platinum Elite</span></div><div class="lk-what">Shape your whole public page: cover image, featured procedures, video introduction, gallery, and section ordering.</div><div class="lk-cta"><button class="btn btn-plum btn-sm" data-go="membership">Unlock with Platinum</button></div></div>')
+  +'<div class="card pad"><div class="eyebrow" style="margin-bottom:6px">See it as patients do</div><div class="muted" style="font-size:13px;margin-bottom:12px">Your live public card, exactly as it renders in patient search.</div><button class="btn btn-ink btn-sm btn-full" data-act="publiccardlive">View my public card</button></div>'
+  +'</div></div></div>';
 }
 
-/* ====================== PATIENTS ====================== */
-function vPatients(){
-  var rows=S.inbox;
-  var table='<div class="card pad"><div class="field" style="max-width:360px"><input id="eligQ" placeholder="Search by patient name" aria-label="Search"></div>'
-   +'<div style="overflow-x:auto"><table class="tbl" id="eligTbl"><thead><tr><th>Patient</th><th>Plan</th><th>Status</th><th>Context</th><th></th></tr></thead><tbody>'
-   +(rows.length?rows.map(function(r){
-      var statusCell=paid()
-        ? (r.status==='verified'?'<span class="okpill" style="font-size:11px;padding:5px 10px">Verified</span>':'<span class="pendpill" style="font-size:11px;padding:5px 10px">'+esc(r.status||'pending')+'</span>')
-        : '<span class="mini pend" style="padding:6px 11px">Snapshot with membership</span>';
-      var ctx=r.source==='booking'?('Booked '+(r.starts_at?fmtTime(r.starts_at):'')):'Eligibility request';
-      var action=paid()
-        ? '<button class="btn btn-ghost btn-sm" data-reply="'+esc(r.id)+'" data-src="'+esc(r.source)+'">Reply</button>'
-        : '<button class="btn btn-ghost btn-sm" data-go="membership">Membership</button>';
-      return '<tr data-q="'+esc((r.patient||'').toLowerCase())+'"><td><b>'+esc(r.patient||'Verified patient')+'</b></td><td>'+esc(r.carrier||'—')+'</td><td>'+statusCell+'</td><td style="font-size:12.5px">'+ctx+'</td><td>'+action+'</td></tr>';
-    }).join(''):'<tr><td colspan="5"><div class="empty">No patient requests yet. When patients book you or ask about coverage on CoverCapy, they appear here.</div></td></tr>')
-   +'</tbody></table></div>'
-   +(paid()?'<div class="muted" style="font-size:11.5px;margin-top:12px">Verified benefit snapshots — annual maximum, deductible status, coordination of benefits — arrive with each request.</div>':'<div class="muted" style="font-size:11.5px;margin-top:12px">You can reply to every patient on the free tier. Verified benefit snapshots arrive with membership.</div>')
-   +'</div>';
-  return '<div class="page"><div class="phead"><div class="eyebrow">Patients</div><h1>Inbox and eligibility</h1><div class="guide">Patients who booked your office or asked about their coverage. This list is built live from what patients do on CoverCapy.</div></div>'+table+'</div>';
+/* ===== sheets / celebrate ===== */
+function openSheet(html){$('sheetIn').innerHTML='<div class="grab"></div>'+html;$('sheet').classList.add('open');wire($('sheetIn'));}
+function closeSheet(){$('sheet').classList.remove('open');}
+$('sheet').addEventListener('click',function(e){if(e.target===this)closeSheet();});
+function celebrate(o){
+  openSheet('<div class="celebrate"><div class="em">'+o.em+'</div><h3>'+o.title+'</h3>'
+   +(o.chip?'<div class="chip2">'+o.chip+'</div>':'')
+   +'<p>'+o.body+'</p><button class="btn btn-ink btn-full" data-close="1">Continue</button></div>');
 }
 
-/* ====================== STANDING ====================== */
-function vStanding(){
-  var m=S.me,s=S.summary||{};
-  var blended=m.weighted_rating||m.aggregate_rating||m.google_rating||s.avg_rating||0;
-  var count=m.weighted_review_count||m.aggregate_review_count||m.google_review_count||0;
-  var latest=S.activity.filter(function(a){return a.kind==='review';})[0];
-  return '<div class="page"><div class="phead"><div class="eyebrow">Standing</div><h1>How you look out there</h1><div class="guide">Your reputation, built from your real reviews across sources and the CoverCapy feedback your patients leave.</div></div>'
-   +'<div class="cols2"><div class="stack">'
-   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">Reputation</div>'
-     +'<div style="display:flex;align-items:baseline;gap:10px"><span class="serif" style="font-size:42px">'+(blended?Number(blended).toFixed(1):'—')+'</span><span style="color:var(--gold);font-size:24px">★</span><span class="muted" style="font-size:13px">'+(count?count+' reviews':'building')+'</span></div>'
-     +'<div style="font-size:13px;line-height:2;margin-top:8px">'
-       +(m.google_rating?'Google · '+m.google_review_count+' ★ '+Number(m.google_rating).toFixed(1)+'<br>':'')
-       +(m.yelp_rating?'Yelp · '+(m.yelp_review_count||0)+' ★ '+Number(m.yelp_rating).toFixed(1)+'<br>':'')
-       +(m.zocdoc_rating?'ZocDoc · '+(m.zocdoc_review_count||0)+' ★ '+Number(m.zocdoc_rating).toFixed(1)+'<br>':'')
-       +'CoverCapy · '+(s.reviews_count||m.capy_review_count||0)+' ★ '+((s.avg_rating||m.capy_rating)?Number(s.avg_rating||m.capy_rating).toFixed(1):'—')
-     +'</div></div>'
-   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">Latest CoverCapy review</div>'
-     +(latest?'<div class="lrow"><div class="lk">⭐</div><div class="lt"><b>"'+esc(latest.detail||'Great experience')+'"</b><span>'+esc(latest.patient)+' · verified CoverCapy patient · '+(latest.rating||5)+'★</span></div></div>':'<div class="empty">No CoverCapy reviews yet. Hand happy patients your review link below.</div>')
-     +'<div class="muted" style="font-size:11.5px;margin:8px 0 12px;line-height:1.5">You can reply to CoverCapy reviews. Google and Yelp don\'t allow outside replies, so we link you straight there.</div>'
-     +'<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" data-act="goog">Respond on Google</button><button class="btn btn-ghost btn-sm" data-act="yelp">Respond on Yelp</button></div></div>'
-   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">Review request kit</div>'
-     +'<div class="muted" style="font-size:13px;line-height:1.6;margin-bottom:12px">Your short link for the front desk. Hand it to happy patients on the way out.</div>'
-     +'<div class="card pad" style="text-align:center;font-size:13.5px;font-weight:600;background:var(--cream);box-shadow:none;margin-bottom:10px">covercapy.com/r/'+esc(m.slug||'your-office')+'</div>'
-     +'<button class="btn btn-ink btn-sm" data-act="copylink">Copy link</button></div>'
-   +'</div><div class="stack">'
-   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">What sets you apart</div>'
-     +factRow(m.open_weekends,'<b>Weekend hours.</b> Declared open weekends.')
-     +factRow((m.languages||[]).length>1,'<b>Languages.</b> You list '+((m.languages||[]).join(', ')||'English')+'.')
-     +factRow(!!m.booking_url,'<b>Online booking.</b> Your booking link is live.')
-     +factRow((s.nominations_total||0)>0,'<b>Patient nominations.</b> '+(s.nominations_total||0)+' patients vouched for you.')
-   +'</div>'
-   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:8px">Where you can stand out more</div>'
-     +factRow(!!m.website,'<b>Website verification.</b> A verified website strengthens your card.')
-     +factRow((m.gallery_images||[]).length>=4,'<b>Photos.</b> Full photo sets read as more established.')
-     +factRow(!!m.short_description,'<b>Practice description.</b> The most-read block on your profile.')
-     +'<button class="btn btn-mint btn-sm btn-full" data-go="dprofile" style="margin-top:12px">Open profile tasks</button></div>'
-   +'</div></div></div>';
+/* ===== dentist moments (toasts) ===== */
+function showMoment(m){
+  var t=document.createElement('div');
+  t.className='toast';
+  t.innerHTML='<div class="tic">'+m.ic+'</div><div class="tx"><b>'+m.h+'</b><span>'+m.s+'</span></div>';
+  t.addEventListener('click',function(){t.classList.add('out');setTimeout(function(){t.remove();},350);});
+  $('toasts').appendChild(t);
+  setTimeout(function(){t.classList.add('out');setTimeout(function(){t.remove();},350);},5200);
 }
-function factRow(ok,txt){return '<div class="lrow"><div class="lk">'+(ok?'<span style="color:var(--mint-deep)">✓</span>':'<span style="color:var(--slate)">○</span>')+'</div><div style="font-size:13.5px">'+txt+'</div></div>';}
-
-/* ====================== NOMINATIONS ====================== */
-function vNoms(){
-  return '<div class="page"><button class="btn btn-ghost btn-sm" data-go="ddash" style="margin-bottom:14px">← Today</button>'
-   +'<div class="phead"><div class="eyebrow">Nominations</div><h1>Patients vouched for you</h1><div class="guide">Their words, exactly as written. Every accredited office on CoverCapy started with a patient who asked for them.</div></div>'
-   +'<div class="cols2"><div class="stack">'
-   +(S.noms.length?S.noms.map(function(r){
-      return '<div class="letter"><div class="q">"'+esc(r.trust_reason||'They vouched for your office')+'"</div><div class="who"><b style="color:var(--ink)">'+esc(r.nominee_name||'A patient')+'</b> · nominated your office · '+fmtDate(r.created_at)+'</div>'
-       +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">'
-       +(r.credited?'<span class="okpill" style="font-size:11px;padding:6px 11px">Credited</span>':'<button class="btn btn-ghost btn-sm" data-credit="'+esc(r.id)+'">Credit this nomination</button>')
-       +'<button class="btn btn-ghost btn-sm" data-act="thank">Send a thank you</button></div></div>';
-    }).join(''):'<div class="card pad"><div class="empty">No nominations yet. When a patient nominates your office on CoverCapy, their note appears here.</div></div>')
-   +'</div><div class="stack">'
-   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:6px">How crediting works</div><div class="muted" style="font-size:13px;line-height:1.6">Credit the patient whose nomination brought you here. They receive their network reward when your membership starts. One credit per office, and it never costs you anything. The rest stay on record.</div></div>'
-   +'</div></div></div>';
+function startMoments(){
+  if(S.momentTimer)return;
+  var list=momentsFor();
+  if(!list.length)return;
+  setTimeout(function(){showMoment(list[0]);S.momentIdx=1;},2500);
+  S.momentTimer=setInterval(function(){
+    if(S.momentIdx>=list.length){clearInterval(S.momentTimer);return;}
+    showMoment(list[S.momentIdx]);S.momentIdx++;
+  },16000);
 }
 
-/* ====================== PROFILE ====================== */
-function vProfile(){
-  var m=S.me;
-  return '<div class="page"><div class="phead"><div class="eyebrow">Profile</div><h1>How patients see you</h1><div class="guide">The details patients read on your public card. Keep them current — a complete profile ranks higher within your tier.</div></div>'
-   +'<div class="cols2"><div class="stack">'
-   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Practice details</div>'
-     +'<div class="field"><label>Practice name</label><input id="pf_practice" value="'+esc(m.practice_name||'')+'"></div>'
-     +'<div class="field"><label>Doctor name</label><input id="pf_doctor" value="'+esc(m.doctor_name||'')+'"></div>'
-     +'<div class="field"><label>Short description</label><textarea id="pf_desc" rows="3">'+esc(m.short_description||'')+'</textarea></div>'
-     +'<div class="field"><label>Booking link</label><input id="pf_book" value="'+esc(m.booking_url||'')+'" placeholder="https://"></div>'
-     +'<button class="btn btn-ink btn-sm" data-act="savepf"'+(S.preview?' disabled':'')+'>Save changes</button>'
-     +(S.preview?'<div class="muted" style="font-size:11.5px;margin-top:8px">Saving is disabled in preview.</div>':'')+'</div>'
-   +'</div><div class="stack">'
-   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:6px">Languages</div><div style="display:flex;flex-wrap:wrap;gap:6px">'+((m.languages||['English']).map(function(l){return '<span class="mini lang">'+esc(l)+'</span>';}).join(''))+'</div></div>'
-   +(paid()?'<div class="card pad"><div class="eyebrow" style="margin-bottom:10px">Promotions</div><div class="field"><label>New promotion title</label><input id="promoT" placeholder="New patient whitening special"></div><div class="field"><label>Details</label><input id="promoD" placeholder="Free take-home kit with first exam · ends Jul 15"></div><button class="btn btn-gold btn-sm" data-act="promo"'+(S.preview?' disabled':'')+'>Launch promotion</button><div class="muted" style="font-size:11.5px;margin-top:8px">Promotions never change ranking or review scores.</div></div>'
-     :'<div class="card pad"><div class="eyebrow" style="margin-bottom:6px;color:var(--plum)">Member feature</div><div class="muted" style="font-size:13px;line-height:1.6">Accredited offices can run promotions and publish a practice story drafted from their real review themes.</div><button class="btn btn-ghost btn-sm btn-full" data-go="membership" style="margin-top:12px">See membership</button></div>')
-   +'<div class="card pad"><div class="eyebrow" style="margin-bottom:6px">See it as patients do</div><div class="muted" style="font-size:13px;margin-bottom:12px">Your live public card in Find a Dentist.</div><button class="btn btn-ink btn-sm btn-full" data-act="viewcard">View my public card</button></div>'
-   +'</div></div></div>';
+/* ===== router ===== */
+var VIEWS={today:vToday,pipeline:vPipeline,patients:vPatients,reputation:vReputation,rankings:vRankings,rewards:vRewards,dprofile:vDProfile,membership:vMembership};
+function route(){
+  if(!S.entered){renderGate();return;}
+  var id=(location.hash||'').replace('#/','')||'today';
+  if(!VIEWS[id])id='today';
+  $('view').innerHTML=VIEWS[id]();
+  renderChromeCounts();
+  setActive(id);
+  wire($('view'));
+  var pill=$('dTierPill');if(pill){pill.innerHTML=tierLabel();pill.style.cssText+=';'+tierPillStyle();}
+  if(id==='rankings'){var pq=$('plaque');if(pq){pq.classList.remove('reveal');void pq.offsetWidth;pq.classList.add('reveal');}}
+  window.scrollTo(0,0);
 }
-
-/* ====================== MEMBERSHIP ====================== */
-function vMembership(){
-  var t=tier();
-  var head=paid()
-    ? '<div class="card pad" style="margin-bottom:16px"><div class="eyebrow" style="margin-bottom:4px">Your plan</div><div class="serif" style="font-size:20px">'+(t==='platinum_elite'?'Platinum Elite':'Capy Accredited · $369 / month')+'</div><div class="muted" style="font-size:13px;margin-top:4px">Renews monthly · cancel anytime. Annual prepay saves two months.</div></div>'
-    : '<div class="card pad banner" style="border-color:var(--gold);margin-bottom:16px"><div style="font-size:24px">🏆</div><div style="flex:1;min-width:220px"><b>Apply for Capy Accreditation</b><div class="muted" style="font-size:13px">Reviewed on merit. You\'re not charged to apply — the $369/month begins only if approved.</div></div></div>';
-  return '<div class="page"><div class="phead"><div class="eyebrow">Membership</div><h1>Accreditation & membership</h1><div class="guide">What patients unlock when your office is accredited — and what it takes to get there.</div></div>'
-   +head
-   +'<div class="cols2"><div class="card pad"><div class="eyebrow" style="margin-bottom:8px">Capy Accredited · $369/mo</div><div style="font-size:13px;line-height:2.05">✓ Trust badge across a 10-mile radius<br>✓ Verified patient benefit snapshots in your inbox<br>✓ Blended reviews from Google, Yelp, ZocDoc & CoverCapy<br>✓ Nomination wall on your public profile<br>✓ Practice story & promotions</div>'+(paid()?'<div style="margin-top:14px"><span class="okpill">Current plan</span></div>':'<button class="btn btn-gold btn-sm" data-act="apply" style="margin-top:14px">Apply for accreditation</button>')+'</div>'
-   +'<div class="card pad" style="background:linear-gradient(140deg,#3D2A6B,#5B3E96);border:none;color:var(--paper)"><div class="eyebrow" style="color:#CBB8F2;margin-bottom:8px">Platinum Elite</div><div style="font-size:13px;line-height:2.05;color:rgba(246,240,230,.9)">✓ Featured placement up to 18 miles out<br>✓ Showcase Builder: cover image, featured procedures, video<br>✓ Section ordering & a featured patient quote</div>'+(t==='platinum_elite'?'<div style="margin-top:14px"><span class="okpill">Current plan</span></div>':'<button class="btn btn-mint btn-sm" data-act="platinum" style="margin-top:14px">Talk to us about Platinum</button>')+'</div>'
-   +'</div></div>';
-}
-
-/* ====================== ACTIONS ====================== */
-function bindActions(){
-  var q=$('eligQ');
-  if(q)q.addEventListener('input',function(){var t=this.value.toLowerCase();document.querySelectorAll('#eligTbl tbody tr').forEach(function(tr){var d=tr.getAttribute('data-q')||'';tr.style.display=d.indexOf(t)>=0?'':'none';});});
-
-  document.querySelectorAll('[data-credit]').forEach(function(b){b.addEventListener('click',async function(){
-    var id=this.getAttribute('data-credit');
-    if(S.preview){S.noms.forEach(function(n){if(n.id===id)n.credited=true;});toast('Nomination credited (preview)');go('dnoms');return;}
-    this.disabled=true;
-    var r=await sb.from('dentist_nominations').update({credited:true,credited_at:new Date().toISOString()}).eq('id',id);
-    if(r.error){toast(r.error.message);this.disabled=false;return;}
-    await refreshData();toast('Nomination credited — thank-you reward queued for the patient.');go('dnoms');
-  });});
-
-  document.querySelectorAll('[data-reply]').forEach(function(b){b.addEventListener('click',async function(){
-    var id=this.getAttribute('data-reply'),src=this.getAttribute('data-src');
-    if(src!=='verification'){toast('Booking opened.');return;}
-    if(S.preview){toast('Reply sent (preview)');return;}
-    this.disabled=true;
-    var u=(await sb.auth.getUser()).data.user;
-    var r=await sb.from('verification_responses').insert({request_id:id,dentist_id:S.me.id,responder:u.id,answer:'accepted',note:'We accept this insurance.'});
-    this.disabled=false;
-    if(r.error){toast(r.error.message);return;}
-    toast('Reply sent to the patient.');
-  });});
-
-  var sp=document.querySelector('[data-act="savepf"]');
-  if(sp)sp.addEventListener('click',async function(){
-    if(S.preview)return;this.disabled=true;
-    var patch={practice_name:$('pf_practice').value,doctor_name:$('pf_doctor').value,short_description:$('pf_desc').value,booking_url:$('pf_book').value};
-    var r=await sb.from('dentists').update(patch).eq('id',S.me.id);
-    this.disabled=false;
-    if(r.error){toast(r.error.message);return;}
-    Object.assign(S.me,patch);toast('Profile saved — live on your public card.');
-  });
-
-  var pr=document.querySelector('[data-act="promo"]');
-  if(pr)pr.addEventListener('click',async function(){
-    if(S.preview)return;
-    var title=($('promoT').value||'').trim();if(!title){toast('Add a title first.');return;}
-    this.disabled=true;
-    var u=(await sb.auth.getUser()).data.user;
-    var r=await sb.from('dentist_promotions').insert({dentist_id:S.me.id,title:title,body:$('promoD').value,status:'active',created_by:u.id});
-    this.disabled=false;
-    if(r.error){toast(r.error.message);return;}
-    $('promoT').value='';$('promoD').value='';toast('Promotion is live.');
-  });
-
-  document.querySelectorAll('[data-act="copylink"]').forEach(function(b){b.addEventListener('click',function(){
-    var link='covercapy.com/r/'+(S.me.slug||'your-office');
-    if(navigator.clipboard)navigator.clipboard.writeText(link);toast('Review link copied.');
-  });});
-  document.querySelectorAll('[data-act="viewcard"]').forEach(function(b){b.addEventListener('click',function(){
-    if(S.me.profile_url){window.open(S.me.profile_url,'_blank');}else{toast('Your public card opens in Find a Dentist.');}
-  });});
-  ['thank','goog','yelp','apply','platinum'].forEach(function(a){
-    document.querySelectorAll('[data-act="'+a+'"]').forEach(function(b){b.addEventListener('click',function(){
-      toast({thank:'Thank-you sent.',goog:'Opening Google reviews…',yelp:'Opening Yelp…',apply:'Application started — finish your profile to submit.',platinum:'We\'ll reach out about Platinum.'}[a]);
-    });});
+function renderChromeCounts(){
+  document.querySelectorAll('#topnav .tn-links a').forEach(function(a){
+    var c=navCount(a.dataset.go);
+    var ex=a.querySelector('.ct');if(ex)ex.remove();
+    if(c){var s=document.createElement('span');s.className='ct';s.textContent=c;a.appendChild(s);}
   });
 }
+function go(id){location.hash='#/'+id;}
+window.addEventListener('hashchange',route);
 
-/* ====================== START ====================== */
+/* ===== event wiring (delegated) ===== */
+function wire(root){
+  root.querySelectorAll('[data-go]').forEach(function(el){
+    el.addEventListener('click',function(e){e.stopPropagation();go(el.dataset.go);});
+  });
+  root.querySelectorAll('[data-ob]').forEach(function(el){
+    el.addEventListener('click',function(){obComplete(el.dataset.ob);});
+  });
+  root.querySelectorAll('[data-close]').forEach(function(el){
+    el.addEventListener('click',closeSheet);
+  });
+  root.querySelectorAll('[data-elig]').forEach(function(el){
+    el.addEventListener('click',function(){
+      openSheet('<h3 class="serif">Donna Tran &#183; Humana PPO</h3><div class="ssub">Member 0000027201988 &#183; verified by the CoverCapy team</div>'
+       +'<div style="font-size:13.5px;line-height:2"><b>Key financials</b><br>Annual maximum: $5,000 &#183; $3,665 left<br>Deductible: $75 &#183; met<br><br><b>Coverage in network</b><br>Preventive 100% &#183; Basic 80% &#183; Major 50%<br><br><b>Limits</b><br>Cleanings 2 per year &#183; Exams 2 per year</div>'
+       +'<button class="btn btn-ink btn-full" style="margin-top:18px" data-close="1">Done</button>');
+    });
+  });
+  root.querySelectorAll('[data-opp]').forEach(function(el){
+    el.addEventListener('click',function(){
+      if(S.live){
+        var o=null;DATA.opportunities.forEach(function(x){if(x.name===el.dataset.opp)o=o||x;});
+        if(!o)return;
+        openSheet('<h3 class="serif">'+o.name+'</h3><div class="ssub">'+o.kind+' &#183; '+o.meta+'</div>'
+         +'<div style="font-size:13.5px;line-height:1.7"><b>'+fmt$(o.value)+'</b> '+o.vlabel.toLowerCase()+' &#183; estimate from national PPO fee averages, never shown to patients.</div>'
+         +(o._src==='verification'?'<button class="btn btn-mint btn-full" style="margin-top:16px" data-vreply="'+o._id+'">We accept this insurance &#10003;</button>':'')
+         +(o._src==='nomination'?'<button class="btn btn-gold btn-full" style="margin-top:16px" data-creditlive="'+o._id+'">Credit this nomination</button>':'')
+         +'<button class="btn btn-ghost btn-full btn-sm" style="margin-top:8px" data-close="1">Close</button>');
+        return;
+      }
+      celebrate({em:'&#128203;',title:el.dataset.opp,body:'In the live build this opens the patient thread with their verified benefit snapshot, one tap replies, and booking actions.'});
+    });
+  });
+  root.querySelectorAll('[data-slot]').forEach(function(el){
+    el.addEventListener('click',function(){
+      var k=el.dataset.slot,m=null;MEDIA.forEach(function(x){if(x.k===k)m=x;});
+      if(!m||m.done)return;
+      if(m.plat&&!plat()){celebrate({em:'&#9670;',title:'A Platinum Elite slot',body:m.n+' is part of the Showcase Builder, the profile experience Platinum offices shape themselves.'});return;}
+      m.done=true;route();
+      celebrate({em:'&#128247;',title:m.n+' added',chip:'+ profile strength &#183; live after review',body:'It goes live on your public card after a quick review by our team.'});
+    });
+  });
+  root.querySelectorAll('[data-act]').forEach(function(el){
+    el.addEventListener('click',function(e){
+      e.stopPropagation();
+      var a=el.dataset.act;
+      if(a==='setup'){go('dprofile');}
+      else if(a==='approve'){el.textContent='Approved ✓';el.disabled=true;el.style.opacity='.65';showMoment({ic:'&#128081;',h:'Reward approved',s:'Priya R. is booked for whitening. Verified visit logged.'});}
+      else if(a==='reply'||a==='confirmrev'||a==='reply1'){el.textContent='Done ✓';el.disabled=true;el.style.opacity='.65';}
+      else if(a==='copylink'){el.textContent='Copied ✓';setTimeout(function(){el.textContent='Copy link';},1600);}
+      else if(a==='thank'){el.textContent='Sent ✓';el.disabled=true;el.style.opacity='.65';}
+      else if(a==='nomwall'){celebrate({em:'&#127942;',title:'Nomination featured',body:'Mina’s words now show on your public profile, labeled as a patient nomination and kept separate from reviews.'});}
+      else if(a==='apply'){
+        openSheet('<h3 class="serif">Apply for Capy Accreditation</h3><div class="ssub">Reviewed on merit, usually within a week. You are not charged to apply: the $369 per month membership begins only if approved.</div>'
+         +'<div class="field"><label>Work email</label><input id="applyEmail" placeholder="frontdesk@capybaracove.com"></div>'
+         +'<div class="field"><label>Best phone for the review call</label><input id="applyPhone" placeholder="(714) 555-0142"></div>'
+         +'<button class="btn btn-gold btn-full" data-act="applysend">Submit application</button>'
+         +'<div class="muted" style="font-size:11.5px;margin-top:10px;text-align:center">Accreditation is reviewed on merit and is never sold.</div>');
+      }
+      else if(a==='applysend'){closeSheet();celebrate({em:'&#127942;',title:'Application submitted',chip:'Review usually within a week',body:'Our team reviews your profile, your patient feedback, and your commitments. We will email you at each step.'});}
+      else if(a==='tier3'){
+        openSheet('<h3 class="serif">Talk to us about Platinum Elite</h3><div class="ssub">$6,990 per year, about $583 per month. A growth specialist walks through featured placement, competitive analytics, and the Showcase Builder with your numbers.</div>'
+         +'<div class="field"><label>Work email</label><input placeholder="frontdesk@capybaracove.com"></div>'
+         +'<div class="field"><label>Best time to call</label><input placeholder="Weekday mornings"></div>'
+         +'<button class="btn btn-plum btn-full" data-act="tier3send">Request the call</button>');
+      }
+      else if(a==='tier3send'){closeSheet();celebrate({em:'&#9670;',title:'Request received',chip:'Reply within one business day',body:'Your growth specialist will bring your market numbers: missed searches, the 163 point gap, and what featured placement covers from your address.'});}
+      else if(a==='newcamp'){celebrate({em:'&#128227;',title:'New campaign',body:'Pick a reward, set the Crown cost (1,500 floor), and our team reviews it before it goes live to patients.'});}
+      else if(a==='showcase'){celebrate({em:'&#127912;',title:'Showcase Builder',body:'Cover image, featured procedures, featured quote, video, gallery, and section ordering, with a live preview of your page at every tier.'});}
+      else if(a==='publiccard'){celebrate({em:'&#129441;',title:'Your public card',body:'4.8 ★ · '+(paid()?'132 reviews across 4 sources':'96 Google reviews')+' · "Gentle with kids, honest pricing" · English, Mandarin · weekend hours. This is what patients see in search.'});}
+      else if(a==='taskbio'||a==='tasksite'||a==='taskphotos'){celebrate({em:'&#9650;',title:'Nice pick',chip:'Highest value next step',body:'In the live build this opens the editor. Each completed task raises your profile strength and your search position within your tier.'});}
+      else if(a==='brand'){celebrate({em:'&#128221;',title:'Brand block',body:'In the live build this opens the editor for this block, with examples from top performing offices.'});}
+      else if(a==='promolive'){
+        var ti=($('promoT').value||'').trim();
+        if(!ti){showMoment({ic:'&#9999;',h:'Add a title first',s:'Give the promotion a short name patients will read.'});return;}
+        el.disabled=true;
+        sb.auth.getUser().then(function(u){
+          return sb.from('dentist_promotions').insert({dentist_id:S.row.id,title:ti,body:$('promoD').value,status:'active',created_by:u.data.user.id});
+        }).then(function(r){
+          el.disabled=false;
+          if(r.error){showMoment({ic:'&#9888;',h:'Could not launch',s:r.error.message});return;}
+          return sb.from('dentist_promotions').select('*').eq('dentist_id',S.row.id).order('created_at',{ascending:false}).then(function(q){DATA.promotionsLive=q.data||[];route();showMoment({ic:'&#128227;',h:'Promotion is live',s:'Patients now see it on your public card.'});});
+        });
+      }
+      else if(a==='savepflive'){
+        el.disabled=true;
+        var patch={practice_name:$('pf_practice').value,doctor_name:$('pf_doctor').value,short_description:$('pf_desc').value,booking_url:$('pf_book').value,website:$('pf_site').value};
+        sb.from('dentists').update(patch).eq('id',S.row.id).then(function(r){
+          el.disabled=false;
+          if(r.error){showMoment({ic:'&#9888;',h:'Save failed',s:r.error.message});return;}
+          Object.assign(S.row,patch);
+          var sc2=liveScore(S.row);DATA.score.total=sc2.total;DATA.score.pct='Profile strength &#183; '+sc2.band;DATA.scoreTasks=sc2.tasks;
+          route();showMoment({ic:'&#9650;',h:'Profile saved',s:'Live on your public card. Strength: '+sc2.total+'.'});
+        });
+      }
+      else if(a==='publiccardlive'){
+        if(S.row&&S.row.profile_url)window.open(S.row.profile_url,'_blank');
+        else celebrate({em:'&#129441;',title:'Your public card',body:esc(DATA.office.name)+' &#183; '+DATA.reputation.rating+' ★ · '+DATA.reputation.count+' reviews. Patients see this card in Find a Dentist.'});
+      }
+    });
+  });
+  root.querySelectorAll('[data-vreply]').forEach(function(el){
+    el.addEventListener('click',function(){
+      var id=el.dataset.vreply;el.disabled=true;
+      sb.auth.getUser().then(function(u){
+        return sb.from('verification_responses').insert({request_id:id,dentist_id:S.row.id,responder:u.data.user.id,answer:'accepted',note:'We accept this insurance.'});
+      }).then(function(r){
+        if(r.error){el.disabled=false;showMoment({ic:'&#9888;',h:'Reply failed',s:r.error.message});return;}
+        el.textContent='Sent ✓';showMoment({ic:'&#128203;',h:'Reply sent',s:'The patient sees your answer in their app.'});
+      });
+    });
+  });
+  root.querySelectorAll('[data-creditlive]').forEach(function(el){
+    el.addEventListener('click',function(){
+      var id=el.dataset.creditlive;el.disabled=true;
+      sb.rpc('credit_nomination',{in_nomination:id}).then(function(r){
+        if(r.error){el.disabled=false;showMoment({ic:'&#9888;',h:'Could not credit',s:r.error.message});return;}
+        el.textContent='Credited ✓';showMoment({ic:'&#127942;',h:'Nomination credited',s:'The patient receives their network reward.'});
+      });
+    });
+  });
+}
+
+/* ===== entry ===== */
+function enter(toSetup){
+  S.entered=true;
+  renderChrome();
+  if(toSetup){location.hash='#/dprofile';}else{location.hash='#/today';}
+  route();
+  startMoments();
+}
+$('gate').addEventListener('click',function(e){
+  var b=e.target.closest('[data-enter]');if(!b)return;
+  $('gate').classList.add('hidden');
+  if(b.dataset.enter==='first'){S.first=true;S.dTier='free';openWelcome();}
+  else{S.first=false;S.dTier='accredited';enter(false);}
+});
+renderGate();
 boot();
+})();
 </script>
 </body>
 </html>
